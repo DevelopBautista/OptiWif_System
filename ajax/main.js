@@ -1,0 +1,37 @@
+// main.js
+
+const SERVERURL = 'http://localhost/wispManager/';
+//array de js
+const scriptsToLoad = [
+    'usuario.js',
+    'cliente.js',
+    'plan.js',
+    'servicio.js',
+    'conexion.js',
+    'tipo_planes.js'
+];
+
+
+function loadScripts(scripts, callback) {
+    let loadedCount = 0;
+
+    scripts.forEach(scriptName => {
+        const script = document.createElement('script');
+        script.src = SERVERURL + 'ajax/' + scriptName;
+        script.onload = () => {
+            loadedCount++;
+            if (loadedCount === scripts.length && typeof callback === 'function') {
+                callback();
+            }
+        };
+        script.onerror = () => {
+            console.error(`Error loading script: ${scriptName}`);
+        };
+        document.head.appendChild(script);
+    });
+}
+
+// Usas la función para cargar todos los scripts
+loadScripts(scriptsToLoad, () => {
+    console.log('Todos los scripts cargados');
+});
