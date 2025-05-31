@@ -1,5 +1,10 @@
 <?php
 include_once("incluids/superior.php");
+require_once("../models/modelo_contador_infoBox.php"); // Ajusta si tu modelo tiene otro nombre
+
+$MC = new modelo_contador_infoBox();
+$total_clientes = $MC->contar_clientes();
+$total_servicios = $MC->contar_servicos();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -15,7 +20,7 @@ include_once("incluids/superior.php");
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Clientes</span>
-                                <span class="info-box-number">500</span>
+                                <span class="info-box-number"><?php echo $total_clientes; ?></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
@@ -28,7 +33,7 @@ include_once("incluids/superior.php");
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Servicios</span>
-                                <span class="info-box-number">500</span>
+                                <span class="info-box-number"><?php echo $total_servicios;?></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>
@@ -76,5 +81,5 @@ include_once("incluids/superior.php");
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
- 
+
 <?php include_once("incluids/inferior.php"); ?>
