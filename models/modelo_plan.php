@@ -18,7 +18,7 @@ class modelo_Plan
 
     public function listar_plannes()
     {
-        $sql = "SELECT id_plan,nombre,descripcion,precio FROM planes ";
+        $sql = "SELECT id_plan,nombre_plan,velocidad,precio FROM planes ";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $respuesta = $stmt->fetchAll();
@@ -26,14 +26,14 @@ class modelo_Plan
     }
 
 
-    public function crear_plan($nombre, $descripcion, $precio)
+    public function crear_plan($nombre_plan, $velocidad, $precio)
     {
         try {
 
             // Verificar si el plan  ya existe
-            $sql_check = "SELECT COUNT(*) FROM planes WHERE nombre = :nombre";
+            $sql_check = "SELECT COUNT(*) FROM planes WHERE nombre_plan = :nombre_plan";
             $stmt_check = $this->conn->conexion->prepare($sql_check);
-            $stmt_check->bindParam(':nombre', $nombre);
+            $stmt_check->bindParam(':nombre_plan', $nombre_plan);
             $stmt_check->execute();
             $existe = $stmt_check->fetchColumn();
 
@@ -46,12 +46,12 @@ class modelo_Plan
             }
 
             // crear nuevo plan
-            $sql = "INSERT INTO planes (nombre, descripcion, precio)
-                VALUES (:nombre, :descripcion, :precio)";
+            $sql = "INSERT INTO planes (nombre_plan, velocidad, precio)
+                VALUES (:nombre_plan, :velocidad, :precio)";
             $stmt = $this->conn->conexion->prepare($sql);
 
-            $stmt->bindParam(':nombre', $nombre);
-            $stmt->bindParam(':descripcion', $descripcion);
+            $stmt->bindParam(':nombre_plan', $nombre_plan);
+            $stmt->bindParam(':velocidad', $velocidad);
             $stmt->bindParam(':precio', $precio);
 
             if ($stmt->execute()) {
@@ -74,16 +74,16 @@ class modelo_Plan
     }
 
 
-    public function actualizar_planes($id, $nombre, $descripcion, $precio)
+    public function actualizar_planes($id, $nombre_plan, $velocidad, $precio)
     {
 
-        $sql = "UPDATE planes SET nombre=:Nom,descripcion=:Descri,precio=:precio WHERE id_plan=:Id";
+        $sql = "UPDATE planes SET nombre_plan=:NomPlan,velocidad=:velocidad,precio=:precio WHERE id_plan=:Id";
 
         $stmt = $this->conn->conexion->prepare($sql);
 
         // Parámetros comunes
-        $stmt->bindParam(':Nom', $nombre, PDO::PARAM_STR);
-        $stmt->bindParam(':Descri', $descripcion, PDO::PARAM_STR);
+        $stmt->bindParam(':NomPlan', $nombre_plan, PDO::PARAM_STR);
+        $stmt->bindParam(':velocidad', $velocidad, PDO::PARAM_INT);
         $stmt->bindParam(':precio', $precio, PDO::PARAM_INT);
         $stmt->bindParam(':Id', $id, PDO::PARAM_INT);
 

@@ -55,21 +55,24 @@ function listar_clientes_servicio() {
 
 
 //-----------se lista los servicios---------------------
-function listar_servicios() {
-    tabla = $('#tabla_servicios').DataTable({
+function listar_servicios_ajax() {
+    tabla = $('#tabla_detalle_servicio').DataTable({
         "ajax": {
             "url": "../controllers/servicio/controlador_listar_servicios.php",
             "type": "POST"
         },
         "columns": [
-            { "data": "id_servicio", "visible": false },
-            { "data": "nombre_completo" },
+            { "data": "id_detalle", "visible": false },
             { "data": "nombre" },
-            { "data": "nombre_conexion" },
-            { "data": "fecha_creacion" },
+            { "data": "servicio" },
+            { "data": "plan" },
+            { "data": "velocidad" },
+            { "data": "precio" },
+            { "data": "tipo_conexion" },
+            { "data": "fecha_inicio" },
             { "data": "estado" },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>&nbsp;<button class='btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>"
             }
         ],
 
@@ -80,10 +83,17 @@ function listar_servicios() {
 
     // ver info del servicio
     $('#tabla_servicios ').on('click', '.btn-info', function () {
-        var data = tabla.row($(this).parents('tr')).data();
-
-        alert("viendo info del servicio");
-
+        var data = tabla.row($(this).parents('tr')).data();//obteniendo toda la data de la fila 
+        //almacacenando la data de la fila por campos
+        var id_servicio = data.id_servicio;
+        var nom_cliente = data.nombre_completo;
+        var plan = data.nombre;
+        var ref_instal = data.referencia_direccion;
+        var t_conexion = data.nombre_conexion;
+        var datos_conexion = data.datos_conexion;
+        var fecha = data.fecha_creacion;
+        var estado = data.estado;
+        ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado);
     });
 
 
@@ -102,14 +112,15 @@ function listar_servicios() {
 
 //funcion para crear un servicio
 function crearServicio() {
-    var IdCliente = $('#IdCliente').val();
-    var cliente = $('#nombreCliente').val();
-    var referenciaDir = $('#referenciaDir').val();
-    var cmb_planes = $('#cmb_planes').val();
-    var cmb_conexion = $('#cmb_conexion').val();
-    var datos_conexion = $("#dataConexion").val();
+    var id_cliente = $("#IdCliente").val();
+    var id_plan = $("#cmb_planes").val();
+    var id_tipo_conexion = $("#cmb_conexion").val();
+    var id_servicio = $("#cmb_servicio").val();
+    var direccion_referencia = $("#referenciaDir").val();
+    var cliente = $("#nombreCliente").val();
+    var dataConexion = $("#dataConexion").val();
 
-    if (!cliente || !referenciaDir || !datos_conexion || !cmb_planes || !cmb_conexion) {
+    if (!cliente || !direccion_referencia || !dataConexion || !id_plan || !id_tipo_conexion || !id_servicio) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
     }
 
@@ -118,11 +129,11 @@ function crearServicio() {
         type: "POST",
         dataType: "json",
         data: {
-            IdCliente: IdCliente,
-            referenciaDir: referenciaDir,
-            cmb_planes: cmb_planes,
-            cmb_conexion: cmb_conexion,
-            datos_conexion: datos_conexion
+            id_cliente: id_cliente,
+            id_plan: id_plan,
+            id_tipo_conexion: id_tipo_conexion,
+            id_servicio: id_servicio,
+            direccion_referencia: direccion_referencia
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
@@ -138,16 +149,22 @@ function crearServicio() {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");
         console.error("AJAX error:", errorThrown);
+        console.log("Error:", error);
+        console.log("Texto de respuesta:", xhr.responseText);
     });
 }
 
-function ver_datos_clientes(nom, ced, dir, tel) {
-    $('#modal_showData').modal('show');
-    //Pasandole los datos al modal_showData
-    $("#nom_show").val(nom);
-    $("#ced_show").val(ced);
-    $("#dir_show").val(dir);
-    $("#tel_show").val(tel);
+function ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado) {
+    $('#modal_showData_servicio').modal('show');
+    //Pasandole los datos al modal_showData_servicio
+    $("#id_servicio").val(id_servicio);
+    $("#nom_show").val(nom_cliente);
+    $("#plan_show").val(plan);
+    $("#ri_show").val(ref_instal);
+    $("#tconn_show").val(t_conexion);
+    $("#Dconn_show").val(datos_conexion);
+    $("#fecha_show").val(fecha);
+    $("#estatus_show").val(estado);
 }
 
 function get_datos_cliente(id, nom) {

@@ -17,49 +17,42 @@ class modelo_servicio
 
     public function listar_Servicios_modelo()
     {
-        $sql = "SELECT servicios.id_servicio,servicios.fecha_creacion,servicios.estado,
-                       clientes.nombre_completo,
-                       tipo_conexion.nombre_conexion,
-                       planes.nombre
-
-                from servicios INNER JOIN clientes on servicios.id_cliente=clientes.id_cliente
-                INNER JOIN tipo_conexion on servicios.id_tipoConexion=tipo_conexion.id_tipoConexion
-                INNER JOIN planes on servicios.id_plan=planes.id_plan";
+        $sql = "SELECT id_servicio,descripcion FROM servicios";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
-        $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $respuesta = $stmt->fetchAll();
         return $respuesta; //retorna texto
     }
 
 
-    //este es el modelo(dale)
-    public function crear_servicio_modelo($id_cliente, $id_plan, $referencia_direccion, $id_tipoConexion, $datos_conexion, $fecha_creacion)
+
+    public function crear_servicio_modelo($id_cliente, $id_plan, $id_tipo_conexion, $id_servicio, $direccion_referencia, $fecha_inicio)
     {
         try {
-            $estatus = "activo";
+            $estado = "activo";
 
             // Insertar nuevo usuario
-            $sql = "INSERT INTO servicios (id_cliente, id_plan, referencia_direccion, id_tipoConexion,datos_conexion,fecha_creacion, estado) 
-                            VALUES (:id_cliente,:id_plan,:referencia_direccion,:id_tipoConexion,:datos_conexion,:fecha_creacion,:estado)";
+            $sql = "INSERT INTO detalles_servicios(id_cliente, id_plan, id_tipo_conexion, id_servicio, direccion_referencia, fecha_inicio, estado) 
+                    VALUES (:id_cliente,:id_plan,:id_tipo_conexion,:id_servicio,:direccion_referencia,:fecha_inicio,:estado)";
             $stmt = $this->conn->conexion->prepare($sql);
 
             $stmt->bindParam(':id_cliente', $id_cliente);
             $stmt->bindParam(':id_plan', $id_plan);
-            $stmt->bindParam(':referencia_direccion', $referencia_direccion);
-            $stmt->bindParam(':id_tipoConexion', $id_tipoConexion);
-            $stmt->bindParam(':datos_conexion', $datos_conexion);
-            $stmt->bindParam(':fecha_creacion', $fecha_creacion);
-            $stmt->bindParam(':estado', $estatus);
+            $stmt->bindParam(':id_servicio', $id_servicio);
+            $stmt->bindParam(':id_tipo_conexion', $id_tipo_conexion);
+            $stmt->bindParam(':direccion_referencia', $direccion_referencia);
+            $stmt->bindParam(':fecha_inicio', $fecha_inicio);
+            $stmt->bindParam(':estado', $estado);
 
             if ($stmt->execute()) {
                 return [
                     "status" => "ok",
-                    "mensaje" => "Usuario registrado correctamente."
+                    "mensaje" => "Servicio creado  correctamente."
                 ];
             } else {
                 return [
                     "status" => "error",
-                    "mensaje" => "Error al insertar usuario."
+                    "mensaje" => "Error al crear servicio."
                 ];
             }
         } catch (PDOException $e) {
@@ -132,5 +125,31 @@ class modelo_servicio
                 "error" => $errorInfo
             ];
         }
+    }
+
+
+    public function listar_servicios()
+    {
+        $sql = "SELECT ds.id_detalle,c.nombre_completo AS nombre ,s.descripcion AS servicio,
+                       p.nombre_plan AS plan,
+                       p.velocidad,
+                       p.precio,
+                       tc.desc_conexion AS tipo_conexion,
+                       ds.fecha_inicio,
+                       ds.estado
+                FROM 
+                       detalles_servicios ds
+                JOIN 
+                       clientes c ON ds.id_cliente = c.id_cliente
+                JOIN 
+                        servicios s ON ds.id_servicio = s.id_servicio
+                JOIN 
+                        planes p ON ds.id_plan = p.id_plan
+                JOIN 
+                        tipo_conexion tc ON ds.id_tipo_conexion = tc.id_tipo_conexion";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $respuesta; //retorna texto
     }
 }

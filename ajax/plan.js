@@ -26,8 +26,8 @@ function listar_planes_datatable() {
         },
         "columns": [
             { "data": "id_plan", "visible": false },
-            { "data": "nombre" },
-            { "data": "descripcion" },
+            { "data": "nombre_plan" },
+            { "data": "velocidad" },
             { "data": "precio" },
             {
                 "defaultContent": "<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>"
@@ -42,10 +42,10 @@ function listar_planes_datatable() {
     $('#tabla_plan ').on('click', '.btn-warning', function () {
         var data = tabla.row($(this).parents('tr')).data();
         var id = data.id_plan;
-        var nombre = data.nombre;
-        var descripcion = data.descripcion;
+        var nombre_plan = data.nombre_plan;
+        var velocidad = data.velocidad;
         var precio = data.precio;
-        actualizar_planes(id, nombre, descripcion, precio);
+        actualizar_planes(id, nombre_plan, velocidad, precio);
 
     });
 
@@ -59,8 +59,8 @@ function listar_planes_datatable() {
         }
 
         const id = data.id_plan;
-        const nombre = data.nombre;
-        const descripcion = data.descripcion;
+        const nombre_plan = data.nombre_plan;
+        const velocidad = data.velocidad;
         const precio = data.precio;
     });
 
@@ -69,11 +69,11 @@ function listar_planes_datatable() {
 }
 
 function crear_plan() {
-    var nombre = $('#nombrePlan').val();
-    var descripcion = $('#descripcionPlan').val();
+    var nombre_plan = $('#nombre_plan').val();
+    var velocidad = $('#velocidad').val();
     var precio = $('#precio').val();
 
-    if (!nombre || !descripcion || !precio) {
+    if (!nombre_plan || !velocidad || !precio) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
     }
 
@@ -82,8 +82,8 @@ function crear_plan() {
         type: "POST",
         dataType: "json",
         data: {
-            nombre: nombre,
-            descripcion: descripcion,
+            nombre_plan: nombre_plan,
+            velocidad: velocidad,
             precio: precio
         }
     }).done(function (resp) {
@@ -156,10 +156,10 @@ function cambiar_estatus_usuario(id, estatus) {
     });
 }
 
-function actualizar_planes(id, nombre, descripcion, precio) {
+function actualizar_planes(id, nombre, velocidad, precio) {
     $("#id_plan").val(id);
     $("#nom_plan_up").val(nombre);
-    $("#descripcion_plan_up").val(descripcion);
+    $("#velocidad_up").val(velocidad);
     $("#precio_plan_up").val(precio);
 
     $("#modal_editar_plan").modal('show');
@@ -168,10 +168,10 @@ function actualizar_planes(id, nombre, descripcion, precio) {
 function update_Plan() {
     var id = $("#id_plan").val();
     var nombre = $("#nom_plan_up").val();
-    var descripcion = $("#descripcion_plan_up").val();
+    var velocidad = $("#velocidad_up").val();
     var precio = $("#precio_plan_up").val();
     // Validación de campos obligatorios
-    if (!nombre || !descripcion || !precio) {
+    if (!nombre || velocidad ==0 || !precio) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos obligatorios.", "warning");
     }
 
@@ -182,7 +182,7 @@ function update_Plan() {
         data: {
             id: id,
             nombre: nombre,
-            descripcion: descripcion,
+            velocidad: velocidad,
             precio: precio
         }
     }).done(function (resp) {

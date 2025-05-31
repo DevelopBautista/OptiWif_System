@@ -15,7 +15,7 @@
                     <tr>
                         <th>#</th>
                         <th>Nombre del Plan</th>
-                        <th>Descripcion</th>
+                        <th>Velocidad(Megas)</th>
                         <th>Precio</th>
                         <th>Acciones</th>
 
@@ -48,8 +48,8 @@
                                 placeholder="Nombre del Plan">
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="descripcion_plan_up" name="descripcion_plan_up"
-                                placeholder="Descripcion">
+                            <input type="text" class="form-control" id="velocidad_up" name="velocidad_up"
+                                placeholder="Velocidad">
                         </div>
                     </div>
                     <!--f02-->

@@ -6,12 +6,12 @@ error_reporting(E_ALL);
 require_once("../../models/modelo_plan.php");
 
 $nombre   = htmlspecialchars($_POST['nombre'] ?? '');
-$descripcion   = htmlspecialchars($_POST['descripcion'] ?? '');
+$velocidad   = htmlspecialchars($_POST['velocidad'] ?? '');
 $precio  = htmlspecialchars($_POST['precio'] ?? '');
 $id    = htmlspecialchars($_POST['id'] ?? '');
 
 $MU = new modelo_Plan();
 
-$consulta = $MU->actualizar_planes($id, $nombre, $descripcion, $precio);
+$consulta = $MU->actualizar_planes($id, $nombre, $velocidad, $precio);
 
 echo json_encode($consulta);

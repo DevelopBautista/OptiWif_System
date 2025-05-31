@@ -11,11 +11,11 @@
                 <!--f01-->
                 <div class="row">
                     <div class="form-group col-md-5">
-                        <input type="text" class="form-control" name="nombrePlan"
-                            placeholder="Nombre del Plan" id="nombrePlan">
+                        <input type="text" class="form-control" name="nombre_plan"
+                            placeholder="Nombre del Plan" id="nombre_plan">
                     </div>
                     <div class="form-group col-md-5">
-                        <input type="text" class="form-control" id="descripcionPlan" name="descripcionPlan" placeholder="Descripcion del Plan">
+                        <input type="number" class="form-control" id="velocidad" name="velocidad" placeholder="Velocidad del Plan">
                     </div>
                 </div>
                 <!--f02-->

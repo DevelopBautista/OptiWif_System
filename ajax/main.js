@@ -8,7 +8,8 @@ const scriptsToLoad = [
     'plan.js',
     'servicio.js',
     'conexion.js',
-    'tipo_planes.js'
+    'tipo_planes.js',
+    'tipo_servicio.js'
 ];
 
 

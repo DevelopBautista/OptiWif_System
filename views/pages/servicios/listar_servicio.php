@@ -10,15 +10,18 @@
         <br>
 
         <div class="box-body">
-            <table id="tabla_servicios" class="display responsive nowrap" style="width: 100%;">
+            <table id="tabla_detalle_servicio" class="display responsive nowrap" style="width: 100%;">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Cliente</th>
-                        <th>plan</th>
-                        <th>Tipo_Conexion</th>
-                        <th>Fecha</th>
-                        <th>Estatus</th>
+                        <th>Servicio</th>
+                        <th>Plan</th>
+                        <th>Velocidad</th>
+                        <th>Precio</th>
+                        <th>Tipo Conexion</th>
+                        <th>Fecha Inicio</th>
+                        <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -34,37 +37,38 @@
 
 
 <!-- Modal Mostrar info servicios -->
-<div class="modal" tabindex="-1" role="dialog" id="modal_showData" data-backdrop="static" data-keyboard="false">
+<div class="modal" tabindex="-1" role="dialog" id="modal_showData_servicio" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">Datos del Usuario</h5>
+                <h5 class="modal-title">Datos del Servicio</h5>
             </div>
 
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="nom_show">Nombre Completo</label>
+                    <input type="hidden" id="id_servicio">
+                    <label for="nom_show">Cliente</label>
                     <input type="text" class="form-control" id="nom_show" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="ced_show">Cédula</label>
-                    <input type="text" class="form-control" id="ced_show" readonly>
+                    <label for="ced_show">Plan</label>
+                    <input type="text" class="form-control" id="plan_show" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="tel_show">Teléfono</label>
-                    <input type="text" class="form-control" id="tel_show" readonly>
+                    <label for="tel_show">Referencia de instalacion</label>
+                    <input type="text" class="form-control" id="ri_show" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="dir_show">Dirección</label>
-                    <input type="text" class="form-control" id="dir_show" readonly>
+                    <label for="dir_show">Tipo Conexion</label>
+                    <input type="text" class="form-control" id="tconn_show" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="usu_show">Usuario</label>
-                    <input type="text" class="form-control" id="usu_show" readonly>
+                    <label for="usu_show">Datos de la conexion</label>
+                    <input type="text" class="form-control" id="Dconn_show" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="rol_show">Rol</label>
-                    <input type="text" class="form-control" id="rol_show" readonly>
+                    <label for="rol_show">Fecha</label>
+                    <input type="text" class="form-control" id="fecha_show" readonly>
                 </div>
                 <div class="form-group">
                     <label for="estatus_show">Estatus</label>
@@ -138,7 +142,7 @@
 <!--====================================-->
 <script>
     $(document).ready(function() {
-        listar_servicios();
+        listar_servicios_ajax();
     });
 </script>
 <?php include("incluids/inferior.php"); ?>

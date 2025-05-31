@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 require_once("../../models/modelo_servicio.php");
 
 $MU = new modelo_servicio();
-$consulta = $MU->listar_Servicios_modelo();
+$consulta = $MU->listar_servicios();
 
 header('Content-Type: application/json'); //esto sirve para asegurar que sea una respuesta Json
 

@@ -10,13 +10,13 @@
             <form method="POST" autocomplete="off" id="frm" onsubmit="return false">
                 <!--f01-->
                 <div class="row">
-                    <div class="form-group col-md-5">
+                    <div class="form-group col-md-4">
                         <input type="hidden" id="IdCliente" name="IdCliente">
                         <input type="text" class="form-control" name="nombreCliente"
                             placeholder="Cliente" id="nombreCliente">
                     </div>
-                    <div class="form-group col-md-4">
-                        <button type="button" class="btn btn-primary" onclick="bsucar_cliente_modal()">Buscar Clientes <i class="fa-solid fa-magnifying-glass">
+                    <div class="form-group col-md-5">
+                        <button type="button" class="btn btn-primary btn-md" onclick="bsucar_cliente_modal()">Buscar Clientes <i class="fa-solid fa-magnifying-glass">
                             </i>
                         </button>
                     </div>
@@ -30,7 +30,7 @@
                 </div>
                 <!--f03-->
                 <div class="row">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-5">
                         <select class="planes js-states form-control" name="state" id="cmb_planes" style="width: 100%;">
 
                         </select>
@@ -39,7 +39,15 @@
                         <select class="conexion js-states form-control" name="state" id="cmb_conexion" style="width: 100%;">
                         </select>
                     </div>
+
+                </div>
+
+                <div class="row">
                     <div class="form-group col-md-4">
+                        <select class="servicio js-states form-control" name="state" id="cmb_servicio" style="width: 100%;">
+                        </select>
+                    </div>
+                    <div class="form-group col-md-5">
                         <input type="text" class="form-control" id="dataConexion" name="dataConexion"
                             placeholder="Usuario Y/o Ip">
                     </div>
@@ -107,8 +115,10 @@
     $(document).ready(function() {
         $('.planes').select2();
         $('.conexion').select2();
+        $('.servicio').select2();
         tipo_plan();
         tipo_conexion();
+        tipo_servicio();
 
     });
 </script>
