@@ -16,7 +16,7 @@ class modelo_tipo_conexion
 
     public function listar_tipo_conexion()
     {
-        $sql = "SELECT id_tipo_conexion, descripcion FROM tipo_conexion ";
+        $sql = "SELECT id_tipo_conexion, desc_conexion FROM tipo_conexion ";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $respuesta = $stmt->fetchAll();
