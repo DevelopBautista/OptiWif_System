@@ -28,7 +28,7 @@ class modelo_contador_infoBox
 
     public function contar_servicos()
     {
-        $sql = "SELECT COUNT(*) AS total FROM servicios";
+        $sql = "SELECT COUNT(*) AS total FROM contratos_servicio";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);

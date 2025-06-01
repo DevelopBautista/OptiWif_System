@@ -23,9 +23,9 @@
                 </div>
                 <!--f02-->
                 <div class="row">
-                    <div class="form-group col-md-8">
-                        <input type="text" class="form-control" id="referenciaDir" name="referenciaDir"
-                            placeholder="Referencia de la instalacion del servicio">
+                    <div class="form-group col-md-5">
+                        <input type="text" class="form-control" id="observaciones" name="observaciones"
+                            placeholder="observaciones">
                     </div>
                 </div>
                 <!--f03-->
@@ -48,7 +48,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-5">
-                        <input type="text" class="form-control" id="dataConexion" name="dataConexion"
+                        <input type="text" class="form-control" id="acceso_cliente" name="acceso_cliente"
                             placeholder="Usuario Y/o Ip">
                     </div>
                 </div>

@@ -20,7 +20,7 @@
                         <th>Velocidad</th>
                         <th>Precio</th>
                         <th>Tipo Conexion</th>
-                        <th>Fecha Inicio</th>
+                        <th>Fecha Contrato</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>

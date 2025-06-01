@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-class modelo_servicio
+class modelo_pago
 {
     private $conn;
 
@@ -15,18 +15,7 @@ class modelo_servicio
     }
 
 
-    public function listar_Servicios_modelo()
-    {
-        $sql = "SELECT id_servicio,descripcion FROM servicios";
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->execute();
-        $respuesta = $stmt->fetchAll();
-        return $respuesta; //retorna texto
-    }
-
-
-
-    public function contrato_servicio($id_cliente, $id_plan, $id_tipo_conexion, $id_servicio, $fecha_contrato, $acceso_cliente, $observaciones)
+    public function contrato_servicio($id_cliente, $id_plan, $fecha_contrato)
     {
         try {
             $estado = "activo";
@@ -38,10 +27,6 @@ class modelo_servicio
 
             $stmt->bindParam(':id_cliente', $id_cliente);
             $stmt->bindParam(':id_plan', $id_plan);
-            $stmt->bindParam(':id_servicio', $id_servicio);
-            $stmt->bindParam(':id_tipo_conexion', $id_tipo_conexion);
-            $stmt->bindParam(':acceso_cliente', $acceso_cliente);
-            $stmt->bindParam(':observaciones', $observaciones);
             $stmt->bindParam(':fecha_contrato', $fecha_contrato);
             $stmt->bindParam(':estado', $estado);
 

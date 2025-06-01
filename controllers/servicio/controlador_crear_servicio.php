@@ -9,11 +9,12 @@ $id_cliente = htmlspecialchars($_POST['id_cliente'], ENT_QUOTES);
 $id_plan = htmlspecialchars($_POST['id_plan'], ENT_QUOTES);
 $id_tipo_conexion = htmlspecialchars($_POST['id_tipo_conexion'], ENT_QUOTES, 'UTF-8');
 $id_servicio = htmlspecialchars($_POST['id_servicio'], ENT_QUOTES);
-$direccion_referencia = htmlspecialchars($_POST['direccion_referencia'], ENT_QUOTES);
-$fecha_inicio =date('Y-m-d H:i:s');
+$acceso_cliente = htmlspecialchars($_POST['acceso_cliente'], ENT_QUOTES, 'UTF-8');
+$observaciones = htmlspecialchars($_POST['observaciones'], ENT_QUOTES, 'UTF-8');
+$fecha_contrato = $fecha_hora_forma;
 
 
 $MU = new modelo_servicio();
-$consulta = $MU->crear_servicio_modelo($id_cliente, $id_plan, $id_tipo_conexion, $id_servicio, $direccion_referencia, $fecha_inicio);
+$consulta = $MU->contrato_servicio($id_cliente, $id_plan, $id_tipo_conexion, $id_servicio, $fecha_contrato, $acceso_cliente, $observaciones);
 
 echo $datos = json_encode($consulta);

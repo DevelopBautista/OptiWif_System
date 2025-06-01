@@ -62,14 +62,14 @@ function listar_servicios_ajax() {
             "type": "POST"
         },
         "columns": [
-            { "data": "id_detalle", "visible": false },
-            { "data": "nombre" },
+            { "data": "id_contrato", "visible": false },
+            { "data": "cliente" },
             { "data": "servicio" },
-            { "data": "plan" },
+            { "data": "nombre_plan" },
             { "data": "velocidad" },
             { "data": "precio" },
             { "data": "tipo_conexion" },
-            { "data": "fecha_inicio" },
+            { "data": "fecha_contrato" },
             { "data": "estado" },
             {
                 "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>"
@@ -116,11 +116,11 @@ function crearServicio() {
     var id_plan = $("#cmb_planes").val();
     var id_tipo_conexion = $("#cmb_conexion").val();
     var id_servicio = $("#cmb_servicio").val();
-    var direccion_referencia = $("#referenciaDir").val();
+    var acceso_cliente = $("#acceso_cliente").val();
+    var observaciones = $("#observaciones").val();
     var cliente = $("#nombreCliente").val();
-    var dataConexion = $("#dataConexion").val();
 
-    if (!cliente || !direccion_referencia || !dataConexion || !id_plan || !id_tipo_conexion || !id_servicio) {
+    if (!cliente || !acceso_cliente || !id_plan || !id_tipo_conexion || !id_servicio || !observaciones) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
     }
 
@@ -133,7 +133,8 @@ function crearServicio() {
             id_plan: id_plan,
             id_tipo_conexion: id_tipo_conexion,
             id_servicio: id_servicio,
-            direccion_referencia: direccion_referencia
+            acceso_cliente: acceso_cliente,
+            observaciones: observaciones
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
