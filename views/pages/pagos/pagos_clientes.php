@@ -10,13 +10,14 @@
         <br>
 
         <div class="box-body">
-            <table id="tabla_usuarios" class="display responsive nowrap" style="width: 100%;">
+            <table id="tabla_pagos" class="display responsive nowrap" style="width: 100%;">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Cliente</th>
                         <th>Plan</th>
                         <th>Mensualidad</th>
+                        <th>Fecha de Pago</th>
                         <th>Estatus</th>
                         <th>Acciones</th>
 
@@ -34,7 +35,7 @@
 
 
 
-<!--Pago del cliente-->
+<!--form cobro-->
 <div class="modal" tabindex="-1" role="dialog" id="modal_pago" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -46,47 +47,26 @@
                     <!--f01-->
                     <div class="row">
                         <div class="form-group col-md-5">
-                            <input type="" id="id_usu">
+                            <input type="" id="id_pago">
                             <input type="text" class="form-control" name="nom_up" id="nom_up" readonly>
                         </div>
                         <div class="form-group col-md-6">
-                            <input type="text" class="form-control" id="dir_up" name="dir_up"
-                                placeholder="Direccion">
+                            <select class="metodo_pago js-states form-control" name="state" id="cmb_metodoPago" style="width: 100%;">
+
+                            </select>
                         </div>
                     </div>
                     <!--f02-->
                     <div class="row">
                         <div class="form-group col-md-5">
-                            <input type="text" class="form-control" id="tel_up" name="tel_up"
-                                placeholder="Telefono">
-                        </div>
-                        <div class="form-group col-md-5">
-                            <input type="text" class="form-control" id="user_up" name="user_up"
-                                placeholder="Usuario">
-                        </div>
-                    </div>
-                    <!--f03-->
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <select class="rol_usuarios_up" name="cmb_rol" id="cmb_rol_up" style="width: 100%;">
-                            </select>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <input type="password" class="form-control" id="pswd_up" name="pswd_up"
-                                placeholder="Contraseña(nueva)">
-                        </div>
-                        <div class="form-group col-md-4">
-                            <input type="password" class="form-control" id="pswd2_up" name="pswd2_up"
-                                placeholder="Repetir Contraseña">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <input type="text" class="form-control" id="ced_up" name="ced_up" readonly>
+                            <input type="text" class="form-control" id="referecnia" name="referecnia"
+                                placeholder="Referencia (Opcional)">
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="update_Usuario()" class="btn btn-warning"><i class="fa  fa-check"><b>&nbsp;actualizar</b></i></button>
+                <button type="button" onclick="cobrar()" class="btn btn-warning"><i class="fa  fa-check"><b>&nbsp;Cobrar</b></i></button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                     <i class="fa fa-close"><b>&nbsp;Cancelar</b></i></button>
             </div>
@@ -97,7 +77,8 @@
 <!--====================================-->
 <script>
     $(document).ready(function() {
-       
+        $(".metodo_pago").select2();
+        listar_pagos_ajax();
     });
 </script>
 <?php include("incluids/inferior.php"); ?>

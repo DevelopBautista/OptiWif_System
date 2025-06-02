@@ -9,7 +9,8 @@ const scriptsToLoad = [
     'servicio.js',
     'conexion.js',
     'tipo_planes.js',
-    'tipo_servicio.js'
+    'tipo_servicio.js',
+    'pago.js'
 ];
 
 

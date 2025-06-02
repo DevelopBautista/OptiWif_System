@@ -31,7 +31,7 @@ class modelo_servicio
         try {
             $estado = "activo";
 
-            // Insertar nuevo usuario
+            // Insertar nuevo servicio
             $sql = "INSERT INTO contratos_servicio(id_cliente, id_plan, id_servicio, id_tipo_conexion, fecha_contrato, estado, acceso_cliente, observaciones) 
                     VALUES (:id_cliente,:id_plan,:id_servicio,:id_tipo_conexion,:fecha_contrato,:estado,:acceso_cliente,:observaciones)";
             $stmt = $this->conn->conexion->prepare($sql);

@@ -5,7 +5,7 @@ function tipo_conexion() {
         type: "POST"
     }).done(function (resp) {
         var data = JSON.parse(resp);
-        var cadena = "";
+        var cadena = "<option value=''>Seleccione tipo de conexión</option>"; //Placeholder;
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
                 cadena += "<option value='" + data[i][0] + "'>" + data[i][1] + "</option>";

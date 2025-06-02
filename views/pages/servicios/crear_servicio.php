@@ -37,6 +37,7 @@
                     </div>
                     <div class="form-group col-md-4">
                         <select class="conexion js-states form-control" name="state" id="cmb_conexion" style="width: 100%;">
+
                         </select>
                     </div>
 
@@ -45,11 +46,12 @@
                 <div class="row">
                     <div class="form-group col-md-4">
                         <select class="servicio js-states form-control" name="state" id="cmb_servicio" style="width: 100%;">
+
                         </select>
                     </div>
                     <div class="form-group col-md-5">
                         <input type="text" class="form-control" id="acceso_cliente" name="acceso_cliente"
-                            placeholder="Usuario Y/o Ip">
+                            placeholder="Acceso cliente (Ip,Usuario)">
                     </div>
                 </div>
 
@@ -113,9 +115,24 @@
 
 <script>
     $(document).ready(function() {
-        $('.planes').select2();
-        $('.conexion').select2();
-        $('.servicio').select2();
+        $('.planes').select2({
+            placeholder: "Seleccione Un Plan",
+            allowClear: true,
+            width: 'resolve'
+        });
+        //--------------------------
+        $('.conexion').select2({
+            placeholder: "Seleccione tipo de conexión",
+            allowClear: true,
+            width: 'resolve'
+        });
+        //-----------------------------
+        $('.servicio').select2({
+            placeholder: "Seleccione Un Servicio",
+            allowClear: true,
+            width: 'resolve'
+        });
+        //-----------------------------
         tipo_plan();
         tipo_conexion();
         tipo_servicio();

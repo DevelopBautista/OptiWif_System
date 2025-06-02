@@ -34,6 +34,7 @@ if (!isset($_SESSION['id_user'])) {
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
@@ -127,7 +128,7 @@ if (!isset($_SESSION['id_user'])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/registrar_cliente.php')">Nuevo Cliente</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Listar Clientes</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Clientes</a></li>
                         </ul>
                     </li>
 
@@ -141,7 +142,7 @@ if (!isset($_SESSION['id_user'])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/crear_servicio.php')">Nuevo Servicio</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/listar_servicio.php')">Listar Servicio</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/listar_servicio.php')">Servicios</a></li>
                         </ul>
                     </li>
 
@@ -154,7 +155,7 @@ if (!isset($_SESSION['id_user'])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/crear_plan.php')">Nuevo Plan</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/listar_planes.php')">Listar Planes</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/listar_planes.php')">Planes</a></li>
                         </ul>
                     </li>
                     <!-- menu pagos pendientes -->
@@ -165,7 +166,7 @@ if (!isset($_SESSION['id_user'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Listar Pagos</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Pagos</a></li>
                         </ul>
                     </li>
                     <?php if ($_SESSION['rol'] == 1): ?>
@@ -178,7 +179,7 @@ if (!isset($_SESSION['id_user'])) {
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="#" onclick="loaderPages('contenido_principal','pages/usuarios/registrar_usuario.php')">Nuevo Usuario</a></li>
-                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/usuarios/listar_usuarios.php')">Listar Usuarios</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/usuarios/listar_usuarios.php')">Usuarios</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>
