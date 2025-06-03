@@ -20,7 +20,7 @@ class modelo_pago
         try {
 
             // Insertar nuevo pago
-            $sql = "INSERT INTO contratos_servicio(id_cliente, id_plan, id_servicio, id_tipo_conexion, fecha_contrato, estado, acceso_cliente, observaciones) 
+            $sql = "INSERT INTO (id_cliente, id_plan, id_servicio, id_tipo_conexion, fecha_contrato, estado, acceso_cliente, observaciones) 
                     VALUES (:id_cliente,:id_plan,:id_servicio,:id_tipo_conexion,:fecha_contrato,:estado,:acceso_cliente,:observaciones)";
             $stmt = $this->conn->conexion->prepare($sql);
 
@@ -114,16 +114,18 @@ class modelo_pago
 
     public function listar_pagos()
     {
-        $sql = "SELECT ps.id_pago_servicio,c.nombre_completo AS cliente,
-                       p.nombre_plan,
-                       p.precio,
-                       ps.estado_pago,
-                       ps.fecha_pago
-                FROM pago_servicio ps
-                INNER JOIN clientes c ON ps.id_cliente = c.id_cliente
-                INNER JOIN planes p ON ps.id_plan = p.id_plan
-                INNER JOIN contratos_servicio cs ON ps.id_contrato = cs.id_contrato;
-";
+        $sql = "SELECT m.id_mensualidad,
+                       c.nombre_completo as cliente,
+                       p.nombre_plan as plan,
+                       m.monto,
+                       m.estado,
+                       m.fecha_generada
+                FROM mensualidades m
+                INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
+                INNER JOIN clientes c ON cs.id_cliente = c.id_cliente
+                INNER JOIN planes p ON cs.id_plan = p.id_plan
+                ORDER BY m.periodo_anio DESC, m.periodo_mes DESC";
+
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);

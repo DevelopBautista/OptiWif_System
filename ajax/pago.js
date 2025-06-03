@@ -26,18 +26,20 @@ function listar_pagos_ajax() {
             "type": "POST"
         },
         "columns": [
-            { "data": "id_pago_servicio", "visible": false },
+            { "data": "id_mensualidad", "visible": false },
             { "data": "cliente" },
-            { "data": "nombre_plan" },
-            { "data": "precio" },
-            { "data": "fecha_pago" },
+            { "data": "plan" },
+            { "data": "monto" },
+            { "data": "fecha_generada" },
             {
-                "data": "estado_pago",
+                "data": "estado",
                 //si el cliente pago sera verde sino roja
                 "render": function (data) {
                     if (data === "pagado") {
                         return "<span class='label label-success'>" + data + "</span>";
                     } else if (data === "pendiente") {
+                        return "<span class='label label-warning'>" + data + "</span>";
+                    }else if(data==='vencido'){
                         return "<span class='label label-danger'>" + data + "</span>";
                     }
                 }
@@ -58,9 +60,11 @@ function listar_pagos_ajax() {
     // obtener datos del servicio
     $('#tabla_pagos ').on('click', '.btn-info', function () {
         var data = tabla.row($(this).parents('tr')).data();
-        var id_pago_servicio=data.id_pago_servicio;
+        var id_mensualidad=data.id_mensualidad;
+        var cliente=data.cliente;
 
-        $("#id_pago").val(id_pago_servicio);
+        $("#id_mensualidad").val(id_mensualidad);
+         $("#cliente").val(cliente);
 
         $("#modal_pago").modal("show");
 

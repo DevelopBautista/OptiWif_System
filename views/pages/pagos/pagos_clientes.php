@@ -43,38 +43,10 @@
                 <h4 class="modal-title">Cobro de Mensualidad</h4>
             </div>
             <div class="modal-body">
-                <form action="procesar_pago.php" method="POST">
-                    <label>Cliente:</label><br>
-                    <select name="id_contrato" required>
-                        <!-- Opción cargada dinámicamente desde la base de datos -->
-                        <option value="1">Juan Pérez - Plan 10MB</option>
-                        <option value="2">Ana Gómez - Plan 20MB</option>
-                    </select><br><br>
-
-                    <label>Mensualidad pendiente:</label><br>
-                    <select name="id_mensualidad" required>
-                        <!-- Mostrar solo mensualidades con estado = pendiente -->
-                        <option value="101">Febrero 2025 - $20.00</option>
-                        <option value="102">Marzo 2025 - $20.00</option>
-                    </select><br><br>
-
-                    <label>Monto pagado:</label><br>
-                    <input type="number" step="0.01" name="monto" required><br><br>
-
-                    <label>Método de pago:</label><br>
-                    <select name="metodo_pago" required>
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Transferencia">Transferencia</option>
-                        <option value="Pago Móvil">Pago Móvil</option>
-                    </select><br><br>
-
-                    <label>Referencia del pago (si aplica):</label><br>
-                    <input type="text" name="referencia_pago"><br><br>
-
-                    <label>Observaciones:</label><br>
-                    <textarea name="observaciones" rows="3"></textarea><br><br>
-
-                    <button type="submit">Registrar Pago</button>
+                <form action="" method="POST">
+                   <input type="" id="id_mensualidad" name="id_mensualidad">
+                   <br><br>
+                     <input type="text" id="cliente" name="cliente">
                 </form>
 
 
@@ -87,7 +59,6 @@
         </div>
     </div>
 </div>
-
 <!--====================================-->
 <script>
     $(document).ready(function() {
