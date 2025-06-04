@@ -34,4 +34,13 @@ class modelo_contador_infoBox
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         return $resultado['total'];
     }
+
+    public function contar_pagos_realizados()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM pagos";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'];
+    }
 }

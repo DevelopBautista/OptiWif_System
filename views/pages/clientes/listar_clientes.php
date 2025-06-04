@@ -3,7 +3,7 @@
 <div class="col-md-12">
     <div class="box box-info box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title">Listado Clientes</h3>
+            <h3 class="box-title">Clientes</h3>
 
             <div class="box-tools pull-right">
             </div>

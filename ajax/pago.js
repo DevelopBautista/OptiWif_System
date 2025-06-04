@@ -77,8 +77,7 @@ function listar_pagos_ajax() {
 
 }
 
-
-//funcion para crear un servicio
+//funcion para registrar un pago
 function registrar_pagos() {
     var id_mensualidad = $("#id_mensualidad").val();
     var monto = $("#monto").val();

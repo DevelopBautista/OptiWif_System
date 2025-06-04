@@ -2,7 +2,7 @@
 <div class="col-md-9">
     <div class="box box-info box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title">Listado De planes</h3>
+            <h3 class="box-title">Planes</h3>
             <div class="box-tools pull-right">
 
             </div>

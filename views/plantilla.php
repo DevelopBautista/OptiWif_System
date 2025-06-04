@@ -5,6 +5,7 @@ require_once("../models/modelo_contador_infoBox.php"); // Ajusta si tu modelo ti
 $MC = new modelo_contador_infoBox();
 $total_clientes = $MC->contar_clientes();
 $total_servicios = $MC->contar_servicos();
+$total_pagos_realizados = $MC->contar_pagos_realizados();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -49,8 +50,8 @@ $total_servicios = $MC->contar_servicos();
                             <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">Pagos del dia</span>
-                                <span class="info-box-number">60</span>
+                                <span class="info-box-text">Pagos realizados</span>
+                                <span class="info-box-number"><?php echo $total_pagos_realizados;?></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>

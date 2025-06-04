@@ -1,3 +1,7 @@
 RewriteEngine On
-Options All -Indexes
-RewriteRule ^([a-zA-Z0-9/ñÑ-]+)$ index.php?view=$1
+Options -Indexes
+
+# Redirigir URLs limpias hacia index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9ñÑ_-]+)/?$ index.php?view=$1 [QSA,L]

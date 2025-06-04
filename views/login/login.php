@@ -107,7 +107,7 @@ if (isset($_SESSION['id_user'])) {
 	<script src="vendor/countdowntime/countdowntime.js"></script>
 	<!--===============================================================================================-->
 	<script src="js/main.js"></script>
-	<script src="../../ajax/usuario.js"></script>
+	<script src="../../ajax/main.js"></script>
 </body>
 
 <script>
