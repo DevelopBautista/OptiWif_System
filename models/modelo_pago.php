@@ -15,101 +15,49 @@ class modelo_pago
     }
 
 
-    public function pago_servicio($id_cliente, $id_plan, $fecha_contrato)
+    public function registrar_pago($id_mensualidad, $monto_pagado, $fecha_pago)
     {
+        // Obtener id_cliente desde mensualidad y contrato
+        $sql_cliente = "SELECT cs.id_cliente 
+                        FROM mensualidades m 
+                        JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
+                        WHERE m.id_mensualidad = ?";
+        $stmt_cliente = $this->conn->conexion->prepare($sql_cliente);
+        $stmt_cliente->execute([$id_mensualidad]);
+        $cliente = $stmt_cliente->fetch(PDO::FETCH_ASSOC);
+
+        if (!$cliente) {
+            return false; // No se encontró el cliente
+        }
+        $id_cliente = $cliente['id_cliente'];
+
+        // Empezar transacción
+        $this->conn->conexion->beginTransaction();
+
         try {
+            // 1. Actualizar estado de mensualidad
+            $sql_update = "UPDATE mensualidades 
+                           SET estado = 'pagado', monto = ?, fecha_pagada = ? 
+                           WHERE id_mensualidad = ?";
+            $stmt_update = $this->conn->conexion->prepare($sql_update);
+            $stmt_update->execute([$monto_pagado, $fecha_pago, $id_mensualidad]);
 
-            // Insertar nuevo pago
-            $sql = "INSERT INTO (id_cliente, id_plan, id_servicio, id_tipo_conexion, fecha_contrato, estado, acceso_cliente, observaciones) 
-                    VALUES (:id_cliente,:id_plan,:id_servicio,:id_tipo_conexion,:fecha_contrato,:estado,:acceso_cliente,:observaciones)";
-            $stmt = $this->conn->conexion->prepare($sql);
+            // 2. Insertar registro de pago en tabla pagos
+            $sql_insert = "INSERT INTO pagos (id_cliente, id_mensualidad, monto, fecha_pago) VALUES (?, ?, ?, ?)";
+            $stmt_insert = $this->conn->conexion->prepare($sql_insert);
+            $stmt_insert->execute([$id_cliente, $id_mensualidad, $monto_pagado, $fecha_pago]);
 
-            $stmt->bindParam(':id_cliente', $id_cliente);
-            $stmt->bindParam(':id_plan', $id_plan);
-            $stmt->bindParam(':fecha_contrato', $fecha_contrato);
+            // Commit transacción
+            $this->conn->conexion->commit();
 
-            if ($stmt->execute()) {
-                return [
-                    "status" => "ok",
-                    "mensaje" => "Servicio creado  correctamente."
-                ];
-            } else {
-                return [
-                    "status" => "error",
-                    "mensaje" => "Error al crear servicio."
-                ];
-            }
-        } catch (PDOException $e) {
-            return [
-                "status" => "error",
-                "mensaje" => "Excepción: " . $e->getMessage()
-            ];
+            return true;
+        } catch (Exception $e) {
+            // Rollback en caso de error
+            $this->conn->conexion->rollBack();
+            return false;
         }
     }
 
-
-
-
-    public function cambiar_estatus_servicio($id, $estatus)
-    {
-
-        $sql = "update usuario set usuario_estatus= :estatus where id_usuario= :id";
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->bindParam('estatus', $estatus, PDO::PARAM_STR);
-        $stmt->bindParam('id', $id, PDO::PARAM_INT);
-        $respuesta = $stmt->execute();
-        return $respuesta; //retorna texto
-    }
-
-
-
-    public function actualizar_datos_usuarios($id, $tel, $dir, $usu, $pwsd, $id_rol)
-    {
-        if (empty($pwsd)) {
-            $sql = "UPDATE usuario 
-                SET usuario_tel = :Tel,
-                    usuario_direccion = :Dir,
-                    usuario_usu = :Usu,
-                    id_rol = :Id_rol
-                WHERE id_usuario = :Id";
-        } else {
-            $sql = "UPDATE usuario 
-                SET usuario_tel = :Tel,
-                    usuario_direccion = :Dir,
-                    usuario_usu = :Usu,
-                    usuario_pass = :Pass,
-                    id_rol = :Id_rol
-                WHERE id_usuario = :Id";
-        }
-
-        $stmt = $this->conn->conexion->prepare($sql);
-
-        // Parámetros comunes
-        $stmt->bindParam('Tel', $tel, PDO::PARAM_STR);
-        $stmt->bindParam('Dir', $dir, PDO::PARAM_STR);
-        $stmt->bindParam('Usu', $usu, PDO::PARAM_STR);
-        $stmt->bindParam('Id_rol', $id_rol, PDO::PARAM_INT);
-        $stmt->bindParam('Id', $id, PDO::PARAM_INT);
-
-        // Solo si hay contraseña nueva
-        if (!empty($pwsd)) {
-            $stmt->bindParam('Pass', $pwsd, PDO::PARAM_STR);
-        }
-
-        if ($stmt->execute()) {
-            return [
-                "status" => "ok",
-                "mensaje" => "Los datos del usuario han sido actualizados."
-            ];
-        } else {
-            $errorInfo = $stmt->errorInfo();
-            return [
-                "status" => "error",
-                "mensaje" => "No se pudo actualizar los datos del usuario.",
-                "error" => $errorInfo
-            ];
-        }
-    }
 
 
     public function listar_pagos()
@@ -119,7 +67,8 @@ class modelo_pago
                        p.nombre_plan as plan,
                        m.monto,
                        m.estado,
-                       m.fecha_generada
+                       m.fecha_generada,
+                       m.fecha_vencimiento as fecha_pagos
                 FROM mensualidades m
                 INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
                 INNER JOIN clientes c ON cs.id_cliente = c.id_cliente

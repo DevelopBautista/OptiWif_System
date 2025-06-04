@@ -23,35 +23,33 @@ class modelo_mensualidad
 
         // 1. Obtener contratos activos
         $sql = "SELECT cs.id_contrato, cs.id_plan 
-                FROM contratos_servicio cs 
-                WHERE cs.estado = 'Activo'";
+            FROM contratos_servicio cs 
+            WHERE cs.estado = 'Activo'";
         $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
 
-        while ($contrato = $stmt->fetch_assoc()) {
+        while ($contrato = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $id_contrato = $contrato['id_contrato'];
             $id_plan = $contrato['id_plan'];
 
-            // 2. Verificar si ya existe una mensualidad de este mes para ese contrato
+            // 2. Verificar si ya existe una mensualidad
             $check = $this->conn->conexion->prepare("SELECT COUNT(*) AS total FROM mensualidades WHERE id_contrato = ? AND periodo_mes = ? AND periodo_anio = ?");
-            $check->bind_param("iii", $id_contrato, $mes, $anio);
-            $check->execute();
-            $check_result = $check->get_result()->fetch_assoc();
+            $check->execute([$id_contrato, $mes, $anio]);
+            $check_result = $check->fetch(PDO::FETCH_ASSOC);
 
             if ($check_result['total'] == 0) {
                 // 3. Obtener precio del plan
                 $plan_query = $this->conn->conexion->prepare("SELECT precio FROM planes WHERE id_plan = ?");
-                $plan_query->bind_param("i", $id_plan);
-                $plan_query->execute();
-                $plan_data = $plan_query->get_result()->fetch_assoc();
+                $plan_query->execute([$id_plan]);
+                $plan_data = $plan_query->fetch(PDO::FETCH_ASSOC);
                 $monto = $plan_data['precio'];
 
-                // 4. Calcular fecha de vencimiento (ej: 10 del mes siguiente)
+                // 4. Calcular fecha de vencimiento
                 $fecha_vencimiento = date('Y-m-25', strtotime('+1 month'));
 
                 // 5. Insertar mensualidad
                 $insert = $this->conn->conexion->prepare("INSERT INTO mensualidades (id_contrato, periodo_mes, periodo_anio, monto, fecha_vencimiento, estado, fecha_generada) VALUES (?, ?, ?, ?, ?, 'pendiente', ?)");
-                $insert->bind_param("iiidss", $id_contrato, $mes, $anio, $monto, $fecha_vencimiento, $hoy);
-                $insert->execute();
+                $insert->execute([$id_contrato, $mes, $anio, $monto, $fecha_vencimiento, $hoy]);
             }
         }
 

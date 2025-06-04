@@ -30,7 +30,7 @@ function listar_pagos_ajax() {
             { "data": "cliente" },
             { "data": "plan" },
             { "data": "monto" },
-            { "data": "fecha_generada" },
+            { "data": "fecha_pagos" },
             {
                 "data": "estado",
                 //si el cliente pago sera verde sino roja
@@ -39,7 +39,7 @@ function listar_pagos_ajax() {
                         return "<span class='label label-success'>" + data + "</span>";
                     } else if (data === "pendiente") {
                         return "<span class='label label-warning'>" + data + "</span>";
-                    }else if(data==='vencido'){
+                    } else if (data === 'vencido') {
                         return "<span class='label label-danger'>" + data + "</span>";
                     }
                 }
@@ -60,12 +60,15 @@ function listar_pagos_ajax() {
     // obtener datos del servicio
     $('#tabla_pagos ').on('click', '.btn-info', function () {
         var data = tabla.row($(this).parents('tr')).data();
-        var id_mensualidad=data.id_mensualidad;
-        var cliente=data.cliente;
+        var id_mensualidad = data.id_mensualidad;
+        var monto = data.monto;
+        var cliente = data.cliente
+        var fecha_pagos = data.fecha_pagos;
 
         $("#id_mensualidad").val(id_mensualidad);
-         $("#cliente").val(cliente);
-
+        $("#cliente").val(cliente);
+        $("#monto").val(monto);
+        $("#fecha_pago").val(fecha_pagos);
         $("#modal_pago").modal("show");
 
     });
@@ -76,35 +79,24 @@ function listar_pagos_ajax() {
 
 
 //funcion para crear un servicio
-function crearServicio() {
-    var id_cliente = $("#IdCliente").val();
-    var id_plan = $("#cmb_planes").val();
-    var id_tipo_conexion = $("#cmb_conexion").val();
-    var id_servicio = $("#cmb_servicio").val();
-    var acceso_cliente = $("#acceso_cliente").val();
-    var observaciones = $("#observaciones").val();
-    var cliente = $("#nombreCliente").val();
+function registrar_pagos() {
+    var id_mensualidad = $("#id_mensualidad").val();
+    var monto = $("#monto").val();
 
-    if (!cliente || !acceso_cliente || !id_plan || !id_tipo_conexion || !id_servicio || !observaciones) {
-        return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
-    }
+    console.log(id_mensualidad + "//" + monto);
 
     $.ajax({
-        url: "../controllers/servicio/controlador_crear_servicio.php",
+        url: "../controllers/pago/controlador_registrar_pago.php",
         type: "POST",
         dataType: "json",
         data: {
-            id_cliente: id_cliente,
-            id_plan: id_plan,
-            id_tipo_conexion: id_tipo_conexion,
-            id_servicio: id_servicio,
-            acceso_cliente: acceso_cliente,
-            observaciones: observaciones
+            id_mensualidad: id_mensualidad,
+            monto: monto
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
             Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                document.getElementById('frm').reset();
+                document.getElementById('frm_pago').reset();
                 if (typeof table !== "undefined") {
                     table.ajax.reload();
                 }
@@ -115,9 +107,9 @@ function crearServicio() {
     }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");
         console.error("AJAX error:", errorThrown);
-        console.log("Error:", error);
-        console.log("Texto de respuesta:", xhr.responseText);
+        console.log("Texto de respuesta:", jqXHR.responseText);
     });
+
 }
 
 function ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado) {

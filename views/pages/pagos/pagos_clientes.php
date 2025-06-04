@@ -43,16 +43,24 @@
                 <h4 class="modal-title">Cobro de Mensualidad</h4>
             </div>
             <div class="modal-body">
-                <form action="" method="POST">
-                   <input type="" id="id_mensualidad" name="id_mensualidad">
-                   <br><br>
-                     <input type="text" id="cliente" name="cliente">
+                <form action="" id="frm_pago" method="POST">
+                    <input type="" id="id_mensualidad" name="id_mensualidad">
+                    <input type="text" id="cliente" name="cliente" readonly>
+                    <br>
+                    <input type="text" id="monto" name="monto" readonly>
+                    <br>
+                    <input type="text" id="fecha_pago" name="fecha_pago" readonly>
+                    <br>
+                    <input type="text" id="efectivo" name="efectivo" placeholder="entrada de dinero">
+                    <br>
+                    <input type="text" id="devuelta" name="devuelta" readonly>
+
                 </form>
 
 
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="cobrar()" class="btn btn-warning"><i class="fa  fa-check"><b>&nbsp;Cobrar</b></i></button>
+                <button type="button" onclick="registrar_pagos()" class="btn btn-warning"><i class="fa  fa-check"><b>&nbsp;Cobrar</b></i></button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
                     <i class="fa fa-close"><b>&nbsp;Cancelar</b></i></button>
             </div>
