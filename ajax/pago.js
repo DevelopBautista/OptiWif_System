@@ -77,110 +77,72 @@ function listar_pagos_ajax() {
 
 }
 
-//funcion para registrar un pago
-function registrar_pagos() {
-    var id_mensualidad = $("#id_mensualidad").val();
-    var monto = $("#monto").val();
+//-----------se lista los pagos realizados---------------------
+function listar_pagos_realizados_ajax() {
+    tabla = $('#tabla_pagos_realizados').DataTable({
+        "ajax": {
+            "url": "../controllers/pago/controlador_pagos_realizados.php",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "id", "visible": false },
+            { "data": "cliente" },
+            { "data": "mensualidad" },
+            { "data": "fecha_pago" }
+        ],
 
-    console.log(id_mensualidad + "//" + monto);
-
-    $.ajax({
-        url: "../controllers/pago/controlador_registrar_pago.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-            id_mensualidad: id_mensualidad,
-            monto: monto
-        }
-    }).done(function (resp) {
-        if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                document.getElementById('frm_pago').reset();
-                if (typeof table !== "undefined") {
-                    table.ajax.reload();
-                }
-            });
-        } else {
-            Swal.fire("Error", resp.mensaje || "No se pudo realizar el registro.", "error");
-        }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-        Swal.fire("Error", "Error de servidor: " + textStatus, "error");
-        console.error("AJAX error:", errorThrown);
-        console.log("Texto de respuesta:", jqXHR.responseText);
+        "language": idioma_espanol,
+        "destroy": true
     });
 
 }
 
-function ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado) {
-    $('#modal_showData_servicio').modal('show');
-    //Pasandole los datos al modal_showData_servicio
-    $("#id_servicio").val(id_servicio);
-    $("#nom_show").val(nom_cliente);
-    $("#plan_show").val(plan);
-    $("#ri_show").val(ref_instal);
-    $("#tconn_show").val(t_conexion);
-    $("#Dconn_show").val(datos_conexion);
-    $("#fecha_show").val(fecha);
-    $("#estatus_show").val(estado);
-}
-
-function get_datos_cliente(id, nom) {
-
-    $("#IdCliente").val(id);
-    $("#nombreCliente").val(nom);
-    $("#modal_ver_clientes").modal('hide');
-}
-
-function update_cliente() {
-
-    var id = $("#id_cliente").val();
-    var dir = $("#dir_up").val();
-    var tel = $("#tel_up").val();
-    $("#modal_editar").modal('show');
-
-
-    if (dir === "" || tel === "") {
-        Swal.fire({
-            title: "Mensaje de Advertencia ",
-            text: "Hay campos vacios.",
-            icon: "warning",
-            showConfirmButton: false,
-            timer: 2000
-        });
-    } else {
-        $.ajax({
-            url: "../controllers/clientes/controlador_actualizar_datos_cliente.php",
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                dir: dir,
-                tel: tel,
-                id: id
-            }
-        }).done(function (resp) {
-            if (resp.status === "ok") {
-                Swal.fire({
-                    title: "Éxito",
-                    text: resp.mensaje,
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 2500 // opcional: cierra automáticamente después de 2 segundos
-                }).then(() => {
-                    $("#modal_editar").modal("hide");
-                    tabla.ajax.reload();
-                });
-            } else {
-                Swal.fire("Error", resp.mensaje, "error");
-            }
-        })
+//funcion para registrar un pago
+function registrar_pagos() {
+    let formData = {// agrupo todo en una sola variable(no sabia eso)
+        id_mensualidad: $("#id_mensualidad").val(),
+        monto_pagado: $("#monto").val(),
+        fecha_pago: $("#fecha_pago").val(),
+        metodo_pago: $("#metodo_pago").val(),
+        referencia_pago: $("#referencia_pago").val(),
+        observaciones: $("#observaciones").val()
+    };
+    // se parsea de text a number
+    var monto = parseFloat($("#monto").val());
+    var efectivo = parseFloat($("#efectivo").val());
+    // se evalua que no sea vacio O menor a 0
+    if (isNaN(efectivo) || efectivo <= 0) {
+        Swal.fire("Advertencia", "Ingresa un valor válido de efectivo", "warning");
+        return;
     }
-
-
+    // me aseguro que el monto introducido sea mayor a la mensualidad
+    if (efectivo < monto) {
+        Swal.fire("Advertencia", "El efectivo debe ser mayor o igual al monto de la mensualidad", "warning");
+        return;
+    }
+    $.ajax({
+        url: "../controllers/pago/controlador_registrar_pago.php",
+        type: "POST",
+        dataType: "json",
+        data: formData
+    }).done(function (resp) {
+        if (resp.exito) {
+            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+                $('#modal_pago').modal('hide');
+                $('#frm_pago')[0].reset();
+                if (typeof tabla !== "undefined") {
+                    tabla.ajax.reload(null, false);
+                }
+            });
+        } else {
+            Swal.fire("Error", resp.mensaje || "No se pudo registrar el pago", "error");
+        }
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        Swal.fire("Error", "Error de servidor: " + textStatus, "error");
+        console.error("AJAX error:", errorThrown);
+        console.log("Respuesta del servidor:", jqXHR.responseText);
+    });
 }
-
-
-
-
 
 
 //llamando modal modal_ver_clientes

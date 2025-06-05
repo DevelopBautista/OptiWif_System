@@ -140,8 +140,8 @@ function crearServicio() {
         if (resp.status === "ok") {
             Swal.fire("Éxito", resp.mensaje, "success").then(() => {
                 document.getElementById('frm').reset();
-                if (typeof table !== "undefined") {
-                    table.ajax.reload();
+                if (typeof tabla !== "undefined") {
+                    tabla.ajax.reload();
                 }
             });
         } else {

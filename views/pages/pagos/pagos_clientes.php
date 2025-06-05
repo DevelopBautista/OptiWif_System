@@ -43,19 +43,38 @@
                 <h4 class="modal-title">Cobro de Mensualidad</h4>
             </div>
             <div class="modal-body">
-                <form action="" id="frm_pago" method="POST">
-                    <input type="" id="id_mensualidad" name="id_mensualidad">
-                    <input type="text" id="cliente" name="cliente" readonly>
-                    <br>
-                    <input type="text" id="monto" name="monto" readonly>
-                    <br>
-                    <input type="text" id="fecha_pago" name="fecha_pago" readonly>
-                    <br>
-                    <input type="text" id="efectivo" name="efectivo" placeholder="entrada de dinero">
-                    <br>
-                    <input type="text" id="devuelta" name="devuelta" readonly>
+                <form id="frm_pago" method="POST">
+                    <input type="hidden" id="id_mensualidad" name="id_mensualidad">
 
+                    <label>Cliente</label>
+                    <input type="text" id="cliente" name="cliente" class="form-control" disabled><br>
+
+                    <label>Monto a pagar</label>
+                    <input type="text" id="monto" name="monto" class="form-control" disabled><br>
+
+                    <label>Fecha de pago</label>
+                    <input type="date" id="fecha_pago" name="fecha_pago" class="form-control" value="<?= date('Y-m-d') ?>" disabled><br>
+
+                    <label>Método de pago</label>
+                    <select name="metodo_pago" id="metodo_pago" class="form-control">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Pago móvil">Pago móvil</option>
+                    </select><br>
+
+                    <label>Referencia de pago (si aplica)</label>
+                    <input type="text" id="referencia_pago" name="referencia_pago" class="form-control"><br>
+
+                    <label>Observaciones</label>
+                    <textarea id="observaciones" name="observaciones" class="form-control" rows="2"></textarea><br>
+
+                    <label>Efectivo recibido</label>
+                    <input type="number" id="efectivo" name="efectivo" class="form-control" placeholder="Entrada de dinero"><br>
+
+                    <label>Devuelta</label>
+                    <input type="text" id="devuelta" name="devuelta" class="form-control" readonly><br>
                 </form>
+
 
 
             </div>

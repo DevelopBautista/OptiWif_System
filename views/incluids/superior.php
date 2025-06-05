@@ -167,6 +167,8 @@ if (!isset($_SESSION['id_user'])) {
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Pagos</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_realizados.php')">Pagos Realizados</a></li>
+
                         </ul>
                     </li>
                     <?php if ($_SESSION['rol'] == 1): ?>

@@ -1,20 +1,38 @@
 <?php
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-require_once("../../models/modelo_pago.php");
+require_once '../../models/modelo_pago.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $id_mensualidad = $_POST['id_mensualidad'];
-    $monto = $_POST['monto'];
-    $fecha = date('Y-m-d');
+    // Validar y capturar datos
+    $id_mensualidad  = $_POST['id_mensualidad'];
+    $monto_pagado    = $_POST['monto_pagado'];
+    $fecha_pago      = $_POST['fecha_pago'] ?? date('Y-m-d'); // la fecha que se hace el pago
+    $metodo_pago     = $_POST['metodo_pago'];
+    $referencia_pago = $_POST['referencia_pago'] ?? '';
+    $observaciones   = $_POST['observaciones'] ?? '';
 
-    $MP = new modelo_pago();
-    $ok = $MP->registrar_pago($id_mensualidad, $monto, $fecha);
+    $pagoServicio = new modelo_pago();
 
-    echo json_encode([
-        "status" => $ok ? "ok" : "error",
-        "mensaje" => $ok ? "Pago registrado correctamente." : "Error al registrar el pago."
-    ]);
-    exit;
+    $resultado = $pagoServicio->registrar_pago(
+        $id_mensualidad,
+        $monto_pagado,
+        $fecha_pago,
+        $metodo_pago,
+        $referencia_pago,
+        $observaciones
+    );
+
+    if ($resultado) {
+        echo json_encode([
+            'exito' => true,
+            'mensaje' => 'Pago registrado exitosamente'
+        ]);
+    } else {
+        echo json_encode([
+            'exito' => false,
+            'mensaje' => 'Error al registrar el pago'
+        ]);
+    }
 }

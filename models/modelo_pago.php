@@ -15,49 +15,63 @@ class modelo_pago
     }
 
 
-    public function registrar_pago($id_mensualidad, $monto_pagado, $fecha_pago)
+    public function registrar_pago($id_mensualidad, $monto_pagado, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones)
     {
-        // Obtener id_cliente desde mensualidad y contrato
-        $sql_cliente = "SELECT cs.id_cliente 
-                        FROM mensualidades m 
-                        JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
-                        WHERE m.id_mensualidad = ?";
-        $stmt_cliente = $this->conn->conexion->prepare($sql_cliente);
-        $stmt_cliente->execute([$id_mensualidad]);
-        $cliente = $stmt_cliente->fetch(PDO::FETCH_ASSOC);
+        // Obtener id_contrato desde mensualidad
+        $sql_datos = "SELECT cs.id_contrato 
+                  FROM mensualidades m 
+                  JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
+                  WHERE m.id_mensualidad = ?";
+        $stmt = $this->conn->conexion->prepare($sql_datos);
+        $stmt->execute([$id_mensualidad]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$cliente) {
-            return false; // No se encontró el cliente
+        if (!$row) {
+            return "No se encontró el contrato relacionado.";
         }
-        $id_cliente = $cliente['id_cliente'];
 
-        // Empezar transacción
+        $id_contrato = $row['id_contrato'];
+
         $this->conn->conexion->beginTransaction();
 
         try {
-            // 1. Actualizar estado de mensualidad
+            // 1. Actualizar estado de la mensualidad
             $sql_update = "UPDATE mensualidades 
-                           SET estado = 'pagado', monto = ?, fecha_pagada = ? 
-                           WHERE id_mensualidad = ?";
+                       SET estado = 'pagado', monto = ?, fecha_pagada = ? 
+                       WHERE id_mensualidad = ?";
             $stmt_update = $this->conn->conexion->prepare($sql_update);
             $stmt_update->execute([$monto_pagado, $fecha_pago, $id_mensualidad]);
 
-            // 2. Insertar registro de pago en tabla pagos
-            $sql_insert = "INSERT INTO pagos (id_cliente, id_mensualidad, monto, fecha_pago) VALUES (?, ?, ?, ?)";
+            // 2. Insertar en pago_servicio (corregido con nombres correctos)
+            $sql_insert = "INSERT INTO pago_servicio (
+                           id_contrato,
+                           fecha_pago,
+                           metodo_pago,
+                           estado_pago,
+                           referecnia_pago,
+                           observaciones,
+                           creado_en,
+                           id_mensualidad
+                       ) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+
             $stmt_insert = $this->conn->conexion->prepare($sql_insert);
-            $stmt_insert->execute([$id_cliente, $id_mensualidad, $monto_pagado, $fecha_pago]);
+            $stmt_insert->execute([
+                $id_contrato,
+                $fecha_pago,
+                $metodo_pago,
+                'pagado',          // puedes ajustar este estado si usas otros
+                $referencia_pago,
+                $observaciones,
+                $id_mensualidad
+            ]);
 
-            // Commit transacción
             $this->conn->conexion->commit();
-
             return true;
         } catch (Exception $e) {
-            // Rollback en caso de error
             $this->conn->conexion->rollBack();
-            return false;
+            return "Error al registrar el pago: " . $e->getMessage();
         }
     }
-
 
 
     public function listar_pagos()
@@ -74,6 +88,22 @@ class modelo_pago
                 INNER JOIN clientes c ON cs.id_cliente = c.id_cliente
                 INNER JOIN planes p ON cs.id_plan = p.id_plan
                 ORDER BY m.periodo_anio DESC, m.periodo_mes DESC";
+
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $respuesta; //retorna texto
+    }
+
+
+    public function listar_pagos_realizados()
+    {
+        $sql = "SELECT pg.id_pago as id,
+                       c.nombre_completo as cliente,
+		               pg.monto as mensualidad,
+                       pg.fecha_pago
+                FROM pagos pg
+                INNER JOIN clientes c on pg.id_cliente=c.id_cliente";
 
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
