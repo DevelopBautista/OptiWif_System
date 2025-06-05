@@ -70,7 +70,16 @@
 
                     <label>Efectivo recibido</label>
                     <input type="number" id="efectivo" name="efectivo" class="form-control" placeholder="Entrada de dinero"><br>
+                    <!--scritp para mostrar el cambio del efectivo-->
+                    <script>
+                        document.getElementById("efectivo").addEventListener("input", function() {
+                            const efectivo = parseFloat(this.value) || 0;
+                            const monto = parseFloat(document.getElementById("monto").value) || 0;
+                            const devuelta = efectivo - monto;
 
+                            document.getElementById("devuelta").value = devuelta >= 0 ? devuelta.toFixed(2) : "0.00";
+                        });
+                    </script>
                     <label>Devuelta</label>
                     <input type="text" id="devuelta" name="devuelta" class="form-control" readonly><br>
                 </form>

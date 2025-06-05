@@ -115,7 +115,7 @@ function registrar_pagos() {
         Swal.fire("Advertencia", "Ingresa un valor válido de efectivo", "warning");
         return;
     }
-    // me aseguro que el monto introducido sea mayor a la mensualidad
+    // me aseguro que el monto introducido sea mayor O igual a la mensualidad
     if (efectivo < monto) {
         Swal.fire("Advertencia", "El efectivo debe ser mayor o igual al monto de la mensualidad", "warning");
         return;
