@@ -57,7 +57,7 @@ function listar_pagos_ajax() {
 
 
 
-    // obtener datos del servicio
+    // obtener datos del servicio para llevar el modal_pago
     $('#tabla_pagos ').on('click', '.btn-info', function () {
         var data = tabla.row($(this).parents('tr')).data();
         var id_mensualidad = data.id_mensualidad;
