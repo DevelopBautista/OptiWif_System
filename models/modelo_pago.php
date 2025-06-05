@@ -98,12 +98,18 @@ class modelo_pago
 
     public function listar_pagos_realizados()
     {
-        $sql = "SELECT pg.id_pago as id,
-                       c.nombre_completo as cliente,
-		               pg.monto as mensualidad,
-                       pg.fecha_pago
-                FROM pagos pg
-                INNER JOIN clientes c on pg.id_cliente=c.id_cliente";
+        $sql = "SELECT 
+                    ps.id_pago_servicio as id,
+                    c.nombre_completo as cliente,
+                    m.monto as mensualidad,
+                    ps.creado_en as fecha_pago
+                FROM pago_servicio ps
+                
+                INNER JOIN 
+                        contratos_servicio cs ON ps.id_contrato = cs.id_contrato
+                INNER JOIN 
+                        clientes c ON cs.id_cliente = c.id_cliente
+                INNER JOIN mensualidades m on ps.id_mensualidad=m.id_mensualidad";
 
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
