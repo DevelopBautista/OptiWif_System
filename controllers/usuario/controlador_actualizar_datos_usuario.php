@@ -11,7 +11,6 @@ $user_up  = htmlspecialchars($_POST['user_up'] ?? '');
 $pwsd_up  = $_POST['pwsd_up'];
 $rol_up   = htmlspecialchars($_POST['rol_up'] ?? '');
 $id_up    = htmlspecialchars($_POST['id_up'] ?? '');
-
 $MU = new modelo_Usuario();
 
 $claveHash = '';

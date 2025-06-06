@@ -47,7 +47,7 @@ function listar_pagos_ajax() {
 
             },
             {
-                "defaultContent": "<button  class=' btn btn-info btn-sm'><i class='fa-solid fa-file-invoice-dollar'></i></button>"
+                "defaultContent": "<button  class=' btn btn-info btn-sm title='Pagar Mensualidad'><i class='fa-solid fa-file-invoice-dollar'></i></button>"
             }
         ],
 

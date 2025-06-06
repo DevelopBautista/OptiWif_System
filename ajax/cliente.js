@@ -30,7 +30,7 @@ function listar_clientes() {
             { "data": "nombre_completo" },
             { "data": "telefono" },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver detalles'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class='btn btn-warning btn-sm' title='Editar'><i class='fa-solid fa-edit'></i></button>"
             }
         ],
 

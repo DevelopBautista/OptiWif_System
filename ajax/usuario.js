@@ -151,7 +151,6 @@ function listar_usuario() {
     $('#tabla_usuarios ').on('click', '.btn-info', function () {
         var data = tabla.row($(this).parents('tr')).data();//obteniendo toda la data de la fila 
         //almacacenando la data de la fila por campos
-        var id = data.id_usuario;
         var nom = data.usuario_nombres;
         var ced = data.usuario_ced;
         var tel = data.usuario_tel;

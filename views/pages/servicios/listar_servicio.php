@@ -37,42 +37,21 @@
 
 
 <!-- Modal Mostrar info servicios -->
-<div class="modal" tabindex="-1" role="dialog" id="modal_showData_servicio" data-backdrop="static" data-keyboard="false">
+<div class="modal" tabindex="-1" role="dialog" id="modalInfoServicio" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
-                <h5 class="modal-title">Datos del Servicio</h5>
+                <h5 class="modal-title">Datos extras del Servicio</h5>
             </div>
 
             <div class="modal-body">
                 <div class="form-group">
-                    <input type="hidden" id="id_servicio">
-                    <label for="nom_show">Cliente</label>
-                    <input type="text" class="form-control" id="nom_show" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="ced_show">Plan</label>
-                    <input type="text" class="form-control" id="plan_show" readonly>
-                </div>
-                <div class="form-group">
                     <label for="tel_show">Referencia de instalacion</label>
-                    <input type="text" class="form-control" id="ri_show" readonly>
+                    <input type="text" class="form-control" id="modal_RefIns" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="dir_show">Tipo Conexion</label>
-                    <input type="text" class="form-control" id="tconn_show" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="usu_show">Datos de la conexion</label>
-                    <input type="text" class="form-control" id="Dconn_show" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="rol_show">Fecha</label>
-                    <input type="text" class="form-control" id="fecha_show" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="estatus_show">Estatus</label>
-                    <input type="text" class="form-control" id="estatus_show" readonly>
+                    <label for="usu_show">Tipo de acceso del cliente</label>
+                    <input type="text" class="form-control" id="modal_accesoCliente" readonly>
                 </div>
             </div>
 
@@ -87,7 +66,7 @@
 
 
 <!--actualizad datos del servicio-->
-<div class="modal" tabindex="-1" role="dialog" id="modal_editar_servicio" data-backdrop="static" data-keyboard="false">
+<div class="modal" tabindex="-1" role="dialog" id="modalUpdateServicio" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
@@ -98,34 +77,26 @@
                     <!--f01-->
                     <div class="row">
                         <div class="form-group col-md-5">
-                            <input type="hidden" id="IdCliente" name="IdCliente">
-                            <input type="text" class="form-control" name="nombreCliente"
-                                placeholder="Cliente" id="nombreCliente">
+                            <input type="hidden" id="id_cliente" name="id_cliente">
+                            <input type="hidden" id="id_contrato">
                         </div>
                         <div class="form-group col-md-4">
                         </div>
                     </div>
                     <!--f02-->
                     <div class="row">
-                        <div class="form-group col-md-8">
-                            <input type="text" class="form-control" id="referenciaDir" name="referenciaDir"
-                                placeholder="Referencia de la instalacion del servicio">
-                        </div>
-                    </div>
-                    <!--f03-->
-                    <div class="row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-5">
                             <select class="planes js-states form-control" name="state" id="cmb_planes" style="width: 100%;">
 
                             </select>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-5">
                             <select class="conexion js-states form-control" name="state" id="cmb_conexion" style="width: 100%;">
                             </select>
                         </div>
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-5">
                             <input type="text" class="form-control" id="dataConexion" name="dataConexion"
-                                placeholder="Usuario Y/o Ip">
+                                placeholder="Acceso cliente (Ip,Usuario)">
                         </div>
                     </div>
                 </form>
@@ -143,6 +114,9 @@
 <script>
     $(document).ready(function() {
         listar_servicios_ajax();
+        tipo_plan();
+        tipo_conexion();
+        tipo_servicio();
     });
 </script>
 <?php include("incluids/inferior.php"); ?>

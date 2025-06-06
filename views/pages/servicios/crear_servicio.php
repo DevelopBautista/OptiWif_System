@@ -11,7 +11,7 @@
                 <!--f01-->
                 <div class="row">
                     <div class="form-group col-md-4">
-                        <input type="hidden" id="IdCliente" name="IdCliente">
+                        <input type="hidden" id="id_cliente" name="id_cliente">
                         <input type="text" class="form-control" name="nombreCliente"
                             placeholder="Cliente" id="nombreCliente">
                     </div>

@@ -67,62 +67,33 @@ class modelo_servicio
 
 
 
-    public function cambiar_estatus_servicio($id, $estatus)
+    public function actualizar_datos_servicio($id_cliente, $id_plan, $id_tipo_conexion, $acceso_cliente, $id_cs)
     {
-
-        $sql = "update usuario set usuario_estatus= :estatus where id_usuario= :id";
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->bindParam('estatus', $estatus, PDO::PARAM_STR);
-        $stmt->bindParam('id', $id, PDO::PARAM_INT);
-        $respuesta = $stmt->execute();
-        return $respuesta; //retorna texto
-    }
-
-
-
-    public function actualizar_datos_usuarios($id, $tel, $dir, $usu, $pwsd, $id_rol)
-    {
-        if (empty($pwsd)) {
-            $sql = "UPDATE usuario 
-                SET usuario_tel = :Tel,
-                    usuario_direccion = :Dir,
-                    usuario_usu = :Usu,
-                    id_rol = :Id_rol
-                WHERE id_usuario = :Id";
-        } else {
-            $sql = "UPDATE usuario 
-                SET usuario_tel = :Tel,
-                    usuario_direccion = :Dir,
-                    usuario_usu = :Usu,
-                    usuario_pass = :Pass,
-                    id_rol = :Id_rol
-                WHERE id_usuario = :Id";
-        }
+        $sql = "UPDATE contratos_servicio SET 
+                        id_cliente=:id_cliente,id_plan=:id_plan,
+                        id_tipo_conexion=:id_tipo_conexion, 
+                        acceso_cliente=:acceso_cliente 
+                WHERE id_contrato=:id_contrato";
 
         $stmt = $this->conn->conexion->prepare($sql);
 
         // Parámetros comunes
-        $stmt->bindParam('Tel', $tel, PDO::PARAM_STR);
-        $stmt->bindParam('Dir', $dir, PDO::PARAM_STR);
-        $stmt->bindParam('Usu', $usu, PDO::PARAM_STR);
-        $stmt->bindParam('Id_rol', $id_rol, PDO::PARAM_INT);
-        $stmt->bindParam('Id', $id, PDO::PARAM_INT);
-
-        // Solo si hay contraseña nueva
-        if (!empty($pwsd)) {
-            $stmt->bindParam('Pass', $pwsd, PDO::PARAM_STR);
-        }
+        $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
+        $stmt->bindParam(':id_plan', $id_plan, PDO::PARAM_STR);
+        $stmt->bindParam(':id_tipo_conexion', $id_tipo_conexion, PDO::PARAM_STR);
+        $stmt->bindParam(':acceso_cliente', $acceso_cliente, PDO::PARAM_STR);
+        $stmt->bindParam(':id_contrato', $id_cs, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             return [
                 "status" => "ok",
-                "mensaje" => "Los datos del usuario han sido actualizados."
+                "mensaje" => "Los datos del servicio han sido actualizados."
             ];
         } else {
             $errorInfo = $stmt->errorInfo();
             return [
                 "status" => "error",
-                "mensaje" => "No se pudo actualizar los datos del usuario.",
+                "mensaje" => "No se pudo actualizar los datos del servicio.",
                 "error" => $errorInfo
             ];
         }
@@ -131,10 +102,13 @@ class modelo_servicio
 
     public function listar_servicios()
     {
-        $sql = "SELECT cs.id_contrato,cs.fecha_contrato,cs.estado,
+        $sql = "SELECT cs.id_contrato,cs.fecha_contrato,cs.estado,c.id_cliente,
+                       p.id_plan,s.id_servicio,
                        cs.acceso_cliente,cs.observaciones,c.nombre_completo AS cliente,
                        p.nombre_plan,p.precio,p.velocidad,
-                       s.descripcion AS servicio,tp.desc_conexion AS tipo_conexion
+                       s.descripcion AS servicio,
+                       tp.id_tipo_conexion,
+                       tp.desc_conexion AS tipo_conexion
                 FROM contratos_servicio cs
                 JOIN clientes c ON cs.id_cliente = c.id_cliente
                 JOIN planes p ON cs.id_plan = p.id_plan

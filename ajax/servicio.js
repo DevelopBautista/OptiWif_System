@@ -54,7 +54,7 @@ function listar_clientes_servicio() {
 }
 
 
-//-----------se lista los servicios---------------------
+//-----------listar los servicios---------------------
 function listar_servicios_ajax() {
     tabla = $('#tabla_detalle_servicio').DataTable({
         "ajax": {
@@ -72,7 +72,7 @@ function listar_servicios_ajax() {
             { "data": "fecha_contrato" },
             { "data": "estado" },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver detalles'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm' title='Editar servicio'><i class='fa-solid fa-edit'></i></button>"
             }
         ],
 
@@ -80,28 +80,40 @@ function listar_servicios_ajax() {
         "destroy": true
     });
 
+    //para cuando este en modo celular para que no de error de undefine
+    $('#tabla_detalle_servicio').on('click', '.btn-info', function () {
+        let fila = $(this).closest('tr');
+        let data = tabla.row(fila.hasClass('child') ? fila.prev() : fila).data();
 
-    // ver info del servicio
-    $('#tabla_servicios ').on('click', '.btn-info', function () {
-        var data = tabla.row($(this).parents('tr')).data();//obteniendo toda la data de la fila 
-        //almacacenando la data de la fila por campos
-        var id_servicio = data.id_servicio;
-        var nom_cliente = data.nombre_completo;
-        var plan = data.nombre;
-        var ref_instal = data.referencia_direccion;
-        var t_conexion = data.nombre_conexion;
-        var datos_conexion = data.datos_conexion;
-        var fecha = data.fecha_creacion;
-        var estado = data.estado;
-        ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado);
+        if (!data) {
+            console.error("No se pudo obtener la fila de datos");
+            return;
+        }
+
+        var observaciones = data.observaciones;
+        var acceso_cliente = data.acceso_cliente;
+        ver_datos_servicio(observaciones, acceso_cliente);    // Pasa los datos si tu función los usa
     });
 
 
     // obtener datos del servicio
-    $('#tabla_servicios ').on('click', '.btn-warning', function () {
-        var data = tabla.row($(this).parents('tr')).data();
+    $('#tabla_detalle_servicio ').on('click', '.btn-warning', function () {
+        let fila = $(this).closest('tr');
+        let data = tabla.row(fila.hasClass('child') ? fila.prev() : fila).data();
 
-        $("#modal_editar_servicio").modal("show");
+        if (!data) {
+            console.error("No se pudo obtener la fila de datos");
+            return;
+        }
+        var id_contrato = data.id_contrato;
+        var IdCliente = data.id_cliente;
+        var id_plan = data.id_plan;
+        var id_tipo_conexion = data.id_tipo_conexion;
+        var acceso_cliente = data.acceso_cliente;
+
+        actualizar_datos_servicio(IdCliente, id_plan, id_tipo_conexion, acceso_cliente, id_contrato);
+
+
 
     });
 
@@ -112,7 +124,7 @@ function listar_servicios_ajax() {
 
 //funcion para crear un servicio
 function crearServicio() {
-    var id_cliente = $("#IdCliente").val();
+    var id_cliente = $("#id_cliente").val();
     var id_plan = $("#cmb_planes").val();
     var id_tipo_conexion = $("#cmb_conexion").val();
     var id_servicio = $("#cmb_servicio").val();
@@ -155,72 +167,73 @@ function crearServicio() {
     });
 }
 
-function ver_datos_servicio(id_servicio, nom_cliente, plan, ref_instal, t_conexion, datos_conexion, fecha, estado) {
-    $('#modal_showData_servicio').modal('show');
+function ver_datos_servicio(observaciones, acceso_cliente) {
+    $('#modalInfoServicio').modal('show');
     //Pasandole los datos al modal_showData_servicio
-    $("#id_servicio").val(id_servicio);
-    $("#nom_show").val(nom_cliente);
-    $("#plan_show").val(plan);
-    $("#ri_show").val(ref_instal);
-    $("#tconn_show").val(t_conexion);
-    $("#Dconn_show").val(datos_conexion);
-    $("#fecha_show").val(fecha);
-    $("#estatus_show").val(estado);
+
+    $("#modal_RefIns").val(observaciones);
+    $("#modal_accesoCliente").val(acceso_cliente);
+
+
 }
 
-function get_datos_cliente(id, nom) {
+function get_datos_servicio(id, nom) {
 
     $("#IdCliente").val(id);
     $("#nombreCliente").val(nom);
     $("#modal_ver_clientes").modal('hide');
 }
 
-function update_cliente() {
-
-    var id = $("#id_cliente").val();
-    var dir = $("#dir_up").val();
-    var tel = $("#tel_up").val();
-    $("#modal_editar").modal('show');
+function actualizar_datos_servicio(id_cliente, id_plan, id_tipo_conexion, acceso_cliente, id_contrato) {
 
 
-    if (dir === "" || tel === "") {
-        Swal.fire({
-            title: "Mensaje de Advertencia ",
-            text: "Hay campos vacios.",
-            icon: "warning",
-            showConfirmButton: false,
-            timer: 2000
-        });
-    } else {
-        $.ajax({
-            url: "../controllers/clientes/controlador_actualizar_datos_cliente.php",
-            type: "POST",
-            dataType: "JSON",
-            data: {
-                dir: dir,
-                tel: tel,
-                id: id
-            }
-        }).done(function (resp) {
-            if (resp.status === "ok") {
-                Swal.fire({
-                    title: "Éxito",
-                    text: resp.mensaje,
-                    icon: "success",
-                    showConfirmButton: false,
-                    timer: 2500 // opcional: cierra automáticamente después de 2 segundos
-                }).then(() => {
-                    $("#modal_editar").modal("hide");
-                    tabla.ajax.reload();
-                });
-            } else {
-                Swal.fire("Error", resp.mensaje, "error");
-            }
-        })
+    $("#id_cliente").val(id_cliente);
+    $("#cmb_planes").val(id_plan);
+    $("#cmb_conexion").val(id_tipo_conexion);
+    $("#dataConexion").val(acceso_cliente);
+    $("#id_contrato").val(id_contrato);
+
+    $("#modalUpdateServicio").modal("show");
+}
+
+
+function update_servicio() {
+    var id_cliente = $("#id_cliente").val();
+    var id_plan = $("#cmb_planes").val();
+    var id_tipo_conexion = $("#cmb_conexion").val();
+    var acceso_cliente = $("#dataConexion").val();
+    var id_contrato = $("#id_contrato").val();
+
+    // Validación de campos obligatorios
+    if (!id_plan || !id_tipo_conexion || !acceso_cliente) {
+        return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos obligatorios.", "warning");
     }
 
+    $.ajax({
+        url: "../controllers/servicio/controlador_actualizar_datos_servicio.php",
+        type: "POST",
+        dataType: "JSON",
+        data: {
+            id_cliente: id_cliente,
+            id_plan: id_plan,
+            id_tipo_conexion: id_tipo_conexion,
+            acceso_cliente: acceso_cliente,
+            id_contrato: id_contrato,
 
+        }
+    }).done(function (resp) {
+        console.log("Respuesta PHP:", resp);
+        if (resp.status === "ok") {
+            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+                $("#modalUpdateServicio").modal("hide");
+                tabla.ajax.reload();
+            });
+        } else {
+            Swal.fire("Error", resp.mensaje, "error");
+        }
+    })
 }
+
 
 
 
