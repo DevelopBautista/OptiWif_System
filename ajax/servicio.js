@@ -130,9 +130,12 @@ function crearServicio() {
     var id_servicio = $("#cmb_servicio").val();
     var acceso_cliente = $("#acceso_cliente").val();
     var observaciones = $("#observaciones").val();
+    var fecha_contrato = $("#fecha_contrato").val();
+    var dias_mas = $("#dias_mas").val();
+    var cargo_extra = $("#cargo_extra").val() || 0;
     var cliente = $("#nombreCliente").val();
 
-    if (!cliente || !acceso_cliente || !id_plan || !id_tipo_conexion || !id_servicio || !observaciones) {
+    if (!cliente || !acceso_cliente || !id_plan || !id_tipo_conexion || !id_servicio || !observaciones || !fecha_contrato || !dias_mas || !cargo_extra) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
     }
 
@@ -146,7 +149,10 @@ function crearServicio() {
             id_tipo_conexion: id_tipo_conexion,
             id_servicio: id_servicio,
             acceso_cliente: acceso_cliente,
-            observaciones: observaciones
+            observaciones: observaciones,
+            fecha_contrato: fecha_contrato,
+            dias_mas: dias_mas,
+            cargo_extra: cargo_extra
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
@@ -177,9 +183,9 @@ function ver_datos_servicio(observaciones, acceso_cliente) {
 
 }
 
-function get_datos_servicio(id, nom) {
+function get_datos_cliente(id, nom) {
 
-    $("#IdCliente").val(id);
+    $("#id_cliente").val(id);
     $("#nombreCliente").val(nom);
     $("#modal_ver_clientes").modal('hide');
 }

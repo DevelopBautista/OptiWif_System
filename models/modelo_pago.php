@@ -81,13 +81,12 @@ class modelo_pago
                        p.nombre_plan as plan,
                        m.monto,
                        m.estado,
-                       m.fecha_generada,
+                       m.fecha_inicio,
                        m.fecha_vencimiento as fecha_pagos
                 FROM mensualidades m
                 INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
                 INNER JOIN clientes c ON cs.id_cliente = c.id_cliente
-                INNER JOIN planes p ON cs.id_plan = p.id_plan
-                ORDER BY m.periodo_anio DESC, m.periodo_mes DESC";
+                INNER JOIN planes p ON cs.id_plan = p.id_plan ";
 
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();

@@ -54,6 +54,25 @@
                             placeholder="Acceso cliente (Ip,Usuario)">
                     </div>
                 </div>
+                <!--f04-->
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        <label for="fecha_contrato">Fecha de contrato:</label>
+                        <input type="date" class="form-control" id="fecha_contrato" name="fecha_contrato" require>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="fecha_contrato">Dias de Gracias:</label>
+                        <input type="number" class="form-control" id="dias_mas" name="dias_mas" require>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="cargo_extra">Cargo Extra:</label>
+                        <input type="number" class="form-control" id="cargo_extra" name="cargo_extra" require>
+                    </div>
+
+                </div>
+
 
                 <div class="form-group">
                     <button type="button" class="btn btn-primary" onclick="crearServicio()"><i class="fa  fa-check"><b>&nbsp;Crear Servicio</b></i></button>

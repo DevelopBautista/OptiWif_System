@@ -4,7 +4,6 @@
         <div class="box-header with-border">
             <h3 class="box-title">Servicios</h3>
             <div class="box-tools pull-right">
-
             </div>
         </div>
         <br>
@@ -117,6 +116,13 @@
         tipo_plan();
         tipo_conexion();
         tipo_servicio();
+    });
+</script>
+
+<script>
+    $('#modalUpdateServicio, #modalInfoServicio').on('hidden.bs.modal', function() {
+        // Mover foco a un botón visible o al body
+        $('body').focus();
     });
 </script>
 <?php include("incluids/inferior.php"); ?>
