@@ -133,7 +133,7 @@ function listar_usuario() {
                 }
             },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm'><i class='fa-solid fa-edit'></i></button>&nbsp;<button class='btn btn-success btn-sm'><i class='fa-solid fa-check'></i></button>&nbsp;<button class='btn btn-danger btn-sm'><i class='fa-solid fa-trash'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver Detalles'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm' title='Editar'><i class='fa-solid fa-edit'></i></button>&nbsp;<button class='btn btn-success btn-sm'title='Activar/Desactivar' ><i class='fa-solid fa-check'></i></button>&nbsp;<button class='btn btn-danger btn-sm' title='Eliminar'><i class='fa-solid fa-trash'></i></button>"
             }
         ],
 
@@ -273,12 +273,21 @@ function ingresar_usuario() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+
+            Swal.fire({
+                title: "mensaje de confirmación",
+                text: "Éxito" + resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+
+            }).then(function () {
                 document.getElementById('frm').reset();
-                if (typeof table !== "undefined") {
-                    table.ajax.reload();
+                if (typeof tabla !== "undefined") {
+                    tabla.ajax.reload();
                 }
             });
+
         } else if (resp.status === "existe") {
             Swal.fire("Advertencia", resp.mensaje, "warning");
         } else {
@@ -430,9 +439,20 @@ function update_Usuario() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+
+            Swal.fire({
+                title: "mensaje de confirmación",
+                text: "Éxito" + resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+
+            }).then(function () {
+                document.getElementById('frm').reset();
                 $("#modal_editar").modal("hide");
-                tabla.ajax.reload();
+                if (typeof tabla !== "undefined") {
+                    tabla.ajax.reload();
+                }
             });
         } else {
             Swal.fire("Error", resp.mensaje, "error");

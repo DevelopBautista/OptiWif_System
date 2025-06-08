@@ -75,16 +75,7 @@ function listar_clientes() {
             return;
         }
 
-        const id = data.id_usuario;
-        const nom = data.usuario_nombres;
-        const ced = data.usuario_ced;
-        const tel = data.usuario_tel;
-        const dir = data.usuario_direccion;
-        const usu = data.usuario_usu;
-        const rol = data.id_rol;
-        const pswd = ""; // No enviar el hash, dejar campo vacío
 
-        //actualizar_datos_usuario(id, nom, ced, tel, dir, usu, rol, pswd);
     });
 
 }

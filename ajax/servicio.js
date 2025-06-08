@@ -156,12 +156,21 @@ function crearServicio() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+
+            Swal.fire({
+                title: "mensaje de confirmación",
+                text: "Éxito" + resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+
+            }).then(function () {
                 document.getElementById('frm').reset();
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload();
                 }
             });
+
         } else {
             Swal.fire("Error", resp.mensaje || "No se pudo realizar el registro.", "error");
         }
@@ -228,12 +237,19 @@ function update_servicio() {
 
         }
     }).done(function (resp) {
-        console.log("Respuesta PHP:", resp);
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+            Swal.fire({
+                title: "mensaje de confirmación",
+                text: "Éxito  " + resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+
+            }).then(function () {
                 $("#modalUpdateServicio").modal("hide");
                 tabla.ajax.reload();
             });
+
         } else {
             Swal.fire("Error", resp.mensaje, "error");
         }

@@ -127,13 +127,21 @@ function registrar_pagos() {
         data: formData
     }).done(function (resp) {
         if (resp.exito) {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+            Swal.fire({
+                title: "mensaje de confirmación",
+                text: "Éxito" + resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000
+
+            }).then(function () {
                 $('#modal_pago').modal('hide');
                 $('#frm_pago')[0].reset();
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload(null, false);
                 }
             });
+
         } else {
             Swal.fire("Error", resp.mensaje || "No se pudo registrar el pago", "error");
         }
