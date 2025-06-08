@@ -15,44 +15,86 @@ class modelo_mensualidad
     }
 
 
-    public function generar_Mensualidades()
+    public function crearMensualidades($id_contrato, $fecha_inicio, $monto, $cantidad)
     {
-        $hoy = date('Y-m-d');
-        $mes = date('n'); // mes actual (1-12)
-        $anio = date('Y');
+        $estado = "pendiente";
+        $cargo_extra = 0.00;
 
-        // 1. Obtener contratos activos
-        $sql = "SELECT cs.id_contrato, cs.id_plan 
-            FROM contratos_servicio cs 
-            WHERE cs.estado = 'Activo'";
+        for ($i = 0; $i < $cantidad; $i++) {
+            $fecha_vencimiento = date('Y-m-d', strtotime("+" . ($i + 1) . "month", strtotime($fecha_inicio)));
+
+            $sql = "INSERT INTO mensualidades (id_contrato, monto, fecha_vencimiento, estado, fecha_inicio, cargo_extra)
+                VALUES (:id_contrato, :monto, :fecha_vencimiento, :estado, :fecha_inicio, :cargo_extra)";
+            $stmt = $this->conn->conexion->prepare($sql);
+            $stmt->bindParam(':id_contrato', $id_contrato);
+            $stmt->bindParam(':monto', $monto);
+            $stmt->bindParam(':fecha_vencimiento', $fecha_vencimiento);
+            $stmt->bindParam(':estado', $estado);
+            $stmt->bindParam(':fecha_inicio', $fecha_inicio);
+            $stmt->bindParam(':cargo_extra', $cargo_extra);
+
+            $stmt->execute();
+        }
+    }
+
+
+    public function obtenerPrecioPlan($id_plan)
+    {
+        $sql = "SELECT precio FROM planes WHERE id_plan = :id_plan";
         $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->bindParam(':id_plan', $id_plan);
         $stmt->execute();
 
-        while ($contrato = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $id_contrato = $contrato['id_contrato'];
-            $id_plan = $contrato['id_plan'];
-
-            // 2. Verificar si ya existe una mensualidad
-            $check = $this->conn->conexion->prepare("SELECT COUNT(*) AS total FROM mensualidades WHERE id_contrato = ? AND periodo_mes = ? AND periodo_anio = ?");
-            $check->execute([$id_contrato, $mes, $anio]);
-            $check_result = $check->fetch(PDO::FETCH_ASSOC);
-
-            if ($check_result['total'] == 0) {
-                // 3. Obtener precio del plan
-                $plan_query = $this->conn->conexion->prepare("SELECT precio FROM planes WHERE id_plan = ?");
-                $plan_query->execute([$id_plan]);
-                $plan_data = $plan_query->fetch(PDO::FETCH_ASSOC);
-                $monto = $plan_data['precio'];
-
-                // 4. Calcular fecha de vencimiento
-                $fecha_vencimiento = date('Y-m-25', strtotime('+1 month'));
-
-                // 5. Insertar mensualidad
-                $insert = $this->conn->conexion->prepare("INSERT INTO mensualidades (id_contrato, periodo_mes, periodo_anio, monto, fecha_vencimiento, estado, fecha_generada) VALUES (?, ?, ?, ?, ?, 'pendiente', ?)");
-                $insert->execute([$id_contrato, $mes, $anio, $monto, $fecha_vencimiento, $hoy]);
-            }
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            return $row['precio'];
         }
+        return 0;
+    }
 
-        return "Mensualidades generadas correctamente.";
+
+    public function generarMensualidadSiguiente()
+    {
+        $estado = "pendiente";
+        $cargo_extra = 0.00;
+
+        // Buscar contratos activos
+        $sqlContratos = "SELECT id_contrato, fecha_contrato, id_plan FROM contratos_servicio WHERE estado = 'activo'";
+        $stmtContratos = $this->conn->conexion->prepare($sqlContratos);
+        $stmtContratos->execute();
+        $contratos = $stmtContratos->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($contratos as $contrato) {
+            $id_contrato = $contrato['id_contrato'];
+            $monto = $this->obtenerPrecioPlan($contrato['id_plan']);
+
+            // Buscar última mensualidad
+            $sqlUltima = "SELECT fecha_vencimiento FROM mensualidades 
+                      WHERE id_contrato = :id_contrato 
+                      ORDER BY fecha_vencimiento DESC LIMIT 1";
+            $stmtUltima = $this->conn->conexion->prepare($sqlUltima);
+            $stmtUltima->bindParam(':id_contrato', $id_contrato);
+            $stmtUltima->execute();
+            $ultima = $stmtUltima->fetch(PDO::FETCH_ASSOC);
+
+            if ($ultima) {
+                $nueva_fecha_inicio = $ultima['fecha_vencimiento'];
+                $fecha_vencimiento = date('Y-m-d', strtotime("+1 month", strtotime($nueva_fecha_inicio)));
+            } else {
+                $nueva_fecha_inicio = $contrato['fecha_contrato'];
+                $fecha_vencimiento = date('Y-m-d', strtotime("+1 month", strtotime($nueva_fecha_inicio)));
+            }
+
+            // Insertar nueva mensualidad
+            $sqlInsert = "INSERT INTO mensualidades (id_contrato, monto, fecha_vencimiento, estado, fecha_inicio, cargo_extra)
+                      VALUES (:id_contrato, :monto, :fecha_vencimiento, :estado, :fecha_inicio, :cargo_extra)";
+            $stmtInsert = $this->conn->conexion->prepare($sqlInsert);
+            $stmtInsert->bindParam(':id_contrato', $id_contrato);
+            $stmtInsert->bindParam(':monto', $monto);
+            $stmtInsert->bindParam(':fecha_vencimiento', $fecha_vencimiento);
+            $stmtInsert->bindParam(':estado', $estado);
+            $stmtInsert->bindParam(':fecha_inicio', $nueva_fecha_inicio);
+            $stmtInsert->bindParam(':cargo_extra', $cargo_extra);
+            $stmtInsert->execute();
+        }
     }
 }

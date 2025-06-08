@@ -32,17 +32,49 @@ class modelo_pago
 
         $id_contrato = $row['id_contrato'];
 
+        // Obtener datos de la mensualidad
+        $sql_mensualidad = "SELECT monto, fecha_vencimiento FROM mensualidades WHERE id_mensualidad = ?";
+        $stmt_m = $this->conn->conexion->prepare($sql_mensualidad);
+        $stmt_m->execute([$id_mensualidad]);
+        $mensualidad = $stmt_m->fetch(PDO::FETCH_ASSOC);
+
+        if (!$mensualidad) {
+            return "No se encontró la mensualidad.";
+        }
+
+        $monto_original = $mensualidad['monto'];
+        $fecha_vencimiento = $mensualidad['fecha_vencimiento'];
+
+        // Calcular mora
+        $fecha_actual = new DateTime($fecha_pago);
+        $fecha_venc = new DateTime($fecha_vencimiento);
+        $dias_mora = 0;
+
+        if ($fecha_actual > $fecha_venc) {
+            $interval = $fecha_actual->diff($fecha_venc);
+            $dias_mora = $interval->days;
+        }
+
+        $tasa_interes_diaria = 0.01; // 1% diario
+        $cargo_mora = $monto_original * $tasa_interes_diaria * $dias_mora;
+
+        $monto_total_pagar = $monto_original + $cargo_mora;
+
+        // Iniciar transacción
         $this->conn->conexion->beginTransaction();
 
         try {
-            // 1. Actualizar estado de la mensualidad
+            // 1. Actualizar mensualidad
             $sql_update = "UPDATE mensualidades 
-                       SET estado = 'pagado', monto = ?, fecha_pagada = ? 
+                       SET estado = 'pagado', 
+                           monto = ?, 
+                           fecha_pago = ?, 
+                           cargo_extra = ?
                        WHERE id_mensualidad = ?";
             $stmt_update = $this->conn->conexion->prepare($sql_update);
-            $stmt_update->execute([$monto_pagado, $fecha_pago, $id_mensualidad]);
+            $stmt_update->execute([$monto_total_pagar, $fecha_pago, $cargo_mora, $id_mensualidad]);
 
-            // 2. Insertar en pago_servicio (corregido con nombres correctos)
+            // 2. Insertar en pago_servicio
             $sql_insert = "INSERT INTO pago_servicio (
                            id_contrato,
                            fecha_pago,
@@ -59,7 +91,7 @@ class modelo_pago
                 $id_contrato,
                 $fecha_pago,
                 $metodo_pago,
-                'pagado',          // puedes ajustar este estado si usas otros
+                'pagado',
                 $referencia_pago,
                 $observaciones,
                 $id_mensualidad
