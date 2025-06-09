@@ -6,6 +6,7 @@ $MC = new modelo_contador_infoBox();
 $total_clientes = $MC->contar_clientes();
 $total_servicios = $MC->contar_servicos();
 $total_pagos = $MC->contar_pagos_realizados();
+$total_facturas = $MC->contar_facturas_realizadas();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -47,7 +48,7 @@ $total_pagos = $MC->contar_pagos_realizados();
 
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
-                            <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+                            <span class="info-box-icon bg-green"><i class="fa-solid fa-hand-holding-dollar"></i></span>
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Pagos realizados</span>
@@ -60,11 +61,11 @@ $total_pagos = $MC->contar_pagos_realizados();
                     <!-- /.col -->
                     <div class="col-md-3 col-sm-6 col-xs-12">
                         <div class="info-box">
-                            <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+                            <span class="info-box-icon bg-yellow"><i class="fa-solid fa-file-invoice-dollar"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">facturas realizadas</span>
-                                <span class="info-box-number">60</span>
+                                <span class="info-box-text">facturas</span>
+                                <span class="info-box-number"><?php echo $total_facturas; ?></span>
                             </div>
                             <!-- /.info-box-content -->
                         </div>

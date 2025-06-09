@@ -43,4 +43,14 @@ class modelo_contador_infoBox
         $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
         return $resultado['total'];
     }
+
+
+    public function contar_facturas_realizadas()
+    {
+        $sql = "SELECT COUNT(*) AS total FROM facturas";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'];
+    }
 }

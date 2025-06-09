@@ -135,7 +135,7 @@ if (!isset($_SESSION['id_user'])) {
 
                     <!-- menu servios -->
                     <li class="treeview">
-                        <a href=""><i class="fa fa-link"></i> <span>Servicios</span>
+                        <a href=""><i class="fa-solid fa-paste"></i> <span>Servicios</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
@@ -148,7 +148,7 @@ if (!isset($_SESSION['id_user'])) {
 
                     <!-- menu planes -->
                     <li class="treeview">
-                        <a href=""><i class="fa fa-link"></i> <span>Planes</span>
+                        <a href=""><i class="fa-solid fa-table-list"></i></i> <span>Planes</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>

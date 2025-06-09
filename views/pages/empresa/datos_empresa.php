@@ -51,7 +51,7 @@
 
 <script>
     $(document).ready(function() {
-        $('#nombres').focus();
+        $('#nombre_empresa').focus();
     });
 </script>
 
