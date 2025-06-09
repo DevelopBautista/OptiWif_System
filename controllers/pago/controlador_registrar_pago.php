@@ -7,7 +7,7 @@ require_once '../../models/modelo_pago.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validar y capturar datos
     $id_mensualidad  = $_POST['id_mensualidad'];
-    $monto_pagado    = $_POST['monto_pagado'];
+    $monto_total_pagar    = $_POST['monto_total_pagar'];
     $fecha_pago      = $_POST['fecha_pago'] ?? date('Y-m-d'); // la fecha que se hace el pago
     $metodo_pago     = $_POST['metodo_pago'];
     $referencia_pago = $_POST['referencia_pago'] ?? '';
@@ -15,14 +15,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pagoServicio = new modelo_pago();
 
+    if ($pagoServicio->verificar_pago_existe($id_mensualidad)) {
+        return;
+    }
+
     $resultado = $pagoServicio->registrar_pago(
         $id_mensualidad,
-        $monto_pagado,
+        $monto_total_pagar,
         $fecha_pago,
         $metodo_pago,
         $referencia_pago,
         $observaciones
     );
+
+
 
     if ($resultado) {
         echo json_encode([

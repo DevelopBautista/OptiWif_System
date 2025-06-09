@@ -43,12 +43,13 @@
             <div class="modal-body">
                 <form id="frm_pago" method="POST">
                     <input type="hidden" id="id_mensualidad" name="id_mensualidad">
+                     <input type="hidden" id="estado_pago" name="estado_pago">
 
                     <label>Cliente</label>
                     <input type="text" id="cliente" name="cliente" class="form-control" disabled><br>
 
-                    <label>Monto a pagar</label>
-                    <input type="text" id="monto" name="monto" class="form-control" disabled><br>
+                    <label>Monto total a pagar</label>
+                    <input type="text" id="monto_total_pagar" name="monto_total_pagar" class="form-control" disabled><br>
 
                     <label>Fecha de pago</label>
                     <input type="date" id="fecha_pago" name="fecha_pago" class="form-control" value="<?= date('Y-m-d') ?>" disabled><br>
@@ -72,7 +73,7 @@
                     <script>
                         document.getElementById("efectivo").addEventListener("input", function() {
                             const efectivo = parseFloat(this.value) || 0;
-                            const monto = parseFloat(document.getElementById("monto").value) || 0;
+                            const monto = parseFloat(document.getElementById("monto_total_pagar").value) || 0;
                             const devuelta = efectivo - monto;
 
                             document.getElementById("devuelta").value = devuelta >= 0 ? devuelta.toFixed(2) : "0.00";

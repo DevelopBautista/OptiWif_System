@@ -33,7 +33,6 @@ function listar_pagos_ajax() {
             { "data": "fecha_pagos" },
             {
                 "data": "estado",
-                //si el cliente pago sera verde sino roja
                 "render": function (data) {
                     if (data === "pagado") {
                         return "<span class='label label-success'>" + data + "</span>";
@@ -43,38 +42,40 @@ function listar_pagos_ajax() {
                         return "<span class='label label-danger'>" + data + "</span>";
                     }
                 }
-
-
             },
             {
-                "defaultContent": "<button  class=' btn btn-info btn-sm' title='Pagar Mensualidad'><i class='fa-solid fa-file-invoice-dollar'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm' title='Pagar Mensualidad'><i class='fa-solid fa-file-invoice-dollar'></i></button>"
             }
         ],
-
         "language": idioma_espanol,
-        "destroy": true
+        "destroy": true,
+        "responsive": true //Asegura que soporte vista móvil
     });
 
+    //Adaptado para funcionar en modo móvil también
+    $('#tabla_pagos').on('click', '.btn-info', function () {
+        var tr = $(this).closest('tr');
+        var row = tabla.row(tr);
 
+        // Si es una fila .child, buscar la anterior (la principal)
+        if (tr.hasClass('child')) {
+            row = tabla.row(tr.prev());
+        }
 
-    // obtener datos del servicio para llevar el modal_pago
-    $('#tabla_pagos ').on('click', '.btn-info', function () {
-        var data = tabla.row($(this).parents('tr')).data();
-        var id_mensualidad = data.id_mensualidad;
-        var monto = data.monto;
-        var cliente = data.cliente
-        var fecha_pagos = data.fecha_pagos;
+        var data = row.data();
 
-        $("#id_mensualidad").val(id_mensualidad);
-        $("#cliente").val(cliente);
-        $("#monto").val(monto);
-        $("#fecha_pago").val(fecha_pagos);
+        if (!data) {
+            Swal.fire("Error", "No se pudo obtener los datos de la fila.", "error");
+            return;
+        }
+
+        $("#id_mensualidad").val(data.id_mensualidad);
+        $("#cliente").val(data.cliente);
+        $("#monto_total_pagar").val(data.monto);
+        $("#fecha_pago").val(data.fecha_pagos);
+        $("#estado_pago").val(data.estado);
         $("#modal_pago").modal("show");
-
     });
-
-
-
 }
 
 //-----------se lista los pagos realizados---------------------
@@ -101,14 +102,15 @@ function listar_pagos_realizados_ajax() {
 function registrar_pagos() {
     let formData = {// agrupo todo en una sola variable(no sabia eso)
         id_mensualidad: $("#id_mensualidad").val(),
-        monto_pagado: $("#monto").val(),
+        monto_total_pagar: $("#monto_total_pagar").val(),
         fecha_pago: $("#fecha_pago").val(),
         metodo_pago: $("#metodo_pago").val(),
         referencia_pago: $("#referencia_pago").val(),
         observaciones: $("#observaciones").val()
     };
     // se parsea de text a number
-    var monto = parseFloat($("#monto").val());
+    var estado_paga = $("#estado_pago").val();
+    var monto_total_pagar = parseFloat($("#monto_total_pagar").val());
     var efectivo = parseFloat($("#efectivo").val());
     // se evalua que no sea vacio O menor a 0
     if (isNaN(efectivo) || efectivo <= 0) {
@@ -116,10 +118,11 @@ function registrar_pagos() {
         return;
     }
     // me aseguro que el monto introducido sea mayor O igual a la mensualidad
-    if (efectivo < monto) {
+    if (efectivo < monto_total_pagar) {
         Swal.fire("Advertencia", "El efectivo debe ser mayor o igual al monto de la mensualidad", "warning");
         return;
     }
+
     $.ajax({
         url: "../controllers/pago/controlador_registrar_pago.php",
         type: "POST",
@@ -129,7 +132,7 @@ function registrar_pagos() {
         if (resp.exito) {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito" + resp.mensaje,
+                text: "Éxito " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000
@@ -143,7 +146,7 @@ function registrar_pagos() {
             });
 
         } else {
-            Swal.fire("Error", resp.mensaje || "No se pudo registrar el pago", "error");
+            Swal.fire("mensaje de error", resp.mensaje || "No se pudo registrar el pago", "error");
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");

@@ -1,0 +1,12 @@
+============================
+       FACTURA POS
+============================
+Factura N°: Fact-00000002
+Cliente : Elizabeth Baes
+Fecha: 2025-07-18
+Método: Efectivo
+Total: RD$1.500,00
+============================
+   ¡Gracias por su pago!   
+============================
+
