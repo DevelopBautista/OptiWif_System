@@ -162,12 +162,25 @@ if (!isset($_SESSION['id_user'])) {
                     <li class="treeview">
                         <a href=""><i class="fa fa-money-bill"></i> <span>Pagos</span>
                             <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
+                                <i class="fa fa-angle-left pull-right"></i>  
                             </span>
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Mensualidades</a></li>
                             <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_realizados.php')">Pagos Realizados</a></li>
+
+                        </ul>
+                    </li>
+                    <!-- menu factuas -->
+                    <li class="treeview">
+                        <a href=""><i class="fa-solid fa-file-invoice"></i> <span>facturas</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Facturas_realizadas</a></li>
+
 
                         </ul>
                     </li>
