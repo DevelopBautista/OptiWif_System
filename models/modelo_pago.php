@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
+include_once(__DIR__ . "/../config/config.php");
 
 class modelo_pago
 {
@@ -116,7 +116,7 @@ class modelo_pago
 
                 // 4. Imprimir POS (de forma segura)
                 try {
-                    $this->imprimir_ticket_pos($numero_factura, $id_contrato, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
+                    $this->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
                 } catch (Exception $e) {
                     error_log("Error imprimiendo POS: " . $e->getMessage());
                 }
@@ -212,7 +212,7 @@ class modelo_pago
 
 
     //no es mia solo la adapte
-    private function imprimir_ticket_pos($numero_factura, $id_contrato, $cliente, $monto, $fecha_pago, $metodo_pago)
+    private function imprimir_ticket_pos($numero_factura, $cliente, $monto, $fecha_pago, $metodo_pago)
     {
         // Contenido del ticket tipo POS
         $ticket = "============================\n";
@@ -222,7 +222,7 @@ class modelo_pago
         $ticket .= "Cliente : $cliente\n";
         $ticket .= "Fecha: $fecha_pago\n";
         $ticket .= "Método: $metodo_pago\n";
-        $ticket .= "Total: RD$" . number_format($monto, 2, ',', '.') . "\n";
+        $ticket .= "Total:" . MONEDA . number_format($monto, 2, ',', '.') . "\n";
         $ticket .= "============================\n";
         $ticket .= "   ¡Gracias por su pago!   \n";
         $ticket .= "============================\n\n";

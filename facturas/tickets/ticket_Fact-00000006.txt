@@ -1,11 +1,11 @@
 ============================
        FACTURA POS
 ============================
-Factura N°: Fact-00000001
-Contrato ID: 1
-Fecha: 2025-07-11
+Factura N°: Fact-00000006
+Cliente : Elizabeth Baes
+Fecha: 2025-09-30
 Método: Efectivo
-Total: Bs. 1.500,00
+Total:RD$1.500,00
 ============================
    ¡Gracias por su pago!   
 ============================
