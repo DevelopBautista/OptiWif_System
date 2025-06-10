@@ -211,7 +211,6 @@ class modelo_pago
     }
 
 
-    //no es mia solo la adapte
     private function imprimir_ticket_pos($numero_factura, $cliente, $monto, $fecha_pago, $metodo_pago)
     {
         // Contenido del ticket tipo POS
