@@ -179,7 +179,7 @@ if (!isset($_SESSION['id_user'])) {
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/pagos/pagos_clientes.php')">Facturas_realizadas</a></li>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/facturas/listar_facturas.php')">Facturas Realizadas</a></li>
 
 
                         </ul>
