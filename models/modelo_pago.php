@@ -17,14 +17,14 @@ class modelo_pago
         $this->conn->conectar();
     }
 
-    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones)
+    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones, $dias_gracia, $cargo_extra)
     {
         // Obtener datos de la mensualidad y del contrato
-        $sql_datos = "SELECT m.monto, m.fecha_vencimiento, m.estado, cs.id_contrato,c.nombre_completo as cliente
-                        FROM mensualidades m 
-                        JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
-                        JOIN clientes c on cs.id_cliente=c.id_cliente
-                        WHERE m.id_mensualidad = ?";
+        $sql_datos = "SELECT m.monto, m.fecha_vencimiento, m.estado, cs.id_contrato, c.nombre_completo as cliente
+                    FROM mensualidades m 
+                    JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
+                    JOIN clientes c on cs.id_cliente = c.id_cliente
+                    WHERE m.id_mensualidad = ?";
         $stmt = $this->conn->conexion->prepare($sql_datos);
         $stmt->execute([$id_mensualidad]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -40,21 +40,19 @@ class modelo_pago
 
         $id_contrato = $row['id_contrato'];
         $monto_original = $row['monto'];
-        $fecha_vencimiento = $row['fecha_vencimiento'];
+        $fecha_vencimiento = new DateTime($row['fecha_vencimiento']);
         $cliente = $row['cliente'];
 
-        // Calcular mora
+        // Calcular fecha con días de gracia
+        $fecha_gracia = clone $fecha_vencimiento;
+        $fecha_gracia->modify("+{$dias_gracia} days");
         $fecha_actual = new DateTime($fecha_pago);
-        $fecha_venc = new DateTime($fecha_vencimiento);
-        $dias_mora = 0;
 
-        if ($fecha_actual > $fecha_venc) {
-            $interval = $fecha_actual->diff($fecha_venc);
-            $dias_mora = $interval->days;
+        // Calcular cargo de mora solo si se pasa de la fecha de gracia
+        $cargo_mora = 0;
+        if ($fecha_actual > $fecha_gracia) {
+            $cargo_mora = $cargo_extra;
         }
-
-        $tasa_interes_diaria = 0.01; // 1% diario
-        $cargo_mora = $monto_original * $tasa_interes_diaria * $dias_mora;
 
         $monto_total_pagar = $monto_original + $cargo_mora;
 
@@ -83,7 +81,6 @@ class modelo_pago
                            creado_en,
                            id_mensualidad
                        ) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
-
             $stmt_insert = $this->conn->conexion->prepare($sql_insert);
             $stmt_insert->execute([
                 $id_contrato,
@@ -95,40 +92,24 @@ class modelo_pago
                 $id_mensualidad
             ]);
 
+            // 3. Generar factura
+            $id_pago = $this->conn->conexion->lastInsertId();
+            $numero_factura = 'Fact-' . str_pad($id_pago, 8, '0', STR_PAD_LEFT);
             try {
-
-                // 1. Obtener el ID del último pago insertado
-                $id_pago = $this->conn->conexion->lastInsertId();
-
-                // 2. Generar número de factura
-                $numero_factura = 'Fact-' . str_pad($id_pago, 8, '0', STR_PAD_LEFT);
-
-                // 3. Insertar en tabla facturas (no afecta flujo si falla)
-                try {
-                    $sql_factura = "INSERT INTO facturas (numero_factura, id_pago_servicio, fecha_emision) 
-                        VALUES (?, ?, NOW())";
-                    $stmt_factura = $this->conn->conexion->prepare($sql_factura);
-                    $stmt_factura->execute([$numero_factura, $id_pago]);
-                } catch (Exception $e) {
-                    // Registrar log o continuar si falla, pero no detener todo
-                    error_log("Error insertando factura: " . $e->getMessage());
-                }
-
-                // 4. Imprimir POS (de forma segura)
-                try {
-                    $this->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
-                } catch (Exception $e) {
-                    error_log("Error imprimiendo POS: " . $e->getMessage());
-                }
-
-                // Finalizar transacción principal
-                $this->conn->conexion->commit();
-                return true;
+                $sql_factura = "INSERT INTO facturas (numero_factura, id_pago_servicio, fecha_emision) 
+                            VALUES (?, ?, NOW())";
+                $stmt_factura = $this->conn->conexion->prepare($sql_factura);
+                $stmt_factura->execute([$numero_factura, $id_pago]);
             } catch (Exception $e) {
-                $this->conn->conexion->rollBack();
-                return "Error al registrar el pago: " . $e->getMessage();
+                error_log("Error insertando factura: " . $e->getMessage());
             }
 
+            // 4. Imprimir POS
+            try {
+                $this->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
+            } catch (Exception $e) {
+                error_log("Error imprimiendo POS: " . $e->getMessage());
+            }
 
             $this->conn->conexion->commit();
             return true;
@@ -137,6 +118,7 @@ class modelo_pago
             return "Error al registrar el pago: " . $e->getMessage();
         }
     }
+
 
 
     public function listar_pagos()

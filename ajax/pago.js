@@ -106,7 +106,10 @@ function registrar_pagos() {
         fecha_pago: $("#fecha_pago").val(),
         metodo_pago: $("#metodo_pago").val(),
         referencia_pago: $("#referencia_pago").val(),
-        observaciones: $("#observaciones").val()
+        observaciones: $("#observaciones").val(),
+        dias_mas: $("#dias_mas").val(),
+        cargo_extra: $("#cargo_extra").val()
+
     };
     // se parsea de text a number
     var estado_paga = $("#estado_pago").val();

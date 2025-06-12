@@ -12,6 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $metodo_pago     = $_POST['metodo_pago'];
     $referencia_pago = $_POST['referencia_pago'] ?? '';
     $observaciones   = $_POST['observaciones'] ?? '';
+    $dias_mas = $_POST['dias_mas'] ?? '';
+    $cargo_extra   = $_POST['cargo_extra'] ?? '';
 
     $pagoServicio = new modelo_pago();
 
@@ -25,7 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $fecha_pago,
         $metodo_pago,
         $referencia_pago,
-        $observaciones
+        $observaciones,
+        $dias_gracia,
+        $cargo_extra
     );
 
 

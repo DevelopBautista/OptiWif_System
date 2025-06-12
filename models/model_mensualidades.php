@@ -65,7 +65,7 @@ class modelo_mensualidad
 
         foreach ($contratos as $contrato) {
             $id_contrato = $contrato['id_contrato'];
-            $monto = $this->obtenerPrecioPlan($contrato['id_plan']);
+            $monto = $this->obtenerPrecioPlan($contrato['id_plan']);//obtener la mensualidad segun el pĺan
 
             // Buscar última mensualidad
             $sqlUltima = "SELECT fecha_vencimiento FROM mensualidades 
