@@ -7,7 +7,7 @@
         <br>
 
         <div class="box-body">
-            <form method="POST" autocomplete="off" id="frm" onsubmit="return false">
+            <form method="POST" enctype="multipart/form-data" autocomplete="off" id="frm" onsubmit="return false">
                 <!--f01-->
                 <div class="row">
                     <div class="form-group col-md-5">
@@ -23,6 +23,13 @@
                     <div class="form-group col-md-5">
                         <input type="text" class="form-control" id="tel" name="tel" placeholder="Telefono">
                     </div>
+
+                    <div class="form-group col-md-4">
+                        <input type="text" class="form-control" id="rnc" name="rnc" placeholder="RNC">
+                    </div>
+                </div>
+                <!--f03-->
+                <div class="row">
                     <div class="form-group col-md-5">
                         <label for="logo">Logo de la Empresa (JPG/PNG):</label><br>
                         <input type="file" class="form-control" id="logo" name="logo" accept="image/*" required>
@@ -30,7 +37,7 @@
                 </div>
 
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary" onclick="ingresar_empresa()"><i class="fa  fa-check"><b>&nbsp;Registrar Empresa</b></i></button>
+                    <button type="button" class="btn btn-primary" onclick="ingresar_datos_empresa()"><i class="fa  fa-check"><b>&nbsp;Registrar Empresa</b></i></button>
                     <a href="" class="btn btn-danger"><i class="fa fa-close"><b>&nbsp;Cancelar</b></i></a>
                 </div>
             </form>

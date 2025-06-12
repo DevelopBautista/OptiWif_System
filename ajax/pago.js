@@ -112,7 +112,7 @@ function registrar_pagos() {
 
     };
     // se parsea de text a number
-    var estado_paga = $("#estado_pago").val();
+    //var estado_paga = $("#estado_pago").val();
     var monto_total_pagar = parseFloat($("#monto_total_pagar").val());
     var efectivo = parseFloat($("#efectivo").val());
     // se evalua que no sea vacio O menor a 0

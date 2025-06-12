@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 include_once(__DIR__ . "/../config/config.php");
+require_once __DIR__ . '/../views/libreporte/vendor/autoload.php';
 
 class modelo_pago
 {
@@ -17,7 +18,7 @@ class modelo_pago
         $this->conn->conectar();
     }
 
-    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones, $dias_gracia, $cargo_extra)
+    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones, $dias_mas, $cargo_extra)
     {
         // Obtener datos de la mensualidad y del contrato
         $sql_datos = "SELECT m.monto, m.fecha_vencimiento, m.estado, cs.id_contrato, c.nombre_completo as cliente
@@ -45,7 +46,8 @@ class modelo_pago
 
         // Calcular fecha con días de gracia
         $fecha_gracia = clone $fecha_vencimiento;
-        $fecha_gracia->modify("+{$dias_gracia} days");
+        $dias_mas = (int) $dias_mas;
+        $fecha_gracia->modify("+{$dias_mas} days");
         $fecha_actual = new DateTime($fecha_pago);
 
         // Calcular cargo de mora solo si se pasa de la fecha de gracia
@@ -195,25 +197,33 @@ class modelo_pago
 
     private function imprimir_ticket_pos($numero_factura, $cliente, $monto, $fecha_pago, $metodo_pago)
     {
-        // Contenido del ticket tipo POS
-        $ticket = "============================\n";
-        $ticket .= "       FACTURA POS\n";
-        $ticket .= "============================\n";
-        $ticket .= "Factura N°: $numero_factura\n";
-        $ticket .= "Cliente : $cliente\n";
-        $ticket .= "Fecha: $fecha_pago\n";
-        $ticket .= "Método: $metodo_pago\n";
-        $ticket .= "Total:" . MONEDA . number_format($monto, 2, ',', '.') . "\n";
-        $ticket .= "============================\n";
-        $ticket .= "   ¡Gracias por su pago!   \n";
-        $ticket .= "============================\n\n";
 
-        // Ruta del archivo temporal del ticket
-        $ruta_ticket = __DIR__ . '/../facturas/tickets/ticket_' . $numero_factura . '.txt';
+        $html = '
+    <style>
+        body { font-family: monospace; font-size: 12px; }
+        .ticket { width: 250px; padding: 10px; border: 1px dashed #000; }
+        .line { text-align: center; border-top: 1px dashed #000; margin: 5px 0; }
+    </style>
+    <div class="ticket">
+        <div class="line">============================</div>
+        <div style="text-align: center;"><strong>MundoTecno</strong></div>
+        <div class="line">============================</div>
+        <p>N°: <strong>' . $numero_factura . '</strong></p>
+        <p>Cliente: ' . htmlspecialchars($cliente) . '</p>
+        <p>Fecha: ' . $fecha_pago . '</p>
+        <p>Método: ' . $metodo_pago . '</p>
+        <p><strong>Total: ' . MONEDA . number_format($monto, 2, ',', '.') . '</strong></p>
+        <div class="line">============================</div>
+        <div style="text-align: center;">¡Gracias por su pago!</div>
+        <div class="line">============================</div>
+    </div>';
 
-        file_put_contents($ruta_ticket, $ticket);
+        $mpdf = new \Mpdf\Mpdf(['format' => [80, 150]]); // Tamaño tipo ticket POS
+        $mpdf->WriteHTML($html);
 
-        // Enviar a impresora (reemplaza 'impresora_pos' con el nombre de tu impresora real)
-        exec("lp -d impresora_pos $ruta_ticket");
+        $nombre_archivo = "$numero_factura.pdf";
+        $ruta_archivo = __DIR__ . "/../views/libreporte/reports/$nombre_archivo";
+
+        $mpdf->Output($ruta_archivo, 'F'); // Guardar en el servidor
     }
 }

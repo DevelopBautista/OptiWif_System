@@ -11,7 +11,8 @@ const scriptsToLoad = [
     'tipo_planes.js',
     'tipo_servicio.js',
     'pago.js',
-    'facturas.js'
+    'facturas.js',
+    'empresa.js'
 ];
 
 

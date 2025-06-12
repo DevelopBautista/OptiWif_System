@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $metodo_pago,
         $referencia_pago,
         $observaciones,
-        $dias_gracia,
+        $dias_mas,
         $cargo_extra
     );
 
