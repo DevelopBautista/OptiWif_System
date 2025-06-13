@@ -197,33 +197,30 @@ class modelo_pago
 
     private function imprimir_ticket_pos($numero_factura, $cliente, $monto, $fecha_pago, $metodo_pago)
     {
+        $sql = "SELECT nombre,direccion,telefono,rnc FROM empresa";
+        $smt = $this->conn->conexion->prepare($sql);
 
-        $html = '
-    <style>
-        body { font-family: monospace; font-size: 12px; }
-        .ticket { width: 250px; padding: 10px; border: 1px dashed #000; }
-        .line { text-align: center; border-top: 1px dashed #000; margin: 5px 0; }
-    </style>
-    <div class="ticket">
-        <div class="line">============================</div>
-        <div style="text-align: center;"><strong>MundoTecno</strong></div>
-        <div class="line">============================</div>
-        <p>N°: <strong>' . $numero_factura . '</strong></p>
-        <p>Cliente: ' . htmlspecialchars($cliente) . '</p>
-        <p>Fecha: ' . $fecha_pago . '</p>
-        <p>Método: ' . $metodo_pago . '</p>
-        <p><strong>Total: ' . MONEDA . number_format($monto, 2, ',', '.') . '</strong></p>
-        <div class="line">============================</div>
-        <div style="text-align: center;">¡Gracias por su pago!</div>
-        <div class="line">============================</div>
-    </div>';
+        $empresa = $smt->execute();
 
-        $mpdf = new \Mpdf\Mpdf(['format' => [80, 150]]); // Tamaño tipo ticket POS
-        $mpdf->WriteHTML($html);
+        // Contenido del ticket tipo POS
+        $ticket = "============================\n";
+        $ticket .= "       FACTURA POS\n";
+        $ticket .= "============================\n";
+        $ticket .= "N°: $numero_factura\n";
+        $ticket .= "Cliente : $cliente\n";
+        $ticket .= "Fecha: $fecha_pago\n";
+        $ticket .= "Método: $metodo_pago\n";
+        $ticket .= "Total:" . MONEDA . number_format($monto, 2, ',', '.') . "\n";
+        $ticket .= "============================\n";
+        $ticket .= "   ¡Gracias por su pago!   \n";
+        $ticket .= "============================\n\n";
 
-        $nombre_archivo = "$numero_factura.pdf";
-        $ruta_archivo = __DIR__ . "/../views/libreporte/reports/$nombre_archivo";
+        // Ruta del archivo temporal del ticket
+        $ruta_ticket = __DIR__ . '/../views/libreporte/reports/ticket_' . $numero_factura . '.txt';
 
-        $mpdf->Output($ruta_archivo, 'F'); // Guardar en el servidor
+        file_put_contents($ruta_ticket, $ticket);
+
+        // Enviar a impresora (reemplaza 'impresora_pos' con el nombre de tu impresora real)
+        exec("lp -d impresora_pos $ruta_ticket");
     }
 }
