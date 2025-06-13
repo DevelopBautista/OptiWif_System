@@ -11,7 +11,7 @@ $conexion->conectar();
 
 
 //obtener datos de la empresa desde la db
-$sql = "SELECT nombre,direccion,telefono,rnc FROM empresa";
+$sql = "SELECT nombre,direccion,telefono,rnc,logo FROM empresa";
 
 $stmt = $conexion->conexion->prepare($sql);
 
@@ -33,24 +33,24 @@ $nombreEmpresa = $empresa['nombre'];
 $direccionEmpresa = $empresa['direccion'];
 $telEmpresa = $empresa['telefono'];
 $rncEmpresa = $empresa['rnc'];
+$logoEmpresa = $empresa['logo']; // ejemplo: '684b782d2897c_logoEmpresa.png'
+$rutaLogo = "../../logos/" . $logoEmpresa;
 
+$nombre_usuario = "Breylin Avila";
 
-
-// Crear instancia mPDF (formato tipo ticket POS)
+//instanciar mPDF (formato tipo ticket POS)
 $mpdf = new Mpdf([
-    'format' => [80, 150], // 80mm x 150mm
+    'format' => [80, 130], // 80mm x 150mm
     'margin_left' => 5,
     'margin_right' => 5,
     'margin_top' => 5,
     'margin_bottom' => 5,
 ]);
 
-
-
 $html = '
 <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
     <!-- Logo (si se desea usar) -->
-    <img src="../../logos/684b782d2897c_logoEmpresa.png" style="width:60px; margin-bottom: 5px;"><br>
+    <img src="' . $rutaLogo . '" style="width:60px; margin-bottom: 5px;"><br><br>
     <div style="text-align: left; padding-left: 5px;">
         <span>Dir: ' . $direccionEmpresa . '</span><br>
         <span>Tel: ' . $telEmpresa . '</span><br>
@@ -65,7 +65,10 @@ $html = '
         Método     : ' . $metodo_pago . '<br>
         <strong>Total      : ' . MONEDA . number_format($monto, 2, ',', '.') . '</strong><br>
     </div>
-
+    <div style="margin: 6px 0;">================================</div>
+    <div style="text-align: left; padding-left: 5px;">
+        Atencion por : <strong>' . $nombre_usuario . '</strong><br>
+    </div>
     <div style="margin: 6px 0;">===============================</div>
                          <span>¡Gracias por su preferencia!</span><br>
     <div style="margin: 6px 0;">===============================</div>
