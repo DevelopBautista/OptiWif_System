@@ -5,6 +5,12 @@ error_reporting(E_ALL);
 
 include_once(__DIR__ . "/../config/config.php");
 require_once __DIR__ . '/../views/libreporte/vendor/autoload.php';
+require_once("modelo_generar_pdfPago.php");
+
+session_start();
+if (!isset($_SESSION['id_user'])) {
+    header('location: ../views/login/login.php');
+}
 
 class modelo_pago
 {
@@ -106,12 +112,18 @@ class modelo_pago
                 error_log("Error insertando factura: " . $e->getMessage());
             }
 
-            // 4. Imprimir POS
-            try {
-                $this->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
-            } catch (Exception $e) {
-                error_log("Error imprimiendo POS: " . $e->getMessage());
-            }
+
+            /*  return [
+                'exito' => true,
+                'mensaje' => 'Pago registrado correctamente',
+                'numero_factura' => $numero_factura
+            ];
+
+            return [
+                'exito' => false,
+                'mensaje' => 'Error al registrar el pago: ...'
+            ];*/
+
 
             $this->conn->conexion->commit();
             return true;
@@ -192,35 +204,5 @@ class modelo_pago
             echo json_encode(['exito' => false, 'mensaje' => 'Error en la base de datos: ' . $e->getMessage()]);
             exit;
         }
-    }
-
-
-    private function imprimir_ticket_pos($numero_factura, $cliente, $monto, $fecha_pago, $metodo_pago)
-    {
-        $sql = "SELECT nombre,direccion,telefono,rnc FROM empresa";
-        $smt = $this->conn->conexion->prepare($sql);
-
-        $empresa = $smt->execute();
-
-        // Contenido del ticket tipo POS
-        $ticket = "============================\n";
-        $ticket .= "       FACTURA POS\n";
-        $ticket .= "============================\n";
-        $ticket .= "N°: $numero_factura\n";
-        $ticket .= "Cliente : $cliente\n";
-        $ticket .= "Fecha: $fecha_pago\n";
-        $ticket .= "Método: $metodo_pago\n";
-        $ticket .= "Total:" . MONEDA . number_format($monto, 2, ',', '.') . "\n";
-        $ticket .= "============================\n";
-        $ticket .= "   ¡Gracias por su pago!   \n";
-        $ticket .= "============================\n\n";
-
-        // Ruta del archivo temporal del ticket
-        $ruta_ticket = __DIR__ . '/../views/libreporte/reports/ticket_' . $numero_factura . '.txt';
-
-        file_put_contents($ruta_ticket, $ticket);
-
-        // Enviar a impresora (reemplaza 'impresora_pos' con el nombre de tu impresora real)
-        exec("lp -d impresora_pos $ruta_ticket");
     }
 }

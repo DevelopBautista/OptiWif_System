@@ -18,6 +18,7 @@ var idioma_espanol = {
 };
 //variable para luego ser usada en otros lugares
 var tabla;
+let $url_factura = "../views/libreporte/reports/facturas";
 //-----------se lista los pagos---------------------
 function listar_pagos_ajax() {
     tabla = $('#tabla_pagos').DataTable({
@@ -135,7 +136,7 @@ function registrar_pagos() {
         if (resp.exito) {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito " + resp.mensaje,
+                text: resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000
@@ -145,6 +146,12 @@ function registrar_pagos() {
                 $('#frm_pago')[0].reset();
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload(null, false);
+                }
+
+                //Abrir ticket en nueva ventana
+                if (resp.numero_factura) {
+                    window.open("../controllers/pago/controlador_imprimir_ticket.php?num_factura=" + encodeURIComponent(resp.numero_factura), "_blank");
+
                 }
             });
 
