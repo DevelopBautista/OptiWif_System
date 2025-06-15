@@ -2,6 +2,8 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+header('Content-Type: application/json');
 require_once '../../models/modelo_pago.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -18,7 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pagoServicio = new modelo_pago();
 
     if ($pagoServicio->verificar_pago_existe($id_mensualidad)) {
-        return;
+        echo json_encode([
+            'exito' => false,
+            'mensaje' => 'Este mes ya fue pagado'
+        ]);
+        exit;
     }
 
     $resultado = $pagoServicio->registrar_pago(
@@ -31,13 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dias_mas,
         $cargo_extra
     );
+    $response = json_decode($resultado);
 
-
-
-    if ($resultado) {
+    if ($response->success) {
         echo json_encode([
             'exito' => true,
-            'mensaje' => 'Pago registrado exitosamente'
+            'mensaje' => 'Pago registrado exitosamente',
+            'nfactura' => $response->nfactura
         ]);
     } else {
         echo json_encode([

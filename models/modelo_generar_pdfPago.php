@@ -3,12 +3,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+use Mpdf\Mpdf;
+
 class modelo_ticket
 {
     private $conn;
 
+
     public function __construct()
     {
+        require_once __DIR__ . '/../config/config.php';
+        require_once __DIR__ . '/../views/libreporte/vendor/autoload.php';
         require_once("modelo_conexion.php");
         $this->conn = new Conexion();
         $this->conn->conectar();
@@ -27,42 +32,56 @@ class modelo_ticket
         $telEmpresa = $empresa['telefono'];
         $rncEmpresa = $empresa['rnc'];
         $logoEmpresa = $empresa['logo']; // ejemplo: '684b782d2897c_logoEmpresa.png'
-        $rutaLogo = __DIR__."/../views/logos/" . $logoEmpresa;
+        $rutaLogo = __DIR__ . "/../views/logos/" . $logoEmpresa;
 
         //instanciar mPDF (formato tipo ticket POS)
-        $mpdf = new Mpdf\Mpdf([
+
+        $mpdf = new Mpdf([
             'format' => [80, 130], // 80mm x 150mm
             'margin_left' => 5,
             'margin_right' => 5,
             'margin_top' => 5,
             'margin_bottom' => 5,
         ]);
-
+        //<img src="' . $rutaLogo . '"  width="50mm" />        
         $html = '
-    <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
-        <!-- Logo (si se desea usar) -->
-        <img src="' . $rutaLogo . '" style="width:60px; margin-bottom: 5px;"><br><br>
-        <div style="text-align: left; padding-left: 5px;">
-            <span>Dir: ' . $direccionEmpresa . '</span><br>
-            <span>Tel: ' . $telEmpresa . '</span><br>
-            <span>RNC: ' . $rncEmpresa . '</span><br>
+        <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
+
+            <div style="text-align: center; margin-bottom: 5mm; font-size: 10pt;">
+                    <table border="1" style="margin: 0 auto;">
+                        <tr>
+                            <td><p>Logo</p></td>
+                        </tr>
+                    </table>
+            </div><br><br>
+            
+            <div style="text-align: left; padding-left: 5px;">
+                <div>Dir: ' . htmlspecialchars($direccionEmpresa) . '</div>
+                <div>Tel: ' . htmlspecialchars($telEmpresa) . '</div>
+                <div>RNC: ' . htmlspecialchars($rncEmpresa) . '</div>
+            </div>
+            <div style="margin: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000;">&nbsp;</div>
+                <div style="text-align: left; padding-left: 5px;">
+                <div>N° Factura : ' . htmlspecialchars($numero_factura) . '</div>
+                <div>Cliente    : ' . htmlspecialchars($cliente) . '</div>
+                <div>Mensualidad: ' . htmlspecialchars($fecha_pago) . '</div>
+                <div>Fecha      : ' . FECHA_HORA . '</div>
+                <div>Método     : ' . htmlspecialchars($metodo_pago) . '</div>
+            <div><strong>Total : ' . MONEDA . number_format($monto_total_pagar, 2, ',', '.') . '</strong></div>
         </div>
-        <div style="margin: 6px 0;">================================</div>
+        <div style="margin: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000;">&nbsp;</div>
+
         <div style="text-align: left; padding-left: 5px;">
-            N° Factura : ' . $numero_factura . '<br>
-            Cliente    : ' . $cliente . '<br>
-            Mensualidad: ' . $fecha_pago . '<br>
-            Fecha      : ' . FECHA_HORA . '<br>
-            Método     : ' . $metodo_pago . '<br>
-            <strong>Total      : ' . MONEDA . number_format($monto_total_pagar, 2, ',', '.') . '</strong><br>
+            Atencion por : <strong>' . htmlspecialchars($_SESSION['user'] ?? 'Usuario') . '</strong>
         </div>
-        <div style="margin: 6px 0;">================================</div>
-        <div style="text-align: left; padding-left: 5px;">
-            Atencion por : <strong>' . $_SESSION['user'] . '</strong><br>
+
+        <div style="margin: 6px 0; border-top: 1px dashed #000;">&nbsp;</div>
+
+        <div style="text-align: center;">
+            <span>¡Gracias por su preferencia!</span>
         </div>
-        <div style="margin: 6px 0;">===============================</div>
-                         <span>¡Gracias por su preferencia!</span><br>
-        <div style="margin: 6px 0;">===============================</div>
+
+        <div style="margin: 6px 0; border-top: 1px dashed #000;">&nbsp;</div>
     </div>';
         // Escribir contenido
         $mpdf->WriteHTML($html);

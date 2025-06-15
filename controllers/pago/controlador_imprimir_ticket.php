@@ -38,8 +38,9 @@ if (!$datos) {
 $numero_factura = $datos['numero_factura'];
 $cliente = $datos['cliente'];
 $monto_total_pagar = $datos['monto'];
-$fecha_pago = $datos['cliente'];
+$fecha_pago = $datos['fecha_pago'];
 $metodo_pago = $datos['metodo_pago'];
 
 $ticket = new modelo_ticket();
-$ticket->imprimir_ticket_pos($numero_factura = $datos, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
+
+$ticket->imprimir_ticket_pos($numero_factura,$cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);

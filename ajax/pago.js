@@ -133,10 +133,13 @@ function registrar_pagos() {
         dataType: "json",
         data: formData
     }).done(function (resp) {
+
+        console.log(resp);
+
         if (resp.exito) {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: resp.mensaje,
+                text: "Exito" + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000
@@ -147,13 +150,9 @@ function registrar_pagos() {
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload(null, false);
                 }
-
-                //Abrir ticket en nueva ventana
-                if (resp.numero_factura) {
-                    window.open("../controllers/pago/controlador_imprimir_ticket.php?num_factura=" + encodeURIComponent(resp.numero_factura), "_blank");
-
-                }
-            });
+                var url='../controllers/pago/controlador_imprimir_ticket.php?num_factura='+resp.nfactura;
+                window.open(url, '_blank');
+            }); 
 
         } else {
             Swal.fire("mensaje de error", resp.mensaje || "No se pudo registrar el pago", "error");

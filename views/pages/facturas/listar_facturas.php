@@ -15,7 +15,7 @@
                     <tr>
                         <th>#</th>
                         <th>Numero de Factura</th>
-                        <th>Id Pago Servicio</th>
+                        <th>Cliente</th>
                         <th>Fecha de Emision</th>
                         <th>Acciones</th>
                     </tr>

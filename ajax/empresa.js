@@ -32,7 +32,7 @@ function ingresar_datos_empresa() {
         } else {
             Swal.fire("Error", resp.mensaje, "error");
         }
-    }).fail(function (jqXHR, textStatus, errorThrown) {
+    }).fail(function (jqXHR, textStatus) {
         console.error("AJAX error:", textStatus);
         console.error("Respuesta del servidor:", jqXHR.responseText);
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");

@@ -100,7 +100,7 @@ class modelo_pago
                 $id_mensualidad
             ]);
 
-            // 3. Generar factura
+            // 3. Generar factura aqui es que se genera el nuemro:factura
             $id_pago = $this->conn->conexion->lastInsertId();
             $numero_factura = 'Fact-' . str_pad($id_pago, 8, '0', STR_PAD_LEFT);
             try {
@@ -113,27 +113,17 @@ class modelo_pago
             }
 
 
-            /*  return [
-                'exito' => true,
-                'mensaje' => 'Pago registrado correctamente',
-                'numero_factura' => $numero_factura
-            ];
-
-            return [
-                'exito' => false,
-                'mensaje' => 'Error al registrar el pago: ...'
-            ];*/
-
-
             $this->conn->conexion->commit();
-            return true;
+           
+            return json_encode([
+                'success' => true,
+                'nfactura' => $numero_factura
+            ]);
         } catch (Exception $e) {
             $this->conn->conexion->rollBack();
             return "Error al registrar el pago: " . $e->getMessage();
         }
     }
-
-
 
     public function listar_pagos()
     {

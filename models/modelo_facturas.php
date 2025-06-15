@@ -18,7 +18,7 @@ class modelo_facturas
 
     public function listar_facturas()
     {
-        $sql = "SELECT * FROM facturas";
+        $sql = "SELECT * FROM facturas";//fix this , that to get a client'name
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
