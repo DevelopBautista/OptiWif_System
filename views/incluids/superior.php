@@ -118,51 +118,55 @@ if (!isset($_SESSION['id_user'])) {
                     <li class="header">
                         <h4>Menu</h4>
                     </li>
+                    <?php if ($_SESSION['rol'] == 1): ?>
+                        <!-- menu clientes -->
+                        <li class="treeview">
+                            <a href=""><i class="fa fa-users"></i> <span>Clientes</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/registrar_cliente.php')">Nuevo Cliente</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Clientes</a></li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+                   
+                    <?php if ($_SESSION['rol'] == 1): ?>
+                        <!-- menu servios -->
+                        <li class="treeview">
+                            <a href=""><i class="fa-solid fa-paste"></i> <span>Servicios</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/crear_servicio.php')">Nuevo Servicio</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/listar_servicio.php')">Servicios</a></li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
 
-                    <!-- menu clientes -->
-                    <li class="treeview">
-                        <a href=""><i class="fa fa-users"></i> <span>Clientes</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/registrar_cliente.php')">Nuevo Cliente</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Clientes</a></li>
-                        </ul>
-                    </li>
-
-
-                    <!-- menu servios -->
-                    <li class="treeview">
-                        <a href=""><i class="fa-solid fa-paste"></i> <span>Servicios</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/crear_servicio.php')">Nuevo Servicio</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/servicios/listar_servicio.php')">Servicios</a></li>
-                        </ul>
-                    </li>
-
-                    <!-- menu planes -->
-                    <li class="treeview">
-                        <a href=""><i class="fa-solid fa-table-list"></i></i> <span>Planes</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/crear_plan.php')">Nuevo Plan</a></li>
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/listar_planes.php')">Planes</a></li>
-                        </ul>
-                    </li>
+                    <?php if ($_SESSION['rol'] == 1): ?>
+                        <!-- menu planes -->
+                        <li class="treeview">
+                            <a href=""><i class="fa-solid fa-table-list"></i></i> <span>Planes</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/crear_plan.php')">Nuevo Plan</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/planes/listar_planes.php')">Planes</a></li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                     <!-- menu pagos pendientes -->
                     <li class="treeview">
                         <a href=""><i class="fa fa-money-bill"></i> <span>Pagos</span>
                             <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>  
+                                <i class="fa fa-angle-left pull-right"></i>
                             </span>
                         </a>
                         <ul class="treeview-menu">
@@ -171,19 +175,22 @@ if (!isset($_SESSION['id_user'])) {
 
                         </ul>
                     </li>
-                    <!-- menu factuas -->
-                    <li class="treeview">
-                        <a href=""><i class="fa-solid fa-file-invoice"></i> <span>facturas</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/facturas/listar_facturas.php')">Facturas Realizadas</a></li>
+                    <?php if ($_SESSION['rol'] == 1): ?>
+                        <!-- menu factuas -->
+                        <li class="treeview">
+                            <a href=""><i class="fa-solid fa-file-invoice"></i> <span>facturas</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/facturas/listar_facturas.php')">Facturas Realizadas</a></li>
 
 
-                        </ul>
-                    </li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
                     <?php if ($_SESSION['rol'] == 1): ?>
                         <!-- menu usuarios -->
                         <li class="treeview">

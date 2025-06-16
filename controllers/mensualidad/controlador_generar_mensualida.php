@@ -3,11 +3,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__."/../../models/model_mensualidades.php";
+require_once __DIR__ . "/../../models/model_mensualidades.php";
 
 $MU = new modelo_mensualidad();
 
-$resultado = $MU->generar_Mensualidades();
+$resultado = $MU->generarMensualidadSiguiente();
 
 $response = [
     "status" => "ok",

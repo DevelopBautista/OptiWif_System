@@ -19,7 +19,7 @@ class modelo_empresa
     {
         try {
 
-            // Verificar si el plan  ya existe
+            // Verificar si empresa  ya existe
             $sql_check = "SELECT COUNT(*) as total FROM empresa ";
             $stmt_check = $this->conn->conexion->prepare($sql_check);
             $stmt_check->execute();

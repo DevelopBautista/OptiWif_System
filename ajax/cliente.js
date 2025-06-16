@@ -103,13 +103,22 @@ function ingresar_cliente() {
 
         }
     }).done(function (resp) {
-        console.log(resp);
         if (resp.status === "ok") {
             Swal.fire("Éxito", resp.mensaje, "success").then(() => {
                 document.getElementById('frm').reset();
                 if (typeof table !== "undefined") {
                     table.ajax.reload();
                 }
+                // Mostrar mensaje de redirección antes de redirigir
+                Swal.fire({
+                    title: "Redirigiendo...",
+                    text: "Serás enviado al panel principal.",
+                    icon: "info",
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+
+                back_to_start();
             });
         } else if (resp.status === "existe") {
             Swal.fire("Advertencia", resp.mensaje, "warning");
@@ -188,8 +197,13 @@ function update_cliente() {
 
 }
 
+function back_to_start() {
+    setTimeout(() => {
+        window.location.href="../index.php";
+    }, 2000);
 
 
+}
 
 
 
