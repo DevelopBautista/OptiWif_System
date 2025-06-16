@@ -18,7 +18,17 @@ class modelo_facturas
 
     public function listar_facturas()
     {
-        $sql = "SELECT * FROM facturas";//fix this , that to get a client'name
+        $sql = "SELECT f.id_factura,f.numero_factura as nfactura,
+                       c.nombre_completo as cliente,
+                       c.id_cliente ,
+                       ps.id_pago_servicio,
+                       cs.id_contrato,
+                       f.fecha_emision
+
+                from facturas f
+                INNER JOIN pago_servicio ps on ps.id_pago_servicio=f.id_pago_servicio
+                INNER JOIN contratos_servicio cs on ps.id_pago_servicio=cs.id_servicio
+                INNER JOIN clientes c on cs.id_cliente =c.id_cliente"; //fix this , that to get a client'name
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -58,10 +58,7 @@ function listar_planes_datatable() {
             return;
         }
 
-        const id = data.id_plan;
-        const nombre_plan = data.nombre_plan;
-        const velocidad = data.velocidad;
-        const precio = data.precio;
+       
     });
 
 

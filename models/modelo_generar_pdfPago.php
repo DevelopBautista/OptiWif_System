@@ -37,7 +37,7 @@ class modelo_ticket
         //instanciar mPDF (formato tipo ticket POS)
 
         $mpdf = new Mpdf([
-            'format' => [80, 130], // 80mm x 150mm
+            'format' => [80, 150], // 80mm x 150mm
             'margin_left' => 5,
             'margin_right' => 5,
             'margin_top' => 5,
@@ -47,14 +47,10 @@ class modelo_ticket
         $html = '
         <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
 
-            <div style="text-align: center; margin-bottom: 5mm; font-size: 10pt;">
-                    <table border="1" style="margin: 0 auto;">
-                        <tr>
-                            <td><p>Logo</p></td>
-                        </tr>
-                    </table>
-            </div><br><br>
-            
+                    <!-- Logo de la empresa -->
+            <div style="margin-bottom: 4mm;">
+                    <img src="' . $rutaLogo . '" width="50mm" style="max-height: 25mm;" />
+            </div>
             <div style="text-align: left; padding-left: 5px;">
                 <div>Dir: ' . htmlspecialchars($direccionEmpresa) . '</div>
                 <div>Tel: ' . htmlspecialchars($telEmpresa) . '</div>
