@@ -16,7 +16,7 @@
                         <th>#</th>
                         <th>Cliente</th>
                         <th>Mensualidad</th>
-                        <th>Fecha de Pago</th>
+                        <th>Fecha</th>
                     </tr>
                 </thead>
                 <tbody>
