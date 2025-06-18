@@ -32,13 +32,13 @@
                 <div class="row">
                     <div class="form-group col-md-5">
                         <label for="logo">Logo de la Empresa (JPG/PNG):</label><br>
-                        <input type="file" class="form-control" id="logo" name="logo" accept="image/*" required>
+                        <input type="file" class="form-control" id="logo" name="logo" accept="image/*">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <button type="button" class="btn btn-primary" onclick="ingresar_datos_empresa()"><i class="fa  fa-check"><b>&nbsp;Registrar Empresa</b></i></button>
-                    <button type="button" class="btn btn-warning" onclick="get_datos_empresa()"><i class="fa fa-edit"><b>&nbsp;Editar Datos</b></i></button>
+                    <button type="button" id="btn_registar" class="btn btn-primary" onclick="ingresar_datos_empresa()"><i class="fa  fa-check"><b>&nbsp;Registrar Empresa</b></i></button>
+                    <button type="button" id="btn_editar" class="btn btn-warning" onclick="get_datos_empresa()"><i class="fa fa-edit"><b>&nbsp;Editar Datos</b></i></button>
 
                     <a href="" class="btn btn-danger"><i class="fa fa-close"><b>&nbsp;Cancelar</b></i></a>
                 </div>
@@ -60,7 +60,7 @@
                         <!--f01-->
                         <div class="row">
                             <div class="form-group col-md-5">
-                                <input type="" id="id_empresa">
+                                <input type="hidden" id="id_empresa">
                                 <input type="text" class="form-control" name="nombre_empresa"
                                     placeholder="Nombre de la empresa" id="nombre_empresa" disabled>
                             </div>
@@ -81,8 +81,10 @@
                         <!--f03-->
                         <div class="row">
                             <div class="form-group col-md-5">
-                                <label for="logo">Logo de la Empresa (JPG/PNG):</label><br>
-                                <input type="file" class="form-control" id="logo" name="logo" accept="image/*" required>
+                                <label for="logo_edit">Logo de la Empresa (JPG/PNG):</label><br>
+                                <input type="file" class="form-control" id="logo_edit" name="logo" accept="image/*">
+                                <br>
+                                <img id="preview_logo_edit" src="" alt="Logo actual" style="max-width: 150px; display: none;">
                             </div>
                         </div>
                     </form>

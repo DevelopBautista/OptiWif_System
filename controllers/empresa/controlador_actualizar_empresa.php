@@ -2,21 +2,19 @@
 require '../../models/modelo_empresa.php';
 $empresa = new modelo_empresa();
 
-$nombre = $_POST['nombre_empresa'] ?? '';
+$id_empresa = $_POST['id_empresa'] ?? '';
 $direccion = $_POST['direccion'] ?? '';
 $telefono = $_POST['tel'] ?? '';
-$rnc = $_POST['rnc'] ?? '';
 $logo = null;
 
-// Validar y mover el archivo subido solo si fue enviado
+// Validar que venga el ID
+if (empty($id_empresa)) {
+    echo json_encode(["status" => "error", "mensaje" => "ID de empresa no recibido."]);
+    exit;
+}
+
+// Verificar si se está subiendo un nuevo logo
 if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
-    $permitidos = ['image/jpeg', 'image/png', 'image/jpg'];
-
-    if (!in_array($_FILES['logo']['type'], $permitidos)) {
-        echo json_encode(["status" => "error", "mensaje" => "Tipo de archivo no permitido"]);
-        exit;
-    }
-
     $nombreArchivo = uniqid() . "_" . basename($_FILES['logo']['name']);
     $rutaTemporal = $_FILES['logo']['tmp_name'];
     $carpetaDestino = __DIR__ . "/../../views/logos/";
@@ -31,11 +29,11 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     if (move_uploaded_file($rutaTemporal, $rutaDestino)) {
         $logo = $nombreArchivo;
     } else {
-        echo json_encode(["status" => "error", "mensaje" => "No se pudo subir el archivo"]);
+        echo json_encode(["status" => "error", "mensaje" => "No se pudo subir el archivo."]);
         exit;
     }
 }
 
-// Insertar datos (aunque no haya logo)
-$respuesta = $empresa->insertar_datos_empresa($nombre, $direccion, $telefono, $rnc, $logo);
+// Llamar al modelo para actualizar
+$respuesta = $empresa->update_Empresa($id_empresa,$direccion, $telefono,$logo);
 echo json_encode($respuesta);

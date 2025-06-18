@@ -141,57 +141,57 @@ function listar_usuario() {
         "destroy": true
     });
     //eliminar usuario
-    $('#tabla_usuarios ').on('click', '.btn-danger', function () {
-        var data = tabla.row($(this).parents('tr')).data();
-        var id = data.id_usuario;
-        eliminar_usuario(id);
+    $('#tabla_usuarios').on('click', '.btn-danger', function () {
+        var data = obtenerDataDeFila(this);
+        if (!data) return Swal.fire("Error", "No se pudo obtener la data.", "error");
+
+        eliminar_usuario(data.id_usuario);
     });
+
 
     //ver datos del usuario
-    $('#tabla_usuarios ').on('click', '.btn-info', function () {
-        var data = tabla.row($(this).parents('tr')).data();//obteniendo toda la data de la fila 
-        //almacacenando la data de la fila por campos
-        var nom = data.usuario_nombres;
-        var ced = data.usuario_ced;
-        var tel = data.usuario_tel;
-        var dir = data.usuario_direccion;
-        var usu = data.usuario_usu;
-        var rol = data.rol_nombre;
-        var id_rol = data.id_rol;
-        var estatus = data.usuario_estatus;
-        ver_datos_usuario(nom, ced, tel, dir, usu, rol, estatus, id_rol);
+    $('#tabla_usuarios').on('click', '.btn-info', function () {
+        var data = obtenerDataDeFila(this);
+        if (!data) return Swal.fire("Error", "No se pudo obtener la data.", "error");
+
+        ver_datos_usuario(
+            data.usuario_nombres,
+            data.usuario_ced,
+            data.usuario_tel,
+            data.usuario_direccion,
+            data.usuario_usu,
+            data.rol_nombre,
+            data.usuario_estatus,
+            data.id_rol
+        );
     });
 
+
     //cambiar estatus del usuario
-    $('#tabla_usuarios ').on('click', '.btn-success', function () {
-        var data = tabla.row($(this).parents('tr')).data();
-        var id = data.id_usuario;
-        var estatus = data.usuario_estatus;
+    $('#tabla_usuarios').on('click', '.btn-success', function () {
+        var data = obtenerDataDeFila(this);
+        if (!data) return Swal.fire("Error", "No se pudo obtener la data.", "error");
 
-        if (estatus === "activo") {
-            estatus = "inactivo"
-        } else {
-            estatus = "activo"
-        }
-        cambiar_estatus_usuario(id, estatus);
-
+        var nuevo_estatus = data.usuario_estatus === "activo" ? "inactivo" : "activo";
+        cambiar_estatus_usuario(data.id_usuario, nuevo_estatus);
     });
 
     // actualziar datos del usuario
-    $('#tabla_usuarios ').on('click', '.btn-warning', function () {
-        var data = tabla.row($(this).parents('tr')).data();
+    $('#tabla_usuarios').on('click', '.btn-warning', function () {
+        var data = obtenerDataDeFila(this);
+        if (!data) return Swal.fire("Error", "No se pudo obtener la data.", "error");
 
-        var id = data.id_usuario;
-        var nombre = data.usuario_nombres;
-        var dire = data.usuario_direccion;
-        var tel = data.usuario_tel;
-        var usuario = data.usuario_usu;
-        var rol = data.id_rol;
-        var ced = data.usuario_ced;
-
-        actualizar_datos_usuario(id, nombre, dire, tel, usuario, rol, ced);
-
+        actualizar_datos_usuario(
+            data.id_usuario,
+            data.usuario_nombres,
+            data.usuario_direccion,
+            data.usuario_tel,
+            data.usuario_usu,
+            data.id_rol,
+            data.usuario_ced
+        );
     });
+
 
 
 
@@ -266,19 +266,20 @@ function ingresar_usuario() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-
             Swal.fire({
                 title: "mensaje de confirmación",
                 text: "Éxito" + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
-                timer: 2000
-
-            }).then(function () {
-                document.getElementById('frm').reset();
-                if (typeof tabla !== "undefined") {
-                    tabla.ajax.reload();
+                timer: 2000,
+                didClose: () => {
+                    document.getElementById('frm').reset();
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload();
+                    }
+                    back_to_dashbaord();
                 }
+
             });
 
         } else if (resp.status === "existe") {
@@ -432,28 +433,40 @@ function update_Usuario() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-
             Swal.fire({
                 title: "mensaje de confirmación",
                 text: "Éxito" + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
-                timer: 2000
-
-            }).then(function () {
-                document.getElementById('frm').reset();
-                $("#modal_editar").modal("hide");
-                if (typeof tabla !== "undefined") {
-                    tabla.ajax.reload();
+                timer: 2000,
+                didClose: () => {
+                    $('#modal_editar').modal('hide');
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload();
+                    }
+                    back_to_dashbaord();
                 }
+
             });
         } else {
             Swal.fire("Error", resp.mensaje, "error");
         }
-    })
+    });
+
 }
 
+function obtenerDataDeFila(button) {
+    var tr = $(button).closest('tr');
+    var row = tabla.row(tr);
 
+    // Si es una fila child (modo responsive), buscar la fila padre
+    if (tr.hasClass('child')) {
+        tr = tr.prev(); // subir a la fila padre
+        row = tabla.row(tr);
+    }
+
+    return row.data(); // devuelve la data segura
+}
 
 
 

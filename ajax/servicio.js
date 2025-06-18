@@ -169,7 +169,10 @@ function crearServicio() {
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload();
                 }
+
+                back_to_dashbaord();
             });
+
 
         } else {
             Swal.fire("Error", resp.mensaje || "No se pudo realizar el registro.", "error");

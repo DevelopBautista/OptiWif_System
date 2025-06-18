@@ -3,6 +3,7 @@
 const SERVERURL = 'http://localhost/wispManager/';
 //array de js
 const scriptsToLoad = [
+    'redireccionar_dashboard.js',
     'usuario.js',
     'cliente.js',
     'plan.js',
@@ -12,7 +13,9 @@ const scriptsToLoad = [
     'tipo_servicio.js',
     'pago.js',
     'facturas.js',
-    'empresa.js'
+    'empresa.js',
+    'apertura_caja.js',
+    'cierre_caja.js'
 ];
 
 

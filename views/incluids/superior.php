@@ -132,7 +132,7 @@ if (!isset($_SESSION['id_user'])) {
                             </ul>
                         </li>
                     <?php endif; ?>
-                   
+
                     <?php if ($_SESSION['rol'] == 1): ?>
                         <!-- menu servios -->
                         <li class="treeview">
@@ -202,6 +202,21 @@ if (!isset($_SESSION['id_user'])) {
                             <ul class="treeview-menu">
                                 <li><a href="#" onclick="loaderPages('contenido_principal','pages/usuarios/registrar_usuario.php')">Nuevo Usuario</a></li>
                                 <li><a href="#" onclick="loaderPages('contenido_principal','pages/usuarios/listar_usuarios.php')">Usuarios</a></li>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if ($_SESSION['rol'] == 1): ?>
+                        <!-- menu caja -->
+                        <li class="treeview">
+                            <a href=""><i class="fa-solid fa-cash-register"></i> <span>Caja</span>
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/apertura_caja.php')">Abrir Caja</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/cierre_caja.php')">Cerrar Caja</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>

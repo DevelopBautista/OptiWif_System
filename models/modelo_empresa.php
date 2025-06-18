@@ -19,17 +19,16 @@ class modelo_empresa
     {
         try {
 
-            // Verificar si empresa  ya existe
-            $sql_check = "SELECT COUNT(*) as total FROM empresa ";
+            // Verificar si ya existe una empresa registrada
+            $sql_check = "SELECT COUNT(*) as total FROM empresa";
             $stmt_check = $this->conn->conexion->prepare($sql_check);
             $stmt_check->execute();
             $existe = $stmt_check->fetchColumn();
 
-            if ($existe['total'] > 0) {
-                //array asociativo 
+            if ($existe > 0) {
                 return [
                     "status" => "existe",
-                    "mensaje" => "Ya existe una empresa."
+                    "mensaje" => "Ya existe una empresa registrada. No se puede registrar otra."
                 ];
             }
 
@@ -64,31 +63,41 @@ class modelo_empresa
         }
     }
 
-
-    public function actualizar_datos_empresa($direccion, $telefono, $id)
+    public function update_Empresa($id,$direccion, $telefono,$logo = null)
     {
+        // Buscar logo anterior
+        $sql_get_logo = "SELECT logo FROM empresa WHERE id_empresa = ?";
+        $stmt = $this->conn->conexion->prepare($sql_get_logo);
+        $stmt->execute([$id]);
+        $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sql = "UPDATE empresa SET direccion=:dir,telefono=:tel WHERE id_empresa=:id";
+        if ($empresa && $logo && !empty($empresa['logo'])) {
+            $rutaLogoAnterior = __DIR__ . "/../views/logos/" . $empresa['logo'];
+            if (file_exists($rutaLogoAnterior)) {
+                unlink($rutaLogoAnterior); // elimina el archivo anterior
+            }
+        }
+
+        // Actualizar
+        $sql = "UPDATE empresa SET  direccion=?, telefono=?" . ($logo ? ", logo=?" : "") . " WHERE id_empresa=?";
+        $params = [$direccion, $telefono];
+        if ($logo) $params[] = $logo;
+        $params[] = $id;
 
         $stmt = $this->conn->conexion->prepare($sql);
-
-        // Parámetros comunes
-        $stmt->bindParam(':dir', $direccion, PDO::PARAM_STR);
-        $stmt->bindParam(':velocidad', $telefono, PDO::PARAM_STR);
-        $stmt->bindParam(':Id', $id, PDO::PARAM_INT);
-
-        if ($stmt->execute()) {
-            return [
-                "status" => "ok",
-                "mensaje" => "Los datos se han actualizado correctamente."
-            ];
+        if ($stmt->execute($params)) {
+            return ["status" => "ok", "mensaje" => "Datos actualizados correctamente."];
         } else {
-            $errorInfo = $stmt->errorInfo();
-            return [
-                "status" => "error",
-                "mensaje" => "No se pudo actualizar los datos.",
-                "error" => $errorInfo
-            ];
+            return ["status" => "error", "mensaje" => "Error al actualizar."];
         }
+    }
+
+
+    public function obtener_empresa()
+    {
+        $sql = "SELECT * FROM empresa LIMIT 1";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC); // devuelve false si no hay
     }
 }

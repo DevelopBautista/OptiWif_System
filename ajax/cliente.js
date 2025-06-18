@@ -104,21 +104,19 @@ function ingresar_cliente() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                document.getElementById('frm').reset();
-                if (typeof table !== "undefined") {
-                    table.ajax.reload();
+            Swal.fire({
+                title: "Éxito",
+                text: resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000,
+                didClose: () => {
+                    document.getElementById('frm').reset();
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload();
+                    }
+                    back_to_dashbaord();
                 }
-                // Mostrar mensaje de redirección antes de redirigir
-                Swal.fire({
-                    title: "Redirigiendo...",
-                    text: "Serás enviado al panel principal.",
-                    icon: "info",
-                    showConfirmButton: false,
-                    timer: 2000
-                });
-
-                back_to_start();
             });
         } else if (resp.status === "existe") {
             Swal.fire("Advertencia", resp.mensaje, "warning");
@@ -183,10 +181,16 @@ function update_cliente() {
                     text: resp.mensaje,
                     icon: "success",
                     showConfirmButton: false,
-                    timer: 2500 // opcional: cierra automáticamente después de 2 segundos
-                }).then(() => {
-                    $("#modal_editar").modal("hide");
-                    tabla.ajax.reload();
+                    timer: 2000,
+                    didClose: () => {
+                        $("#modal_editar").modal("hide");
+                        if (typeof table !== "undefined") {
+                            table.ajax.reload();
+                        }
+                        back_to_dashbaord();
+                    }
+
+
                 });
             } else {
                 Swal.fire("Error", resp.mensaje, "error");
@@ -195,15 +199,11 @@ function update_cliente() {
     }
 
 
-}
 
-function back_to_start() {
-    setTimeout(() => {
-        window.location.href="../index.php";
-    }, 2000);
 
 
 }
+
 
 
 

@@ -58,7 +58,7 @@ function listar_planes_datatable() {
             return;
         }
 
-       
+
     });
 
 
@@ -86,10 +86,19 @@ function crear_plan() {
     }).done(function (resp) {
         console.log(resp);
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                document.getElementById('frm').reset();
-                if (typeof table !== "undefined") {
-                    table.ajax.reload();
+            Swal.fire({
+                title: "Éxito",
+                text: resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000,
+                didClose: () => {
+                    document.getElementById('frm').reset();
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload();
+                        back_to_dashbaord();
+                    }
+
                 }
             });
         } else if (resp.status === "existe") {
@@ -104,54 +113,6 @@ function crear_plan() {
 }
 
 
-function cambiar_estatus_usuario(id, estatus) {
-    var advertencia = "";
-    $.ajax({
-        url: "../controllers/usuario/controlador_cambiarEstatus_usuario.php",
-        type: "POST",
-        dataType: "json",
-        data: {
-            id_usuario: id,
-            estatus: estatus
-        },
-        success: function (response) {
-            if (response.success) {
-                if (estatus === "inactivo") {
-                    advertencia = "Se restringirá el acceso al sistema para este usuario."
-                } else {
-                    advertencia = "Se restaurará el acceso al sistema para este usuario."
-                }
-                Swal.fire({
-                    title: "¿Estas seguro ?",
-                    icon: "warning",
-                    text: advertencia,
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Si"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire({
-                            title: "Éxito",
-                            text: `El usuario fue ${estatus === "activo" ? "activado" : "desactivado"} correctamente.`,
-                            icon: "success",
-                            showConfirmButton: false,
-                            timer: 2000
-                        }).then(() => {//funcion anonima para recargar la tabla por ajax
-                            tabla.ajax.reload();
-                        });
-                    }
-                });
-            } else {
-                Swal.fire("Error", response.message || "No se pudo cambiar el estatus.", "error");
-                tabla.ajax.reload();
-            }
-        },
-        error: function () {
-            Swal.fire("Error", "Error en el servidor", "error");
-        }
-    });
-}
 
 function actualizar_planes(id, nombre, velocidad, precio) {
     $("#id_plan").val(id);
@@ -168,7 +129,7 @@ function update_Plan() {
     var velocidad = $("#velocidad_up").val();
     var precio = $("#precio_plan_up").val();
     // Validación de campos obligatorios
-    if (!nombre || velocidad ==0 || !precio) {
+    if (!nombre || velocidad == 0 || !precio) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos obligatorios.", "warning");
     }
 
@@ -184,16 +145,27 @@ function update_Plan() {
         }
     }).done(function (resp) {
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                $("#modal_editar_plan").modal("hide");
-                tabla.ajax.reload();
+            Swal.fire({
+                title: "Éxito",
+                text: resp.mensaje,
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000,
+                didClose: () => {
+                    $("#modal_editar_plan").modal("hide");
+                    if (typeof table !== "undefined") {
+                        table.ajax.reload();
+                    }
+                    back_to_dashbaord();
+
+                }
             });
+
         } else {
             Swal.fire("Error", resp.mensaje, "error");
         }
     })
 }
-
 
 
 
