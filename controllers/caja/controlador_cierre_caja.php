@@ -22,6 +22,7 @@ switch ($accion) {
         $contado = floatval($_POST['total_contado']);
         $diferencia = $contado - $esperado;
         $observaciones = htmlspecialchars(trim($_POST['observaciones'] ?? ''));
+        $usuario = $_SESSION['id_user'] ?? 0;
 
 
         $data = [
@@ -30,15 +31,19 @@ switch ($accion) {
             'contado' => $contado,
             'diferencia' => $diferencia,
             'obs' => $observaciones,
-            'usuario' => $_SESSION['id_user'] ?? 0
+            'usuario' => $usuario
         ];
 
         $registrado = $cierre->registrarCierre($data);
 
-        echo json_encode([
-            'status' => $registrado ? 'ok' : 'error',
-            'mensaje' => $registrado ? 'Cierre registrado correctamente' : 'Error al registrar cierre'
-        ]);
+        if ($registrado) {
+            // Aquí actualizamos el estado de la caja abierta
+            $cierre->cerrarCajaAbierta($usuario);
+            $cierre->marcarPagosComoCerrados();
+            echo json_encode(['status' => 'ok', 'mensaje' => 'Cierre registrado y caja cerrada correctamente']);
+        } else {
+            echo json_encode(['status' => 'error', 'mensaje' => 'Error al registrar cierre']);
+        }
         break;
 
     default:

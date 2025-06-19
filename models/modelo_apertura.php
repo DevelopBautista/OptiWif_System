@@ -18,10 +18,10 @@ class modelo_apertura
         $query = "SELECT COUNT(*) as total FROM apertura_caja WHERE estado = 'abierta'";
         $stmt = $this->conn->conexion->prepare($query);
 
-        if($stmt->execute()){
-            $result=$stmt->fetch(PDO::FETCH_ASSOC);
+        if ($stmt->execute()) {
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
             return $result['total'] > 0;
-        }else{
+        } else {
             return false;
         }
     }
@@ -33,6 +33,19 @@ class modelo_apertura
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->bindParam(":monto_inicial", $monto);
         $stmt->bindParam(":id_usuario", $usuario);
+        return $stmt->execute();
+    }
+
+    public function cerrarCaja($usuario)
+    {
+        $sql = "UPDATE apertura_caja 
+            SET estado = 'cerrada', fecha_cierre = NOW() 
+            WHERE estado = 'abierta' AND id_usuario = :usuario
+            ORDER BY id_apertura DESC
+            LIMIT 1";
+
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->bindParam(':usuario', $usuario);
         return $stmt->execute();
     }
 }

@@ -2,7 +2,8 @@ function registrarApertura() {
     const monto = $('#monto_inicial').val();
 
     if (!monto || isNaN(monto) || parseFloat(monto) < 0) {
-        return alert("Ingrese un monto válido.");
+        Swal.fire("Advertencia", "Ingrese un monto válido.", "warning");
+        return;
     }
 
     $.ajax({
@@ -15,14 +16,16 @@ function registrarApertura() {
         dataType: 'json',
         success: function (resp) {
             if (resp.status === 'ok') {
-                alert(resp.mensaje);
-                $('#monto_inicial').val('');
+                Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+                    $('#monto_inicial').val('');
+                    verificarEstadoCaja(); // Actualiza el estado de los botones
+                });
             } else {
-                alert("Error: " + resp.mensaje);
+                Swal.fire("Error", resp.mensaje, "error");
             }
         },
         error: function () {
-            alert("Error en el servidor.");
+            Swal.fire("Error", "Error en el servidor.", "error");
         }
     });
 }

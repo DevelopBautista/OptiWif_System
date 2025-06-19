@@ -84,7 +84,7 @@ class modelo_pago
                            fecha_pago,
                            metodo_pago,
                            estado_pago,
-                           referecnia_pago,
+                           referencia_pago,
                            observaciones,
                            creado_en,
                            id_mensualidad
@@ -114,7 +114,7 @@ class modelo_pago
 
 
             $this->conn->conexion->commit();
-           
+
             return json_encode([
                 'success' => true,
                 'nfactura' => $numero_factura
@@ -172,27 +172,19 @@ class modelo_pago
     public function verificar_pago_existe($id_mensualidad)
     {
         try {
-
-            $sql = ("SELECT estado FROM mensualidades WHERE id_mensualidad = :id_mensualidad");
+            $sql = "SELECT estado FROM mensualidades WHERE id_mensualidad = :id_mensualidad";
             $stmt = $this->conn->conexion->prepare($sql);
             $stmt->bindParam(':id_mensualidad', $id_mensualidad, PDO::PARAM_INT);
             $stmt->execute();
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($row) {
-                if ($row['estado'] === 'pagado') {
-                    echo json_encode(['exito' => false, 'mensaje' => 'La mensualidad ya fue pagada anteriormente']);
-                    exit;
-                }
+                return $row['estado'] === 'pagado'; // true si está pagado, false si no
             } else {
-
-                echo json_encode(['exito' => false, 'mensaje' => 'Mensualidad no encontrada']);
-                exit;
+                return null; // mensualidad no encontrada
             }
         } catch (PDOException $e) {
-
-            echo json_encode(['exito' => false, 'mensaje' => 'Error en la base de datos: ' . $e->getMessage()]);
-            exit;
+            return false; // error silencioso, puedes loguear si quieres
         }
     }
 }

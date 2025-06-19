@@ -215,8 +215,7 @@ if (!isset($_SESSION['id_user'])) {
                                 </span>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/apertura_caja.php')">Abrir Caja</a></li>
-                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/cierre_caja.php')">Cerrar Caja</a></li>
+                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/gestion_caja.php')">Gestionar Caja</a></li>
                             </ul>
                         </li>
                     <?php endif; ?>

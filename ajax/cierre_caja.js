@@ -8,11 +8,11 @@ function obtenerTotalSistema() {
             if (resp.status === 'ok') {
                 $('#total_sistema').text(resp.total);
             } else {
-                alert('No se pudo obtener el total del día.');
+                Swal.fire("Advertencia", "No se pudo obtener el total del día.", "warning");
             }
         },
         error: function () {
-            alert('Error al consultar el total del día.');
+            Swal.fire("Error", "Error al consultar el total del día.", "error");
         }
     });
 }
@@ -22,7 +22,8 @@ function registrarCierre() {
     const observaciones = $('#observaciones').val();
 
     if (!total_contado || isNaN(total_contado)) {
-        return alert("Debe ingresar el total contado correctamente.");
+        Swal.fire("Advertencia", "Debe ingresar el total contado correctamente.", "warning");
+        return;
     }
 
     $.ajax({
@@ -36,17 +37,19 @@ function registrarCierre() {
         dataType: 'json',
         success: function (resp) {
             if (resp.status === 'ok') {
-                alert(resp.mensaje);
-                $('#total_contado').val('');
-                $('#observaciones').val('');
-                obtenerTotalSistema();
+                Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+                    $('#total_contado').val('');
+                    $('#observaciones').val('');
+                    obtenerTotalSistema();
+                    verificarEstadoCaja(); // Desactiva boton de cierre y activa apertura
+
+                });
             } else {
-                alert("Error: " + resp.mensaje);
+                Swal.fire("Error", resp.mensaje, "error");
             }
         },
         error: function () {
-            alert("Error al registrar cierre.");
+            Swal.fire("Error", "Error al registrar el cierre.", "error");
         }
     });
 }
-

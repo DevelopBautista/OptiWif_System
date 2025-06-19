@@ -15,7 +15,8 @@ const scriptsToLoad = [
     'facturas.js',
     'empresa.js',
     'apertura_caja.js',
-    'cierre_caja.js'
+    'cierre_caja.js',
+    'verificarEstadoCaja.js'
 ];
 
 
