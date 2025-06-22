@@ -43,7 +43,6 @@ function listar_facturas_ajax() {
         var tr = $(this).closest('tr');
         var row = tabla.row(tr);
 
-        // Si es una fila .child, buscar la anterior (la principal)
         if (tr.hasClass('child')) {
             row = tabla.row(tr.prev());
         }
@@ -57,14 +56,27 @@ function listar_facturas_ajax() {
 
         var nfactura = data.nfactura;
 
-        var url = '../views/libreporte/reports/facturas/Fact_' + nfactura + '.pdf'
-        console.log("URL: " + url)
-        if (nfactura) {
-            window.open(url, '_blank');
-        } else {
-            Swal.fire("Mensaje de advertencia", "No se encotro registros.", "warning");
+        if (!nfactura) {
+            Swal.fire("Mensaje de advertencia", "No se encontró número de factura.", "warning");
+            return;
         }
 
+        $.ajax({
+            url: '../controllers/facturas/verificar_pdf.php',
+            type: 'POST',
+            data: { nfactura: nfactura },
+            dataType: 'json',
+            success: function (resp) {
+                if (resp.existe) {
+                    window.open(resp.url, '_blank');
+                } else {
+                    Swal.fire("No disponible", "El archivo PDF de esta factura no existe.", "warning");
+                }
+            },
+            error: function () {
+                Swal.fire("Error", "No se pudo verificar la existencia del PDF.", "error");
+            }
+        });
     });
 
 
