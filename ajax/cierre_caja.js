@@ -72,12 +72,14 @@ function buscarCierrePorFecha() {
                 const datos = resp.datos;
                 let montoInicial = parseFloat(datos.monto_inicial);
                 let montoFinal = parseFloat(datos.total_caja);
+                let total_movimientos = parseFloat(datos.total_movimientos);
 
                 montoInicial = isNaN(montoInicial) ? 0 : montoInicial;
                 montoFinal = isNaN(montoFinal) ? 0 : montoFinal;
 
                 let mensaje = `<b>Usuario:</b> ${datos.nombre_usuario} <br>
                                <b>Monto Inicial:</b> RD$ ${montoInicial.toFixed(2)} <br>
+                               <b>Total de pagos ralizados:</b> RD$ ${total_movimientos.toFixed(2)} <br>
                                <b>Monto Final:</b> RD$ ${montoFinal.toFixed(2)} <br>
                                <b>Fecha de Cierre:</b> ${datos.fecha_cierre ?? '---'}`;
 

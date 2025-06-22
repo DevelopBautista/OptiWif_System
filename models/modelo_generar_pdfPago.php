@@ -31,7 +31,7 @@ class modelo_ticket
         $direccionEmpresa = $empresa['direccion'];
         $telEmpresa = $empresa['telefono'];
         $rncEmpresa = $empresa['rnc'];
-        $logoEmpresa = $empresa['logo']; // ejemplo: '684b782d2897c_logoEmpresa.png'
+        $logoEmpresa = $empresa['logo'];
         $rutaLogo = __DIR__ . "/../views/logos/" . $logoEmpresa;
 
         //instanciar mPDF (formato tipo ticket POS)
@@ -43,7 +43,7 @@ class modelo_ticket
             'margin_top' => 5,
             'margin_bottom' => 5,
         ]);
-        //<img src="' . $rutaLogo . '"  width="50mm" />        
+
         $html = '
         <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
 

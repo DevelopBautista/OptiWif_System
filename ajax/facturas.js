@@ -56,7 +56,9 @@ function listar_facturas_ajax() {
         }
 
         var nfactura = data.nfactura;
-        var url = '../controllers/pago/controlador_imprimir_ticket.php?num_factura=' + nfactura;
+
+        var url = '../views/libreporte/reports/facturas/Fact_' + nfactura + '.pdf'
+        console.log("URL: " + url)
         if (nfactura) {
             window.open(url, '_blank');
         } else {
