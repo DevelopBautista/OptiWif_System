@@ -54,7 +54,6 @@ function registrarCierre() {
     });
 }
 
-
 function buscarCierrePorFecha() {
     var fecha = document.getElementById('fecha_busqueda').value;
 
@@ -76,15 +75,20 @@ function buscarCierrePorFecha() {
 
                 montoInicial = isNaN(montoInicial) ? 0 : montoInicial;
                 montoFinal = isNaN(montoFinal) ? 0 : montoFinal;
+                total_movimientos = isNaN(total_movimientos) ? 0 : total_movimientos;
 
-                let mensaje = `<b>Usuario:</b> ${datos.nombre_usuario} <br>
-                               <b>Monto Inicial:</b> RD$ ${montoInicial.toFixed(2)} <br>
-                               <b>Total de pagos ralizados:</b> RD$ ${total_movimientos.toFixed(2)} <br>
-                               <b>Monto Final:</b> RD$ ${montoFinal.toFixed(2)} <br>
-                               <b>Fecha de Cierre:</b> ${datos.fecha_cierre ?? '---'}`;
+                let mensaje = `
+                    <div style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color: #f9f9f9; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
+                        <p><strong>👤 Usuario:</strong> ${datos.nombre_usuario}</p>
+                        <p><strong>💰 Monto Inicial:</strong> RD$ ${montoInicial.toFixed(2)}</p>
+                        <p><strong>📥 Total de pagos procesados:</strong> RD$ ${total_movimientos.toFixed(2)}</p>
+                        <p><strong>🧮 Monto Final:</strong> RD$ ${montoFinal.toFixed(2)}</p>
+                        <p><strong>📅 Fecha de Cierre:</strong> ${datos.fecha_cierre ?? '---'}</p>
+                    </div>
+                `;
 
                 Swal.fire({
-                    title: "Cierre encontrado",
+                    title: "📋 Cierre encontrado",
                     html: mensaje,
                     icon: "success"
                 });
@@ -96,9 +100,7 @@ function buscarCierrePorFecha() {
             Swal.fire("Error", "No se pudo buscar el cierre.", "error");
         }
     });
-
 }
-
 
 function generarReporte() {
     var fecha = document.getElementById('fecha_busqueda').value;
@@ -108,4 +110,3 @@ function generarReporte() {
 
     window.open('../views/libreporte/reports/reportes/reportes.php?fecha=' + encodeURIComponent(fecha), '_blank');
 }
-
