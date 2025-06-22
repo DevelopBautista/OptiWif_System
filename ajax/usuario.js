@@ -32,6 +32,7 @@ function verificar_usuario() {
                         rol: data[0][6]
                     }
                 }).done(function (resp) {
+                    console.log("Respuesta del servidor:", resp);
                     let timerInterval;
                     Swal.fire({
                         title: "Bienvenido a OptiWiF System",

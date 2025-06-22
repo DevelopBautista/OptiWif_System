@@ -20,6 +20,7 @@
                         <textarea class="form-control" id="observaciones" rows="3" class="form-control"></textarea>
                     </div>
                     <br>
+                    <h5 class="card-title"><i class="fa fa-cash-register"></i> <b>Cierre de Caja Diario</b></h5>
                     <button id="btn_cerrar_caja" class="btn btn-success" onclick="registrarCierre()">
                         <i class="fa fa-check"></i> <b>&nbsp;Cerrar Caja</button>
                 </div>
@@ -41,6 +42,29 @@
                         </div>
                     </form>
                 </div>
+
+
+                <div class="col-md-6">
+                    <div class="card shadow p-3 mb-4 bg-white rounded border">
+                        <div class="card-body">
+                            <div class="form-group mt-3">
+                                <label for="fecha_busqueda"><i class="fa fa-calendar"></i> <b>Fecha del reporte</b></label>
+                                <input type="date" id="fecha_busqueda" class="form-control">
+                            </div>
+
+                            <div class="form-group mt-4 d-flex justify-content-between">
+                                <button type="button" class="btn btn-primary w-100 me-2" onclick="buscarCierrePorFecha()">
+                                    <i class="fa fa-search"></i> <b>&nbsp;Ver Detalle</b>
+                                </button>
+
+                                <button type="button" class="btn btn-success w-100 ms-2" onclick="generarReporte()">
+                                    <i class="fa fa-file-pdf"></i> <b>&nbsp;Generar PDF</b>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -50,7 +74,7 @@
 
 <script>
     $(document).ready(function() {
-        verificarEstadoCaja(); 
+        verificarEstadoCaja();
         obtenerTotalSistema();
     });
 </script>

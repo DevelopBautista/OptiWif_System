@@ -13,6 +13,8 @@ class modelo_apertura
         $this->conn = new Conexion();
         $this->conn->conectar();
     }
+    //aqui
+    
     public function existeCajaAbierta()
     {
         $query = "SELECT COUNT(*) as total FROM apertura_caja WHERE estado = 'abierta'";

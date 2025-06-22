@@ -110,6 +110,7 @@
 
 <script>
     $(document).ready(function() {
+        get_datos_empresa();
         $('#nombre_empresa').focus();
     });
 </script>

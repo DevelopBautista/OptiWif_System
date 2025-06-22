@@ -53,3 +53,57 @@ function registrarCierre() {
         }
     });
 }
+
+
+function buscarCierrePorFecha() {
+    var fecha = document.getElementById('fecha_busqueda').value;
+
+    if (!fecha) {
+        return Swal.fire("Advertencia", "Debe seleccionar una fecha.", "warning");
+    }
+
+    $.ajax({
+        url: '../controllers/caja/controlador_buscar_cierre_fecha.php',
+        type: 'POST',
+        data: { fecha: fecha },
+        dataType: 'json',
+        success: function (resp) {
+            if (resp.exito && resp.datos) {
+                const datos = resp.datos;
+                let montoInicial = parseFloat(datos.monto_inicial);
+                let montoFinal = parseFloat(datos.total_caja);
+
+                montoInicial = isNaN(montoInicial) ? 0 : montoInicial;
+                montoFinal = isNaN(montoFinal) ? 0 : montoFinal;
+
+                let mensaje = `<b>Usuario:</b> ${datos.nombre_usuario} <br>
+                               <b>Monto Inicial:</b> RD$ ${montoInicial.toFixed(2)} <br>
+                               <b>Monto Final:</b> RD$ ${montoFinal.toFixed(2)} <br>
+                               <b>Fecha de Cierre:</b> ${datos.fecha_cierre ?? '---'}`;
+
+                Swal.fire({
+                    title: "Cierre encontrado",
+                    html: mensaje,
+                    icon: "success"
+                });
+            } else {
+                Swal.fire("Sin resultados", resp.mensaje, "info");
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo buscar el cierre.", "error");
+        }
+    });
+
+}
+
+
+function generarReporte() {
+    var fecha = document.getElementById('fecha_busqueda').value;
+    if (!fecha) {
+        return Swal.fire("Advertencia", "Debe seleccionar una fecha.", "warning");
+    }
+
+    window.open('../views/libreporte/reports/reportes/reportes.php?fecha=' + encodeURIComponent(fecha), '_blank');
+}
+

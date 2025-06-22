@@ -19,6 +19,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $pagoServicio = new modelo_pago();
 
+    // Validar si hay caja abierta
+    if (!$pagoServicio->hayCajaAbierta()) {
+        echo json_encode([
+            'exito' => false,
+            'mensaje' => 'No se puede registrar el pago porque no hay una caja abierta.'
+        ]);
+        exit;
+    }
+
     $estadoPago = $pagoServicio->verificar_pago_existe($id_mensualidad);
 
     if ($estadoPago === true) {

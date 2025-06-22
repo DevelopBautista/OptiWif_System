@@ -125,7 +125,7 @@ class modelo_pago
         }
     }
 
-    public function listar_pagos()
+    public function listar_pagos()//esta 
     {
         $sql = "SELECT m.id_mensualidad,
                        c.nombre_completo as cliente,
@@ -146,7 +146,7 @@ class modelo_pago
     }
 
 
-    public function listar_pagos_realizados()
+    public function listar_pagos_realizados()// y esta
     {
         $sql = "SELECT 
                     ps.id_pago_servicio as id,
@@ -186,5 +186,14 @@ class modelo_pago
         } catch (PDOException $e) {
             return false; // error silencioso, puedes loguear si quieres
         }
+    }
+
+
+    public function hayCajaAbierta()
+    {
+        $sql = "SELECT COUNT(*) FROM apertura_caja WHERE estado = 'abierta'";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchColumn() > 0;
     }
 }

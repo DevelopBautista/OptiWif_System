@@ -9,7 +9,6 @@ function ingresar_datos_empresa() {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
     }
 
-    // Crear FormData para enviar archivo
     var formData = new FormData();
     formData.append("nombre_empresa", nombre_empresa);
     formData.append("direccion", direccion);
@@ -21,32 +20,32 @@ function ingresar_datos_empresa() {
         url: "../controllers/empresa/controlador_insert_empresa.php",
         type: "POST",
         data: formData,
-        contentType: false, // Importante para enviar archivos
-        processData: false, // Importante para evitar conversión automática
+        contentType: false,
+        processData: false,
         dataType: "json"
     }).done(function (resp) {
-        console.log("Respuesta del servidor:", resp);
         if (resp.status === "ok") {
-            Swal.fire("Éxito", resp.mensaje, "success");
-            $('#frm')[0].reset();
+            Swal.fire("Éxito", resp.mensaje, "success").then(() => {
+                location.reload(); // recarga para aplicar cambios visuales
+            });
         } else {
             Swal.fire("Error", resp.mensaje, "error");
         }
     }).fail(function (jqXHR, textStatus) {
         console.error("AJAX error:", textStatus);
-        console.error("Respuesta del servidor:", jqXHR.responseText);
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");
     });
-
 }
 
-//funcion para obtener los datos y enviarlo a los inputs
+// Detecta si hay una empresa registrada y controla los botones
 function get_datos_empresa() {
     $.ajax({
         url: "../controllers/empresa/controlador_get_empresa.php",
         type: "GET",
         dataType: "json"
     }).done(function (resp) {
+        controlarBotonesEmpresa(resp.existe);//para ocultar O mostrar los btns
+
         if (resp.existe) {
             const empresa = resp.empresa;
             $("#modal_editar_empresa #id_empresa").val(empresa.id_empresa);
@@ -55,7 +54,6 @@ function get_datos_empresa() {
             $("#modal_editar_empresa #tel").val(empresa.telefono);
             $("#modal_editar_empresa #rnc").val(empresa.rnc);
 
-            // Mostrar el logo actual si existe
             if (empresa.logo) {
                 $("#preview_logo_edit")
                     .attr("src", "../views/logos/" + empresa.logo)
@@ -64,22 +62,22 @@ function get_datos_empresa() {
                 $("#preview_logo_edit").hide();
             }
 
-            // Mostrar el modal
+            // Mostrar modal
             $("#modal_editar_empresa").modal("show");
-        } else {
             Swal.fire("Aviso", "No hay empresa registrada aún.", "info");
+
         }
     }).fail(function () {
         Swal.fire("Error", "No se pudo obtener la información de la empresa.", "error");
     });
 }
 
-//funcion actualizar los datos en la db
+// Actualizar datos
 function update_Empresa() {
     var id_empresa = $("#modal_editar_empresa #id_empresa").val();
     var direccion = $("#modal_editar_empresa #direccion").val();
     var tel = $("#modal_editar_empresa #tel").val();
-    var logo = $('#modal_editar_empresa #logo_edit')[0].files[0]; // archivo logo nuevo (opcional)
+    var logo = $('#modal_editar_empresa #logo_edit')[0].files[0];
 
     if (!direccion || !tel) {
         return Swal.fire("Mensaje de advertencia", "Debe llenar todos los campos.", "warning");
@@ -89,7 +87,7 @@ function update_Empresa() {
     formData.append("id_empresa", id_empresa);
     formData.append("direccion", direccion);
     formData.append("tel", tel);
-    if (logo) formData.append("logo", logo); // solo si el usuario subió uno nuevo
+    if (logo) formData.append("logo", logo);
 
     $.ajax({
         url: "../controllers/empresa/controlador_actualizar_empresa.php",
@@ -101,14 +99,14 @@ function update_Empresa() {
     }).done(function (resp) {
         if (resp.status === "ok") {
             Swal.fire({
-                title: "mensaje de confirmación",
-                text: "Exito  " + resp.mensaje,
+                title: "Mensaje de confirmación",
+                text: "Éxito: " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000,
                 didClose: () => {
                     $("#modal_editar_empresa").modal("hide");
-                    back_to_dashbaord();
+                    location.reload();
                 }
             });
         } else {
@@ -117,4 +115,17 @@ function update_Empresa() {
     }).fail(function () {
         Swal.fire("Error", "Error de servidor.", "error");
     });
+}
+
+
+
+function controlarBotonesEmpresa(existeEmpresa) {
+    if (existeEmpresa) {
+        $("#btn_registar").hide();
+        $("#btn_editar").show();
+    } else {
+        Swal.fire("Advertencia", "No hay ninguna empresa registrada actualmente.", "warning");
+        $("#btn_registar").show();
+        $("#btn_editar").hide();
+    }
 }
