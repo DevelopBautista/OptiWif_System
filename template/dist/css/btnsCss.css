@@ -1,0 +1,57 @@
+/* Contenedor general de botones DataTables */
+.dt-button {
+    border: none;
+    padding: 6px 12px;
+    margin: 3px 5px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    color: white !important;
+}
+
+/* Botón Copiar */
+.btn-export-copy {
+    background-color: #6c757d !important; /* gris */
+}
+
+.btn-export-copy:hover {
+    background-color: #5a6268 !important;
+}
+
+/* Botón Excel */
+.btn-export-excel {
+    background-color: #28a745 !important; /* verde */
+}
+
+.btn-export-excel:hover {
+    background-color: #218838 !important;
+}
+
+/* Botón CSV */
+.btn-export-csv {
+    background-color: #17a2b8 !important; /* azul claro */
+}
+
+.btn-export-csv:hover {
+    background-color: #138496 !important;
+}
+
+/* Botón PDF */
+.btn-export-pdf {
+    background-color: #dc3545 !important; /* rojo */
+}
+
+.btn-export-pdf:hover {
+    background-color: #c82333 !important;
+}
+
+/* Botón Imprimir */
+.btn-export-print {
+    background-color: #343a40 !important; /* negro-gris */
+}
+
+.btn-export-print:hover {
+    background-color: #23272b !important;
+}

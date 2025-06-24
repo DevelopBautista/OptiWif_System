@@ -92,13 +92,46 @@ function listar_pagos_realizados_ajax() {
             { "data": "mensualidad" },
             { "data": "fecha_pago" }
         ],
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'copyHtml5',
+                text: '<i class="fas fa-copy"></i> Copiar',
+                className: 'btn-export-copy',
+                exportOptions: { columns: ':not(:last-child)' }
+            },
+            {
+                extend: 'excelHtml5',
+                text: '<i class="fas fa-file-excel"></i> Excel',
+                className: 'btn-export-excel',
+                exportOptions: { columns: ':not(:last-child)' }
+            },
+            {
+                extend: 'csvHtml5',
+                text: '<i class="fas fa-file-csv"></i> CSV',
+                className: 'btn-export-csv',
+                exportOptions: { columns: ':not(:last-child)' }
+            },
+            {
+                extend: 'pdfHtml5',
+                text: '<i class="fas fa-file-pdf"></i> PDF',
+                className: 'btn-export-pdf',
+                exportOptions: { columns: ':not(:last-child)' }
+            },
+            {
+                extend: 'print',
+                text: '<i class="fas fa-print"></i> Imprimir',
+                className: 'btn-export-print',
+                exportOptions: { columns: ':not(:last-child)' }
+            }
+        ],
 
         "language": idioma_espanol,
         "destroy": true
     });
 
 
-  
+
 }
 
 //funcion para registrar un pago

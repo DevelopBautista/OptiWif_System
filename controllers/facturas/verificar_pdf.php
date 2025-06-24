@@ -8,12 +8,12 @@ if ($nfactura == '') {
     exit;
 }
 
-$archivo = "../../views/libreporte/reports/facturas/Fact_" . $nfactura . ".pdf";
+$archivo = "../../views/libreporte/reports/facturas/" . $nfactura . ".pdf";
 
 if (file_exists($archivo)) {
     echo json_encode([
         'existe' => true,
-        'url' => "../../views/libreporte/reports/facturas/Fact_" . $nfactura . ".pdf"
+        'url' => "../../views/libreporte/reports/facturas/" . $nfactura . ".pdf"
     ]);
 } else {
     echo json_encode(['existe' => false]);

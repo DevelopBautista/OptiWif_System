@@ -12,7 +12,7 @@ if (isset($_SESSION['id_user'])) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="images/icons/icon.ico" />
+	<link rel="icon"  href="images/icons/Logo.png" /> 
 	<!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
 	<!--===============================================================================================-->
@@ -68,7 +68,7 @@ if (isset($_SESSION['id_user'])) {
 						</div>
 						<br>
 
-						<div >
+						<div>
 							<div>
 								<div></div>
 								<button class="btn btn-primary btn-lg btn-block" onclick="verificar_usuario()">

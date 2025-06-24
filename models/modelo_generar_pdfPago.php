@@ -28,6 +28,7 @@ class modelo_ticket
         $empresa = $stmt->fetch(PDO::FETCH_ASSOC);
 
         //datos de la empresa
+        $nombre = $empresa['nombre'];
         $direccionEmpresa = $empresa['direccion'];
         $telEmpresa = $empresa['telefono'];
         $rncEmpresa = $empresa['rnc'];
@@ -45,45 +46,59 @@ class modelo_ticket
         ]);
 
         $html = '
-        <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
+    <div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">
 
-                    <!-- Logo de la empresa -->
-            <div style="margin-bottom: 4mm;">
+                <!-- Logo de la empresa -->
+                <div style="margin-bottom: 4mm;">
                     <img src="' . $rutaLogo . '" width="50mm" style="max-height: 25mm;" />
-            </div>
+                </div>
+
+                 <!-- Nombre de la empresa -->
+                <div style="margin-bottom: 4mm;">
+                    <strong>' . htmlspecialchars($nombre) . '</strong>
+                </div>
+
+            <!-- Datos de la empresa -->
             <div style="text-align: left; padding-left: 5px;">
                 <div>Dir: ' . htmlspecialchars($direccionEmpresa) . '</div>
                 <div>Tel: ' . htmlspecialchars($telEmpresa) . '</div>
                 <div>RNC: ' . htmlspecialchars($rncEmpresa) . '</div>
             </div>
-            <div style="margin: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000;">&nbsp;</div>
-                <div style="text-align: left; padding-left: 5px;">
-                <div>N° Factura : ' . htmlspecialchars($numero_factura) . '</div>
-                <div>Cliente    : ' . htmlspecialchars($cliente) . '</div>
-                <div>Mensualidad: ' . htmlspecialchars($fecha_pago) . '</div>
-                <div>Fecha      : ' . FECHA_HORA . '</div>
-                <div>Método     : ' . htmlspecialchars($metodo_pago) . '</div>
-            <div><strong>Total : ' . MONEDA . number_format($monto_total_pagar, 2, ',', '.') . '</strong></div>
-        </div>
+
         <div style="margin: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000;">&nbsp;</div>
 
+                <!-- Datos de la factura -->
+            <div style="text-align: left; padding-left: 5px;">
+                <div>N° Factura  : ' . htmlspecialchars($numero_factura) . '</div>
+                <div>Cliente     : ' . htmlspecialchars($cliente) . '</div>
+                <div>Mensualidad : ' . htmlspecialchars($fecha_pago) . '</div>
+                <div>Fecha       : ' . FECHA_HORA . '</div>
+                <div>Método      : ' . htmlspecialchars($metodo_pago) . '</div>
+            <div><strong>Total : ' . MONEDA . number_format($monto_total_pagar, 2, ',', '.') . '</strong></div>
+        </div>
+
+        <div style="margin: 6px 0; border-top: 1px dashed #000; border-bottom: 1px dashed #000;">&nbsp;</div>
+
+        <!-- Atendido por -->
         <div style="text-align: left; padding-left: 5px;">
-            Atencion por : <strong>' . htmlspecialchars($_SESSION['user'] ?? 'Usuario') . '</strong>
+            Atendido por: <strong>' . htmlspecialchars($_SESSION['user'] ?? 'Usuario') . '</strong>
         </div>
 
         <div style="margin: 6px 0; border-top: 1px dashed #000;">&nbsp;</div>
 
+        <!-- Mensaje final -->
         <div style="text-align: center;">
             <span>¡Gracias por su preferencia!</span>
         </div>
 
         <div style="margin: 6px 0; border-top: 1px dashed #000;">&nbsp;</div>
     </div>';
+
         // Escribir contenido
         $mpdf->WriteHTML($html);
 
         // Ruta de guardado
-        $nombre_archivo = "Fact_" . $numero_factura . ".pdf";
+        $nombre_archivo = $numero_factura . ".pdf";
         $ruta_guardado = __DIR__ . "/../views/libreporte/reports/facturas/" . $nombre_archivo;
 
         // Asegurarse de que la carpeta exista

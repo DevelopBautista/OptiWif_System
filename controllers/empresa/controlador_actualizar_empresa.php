@@ -3,6 +3,7 @@ require '../../models/modelo_empresa.php';
 $empresa = new modelo_empresa();
 
 $id_empresa = $_POST['id_empresa'] ?? '';
+$nombre_empresa = $_POST['nombre_empresa'] ?? '';
 $direccion = $_POST['direccion'] ?? '';
 $telefono = $_POST['tel'] ?? '';
 $logo = null;
@@ -35,5 +36,5 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
 }
 
 // Llamar al modelo para actualizar
-$respuesta = $empresa->update_Empresa($id_empresa,$direccion, $telefono,$logo);
+$respuesta = $empresa->update_Empresa($id_empresa,$nombre_empresa, $direccion, $telefono, $logo);
 echo json_encode($respuesta);

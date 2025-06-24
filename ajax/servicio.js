@@ -159,7 +159,7 @@ function crearServicio() {
 
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito" + resp.mensaje,
+                text: "Éxito: " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000
@@ -243,7 +243,7 @@ function update_servicio() {
         if (resp.status === "ok") {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito  " + resp.mensaje,
+                text: "Éxito: " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000

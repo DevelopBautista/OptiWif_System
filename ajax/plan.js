@@ -84,7 +84,6 @@ function crear_plan() {
             precio: precio
         }
     }).done(function (resp) {
-        console.log(resp);
         if (resp.status === "ok") {
             Swal.fire({
                 title: "Éxito",
@@ -96,11 +95,11 @@ function crear_plan() {
                     document.getElementById('frm').reset();
                     if (typeof table !== "undefined") {
                         table.ajax.reload();
-                        back_to_dashbaord();
                     }
-
+                    back_to_dashbaord();
                 }
             });
+
         } else if (resp.status === "existe") {
             Swal.fire("Advertencia", resp.mensaje, "warning");
         } else {

@@ -269,7 +269,7 @@ function ingresar_usuario() {
         if (resp.status === "ok") {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito" + resp.mensaje,
+                text: "Éxito: " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000,
@@ -436,7 +436,7 @@ function update_Usuario() {
         if (resp.status === "ok") {
             Swal.fire({
                 title: "mensaje de confirmación",
-                text: "Éxito" + resp.mensaje,
+                text: "Éxito: " + resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000,

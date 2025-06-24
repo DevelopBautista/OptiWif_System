@@ -30,7 +30,12 @@ if (!isset($_SESSION['id_user'])) {
     <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/dist/css/skins/skin-blue.min.css">
     <!--select2-->
     <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/plugins/select2/select2.min.css">
-
+    <!--btns dataTable-->
+    <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/dist/css/buttons.dataTables.min.css">
+    <!--dar colores a los btns-->
+    <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/dist/css/btnsCss.css">
+    <!--cargar ico-->
+    <link rel="icon" type="image/png" href="<?php SERVERURL;?>login/images/icons/Logo.png" />
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">

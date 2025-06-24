@@ -63,7 +63,7 @@ class modelo_empresa
         }
     }
 
-    public function update_Empresa($id,$direccion, $telefono,$logo = null)
+    public function update_Empresa($id,$nombre,$direccion, $telefono,$logo = null)
     {
         // Buscar logo anterior
         $sql_get_logo = "SELECT logo FROM empresa WHERE id_empresa = ?";
@@ -79,8 +79,8 @@ class modelo_empresa
         }
 
         // Actualizar
-        $sql = "UPDATE empresa SET  direccion=?, telefono=?" . ($logo ? ", logo=?" : "") . " WHERE id_empresa=?";
-        $params = [$direccion, $telefono];
+        $sql = "UPDATE empresa SET  nombre=?,direccion=?, telefono=?" . ($logo ? ", logo=?" : "") . " WHERE id_empresa=?";
+        $params = [$nombre,$direccion, $telefono];
         if ($logo) $params[] = $logo;
         $params[] = $id;
 

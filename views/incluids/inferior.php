@@ -28,7 +28,7 @@
 
  <style>
      .swal2-popup {
-         font-size:large;
+         font-size: large;
      }
  </style>
  <!-- jQuery 3 -->
@@ -48,6 +48,12 @@
  <script src="<?php echo SERVERURL; ?>template/plugins/select2/select2.min.js"></script>
  <!--script personal para iconos-->
  <script src="https://kit.fontawesome.com/b6da622e9f.js" crossorigin="anonymous"></script>
+
+ <!--js para los btn del datatable-->
+ <script src="<?php echo SERVERURL; ?>template/dist/js/buttons.html5.min.js"></script>
+ <script src="<?php echo SERVERURL; ?>template/dist/js/buttons.print.min.js"></script>
+ <script src="<?php echo SERVERURL; ?>template/dist/js/dataTables.buttons.min.js"></script>
+
 
  <!--funcion para cargar los menues-->
  <script>
