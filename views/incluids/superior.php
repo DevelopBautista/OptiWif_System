@@ -217,19 +217,18 @@ header("Pragma: no-cache");
                         </li>
                     <?php endif; ?>
 
-                    <?php if ($_SESSION['rol'] == 1): ?>
-                        <!-- menu caja -->
-                        <li class="treeview">
-                            <a href=""><i class="fa-solid fa-cash-register"></i> <span>Caja</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/gestion_caja.php')">Gestionar Caja</a></li>
-                            </ul>
-                        </li>
-                    <?php endif; ?>
+
+                    <!-- menu caja -->
+                    <li class="treeview">
+                        <a href=""><i class="fa-solid fa-cash-register"></i> <span>Caja</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/caja/gestion_caja.php')">Gestionar Caja</a></li>
+                        </ul>
+                    </li>
 
                     <?php if ($_SESSION['rol'] == 1): ?>
                         <!-- menu Configuraciones -->

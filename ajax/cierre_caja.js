@@ -103,10 +103,27 @@ function buscarCierrePorFecha() {
 }
 
 function generarReporte() {
-    var fecha = document.getElementById('fecha_busqueda').value;
+    var fecha = $('#fecha_busqueda').val();
+
     if (!fecha) {
         return Swal.fire("Advertencia", "Debe seleccionar una fecha.", "warning");
     }
 
-    window.open('../views/libreporte/reports/reportes/reportes.php?fecha=' + encodeURIComponent(fecha), '_blank');
+    $.ajax({
+        url: '../controllers/caja/controlador_verificar_reporte.php',
+        type: 'GET',
+        data: { fecha: fecha },
+        dataType: 'json',
+        success: function (resp) {
+            if (resp.exito) {
+                window.open('../views/libreporte/reports/reportes/reportes.php?fecha=' + encodeURIComponent(fecha), '_blank');
+            } else {
+                Swal.fire("Sin datos", "No se encontró información para la fecha " + fecha, "warning");
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "No se pudo verificar el reporte.", "error");
+        }
+    });
 }
+
