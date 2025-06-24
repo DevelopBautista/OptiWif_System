@@ -4,6 +4,12 @@ session_start();
 if (!isset($_SESSION['id_user'])) {
     header('location: ../views/login/login.php');
 }
+// También evita la caché del navegador
+header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
 ?>
 <!DOCTYPE html>
 
@@ -35,7 +41,7 @@ if (!isset($_SESSION['id_user'])) {
     <!--dar colores a los btns-->
     <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/dist/css/btnsCss.css">
     <!--cargar ico-->
-    <link rel="icon" type="image/png" href="<?php SERVERURL;?>login/images/icons/Logo.png" />
+    <link rel="icon" type="image/png" href="<?php SERVERURL; ?>login/images/icons/Logo.png" />
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">

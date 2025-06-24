@@ -67,7 +67,6 @@
             </form>
         </div>
     </div>
-
     <style>
         .box-body {
             margin-left: 20px;
