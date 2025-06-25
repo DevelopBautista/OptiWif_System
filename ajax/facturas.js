@@ -95,11 +95,12 @@ function listar_facturas_ajax() {
         }
 
         $.ajax({
-            url: '../controllers/facturas/verificar_pdf.php',
+            url: '../controllers/facturas/controlador_verificar_pdf.php',
             type: 'POST',
             data: { nfactura: nfactura },
             dataType: 'json',
             success: function (resp) {
+               console.log("Respuesta:", resp.url);
                 if (resp.existe) {
                     window.open(resp.url, '_blank');
                 } else {
