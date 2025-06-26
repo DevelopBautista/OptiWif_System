@@ -14,13 +14,13 @@ class modelo_mensualidad
         $this->conn->conectar();
     }
 
-    // Crea mensualidades iniciales o en bloque con cargo_extra
+    // Crea mensualidades iniciales 
     public function crearMensualidades($id_contrato, $fecha_inicio, $monto, $cantidad, $cargo_extra)
     {
         $estado = "pendiente";
 
         if ($cantidad <= 0) {
-            return false; // o lanzar excepción
+            return false; // 0 lanzar excepción
         }
 
         for ($i = 0; $i < $cantidad; $i++) {
@@ -136,10 +136,9 @@ class modelo_mensualidad
     // Aplica mora a mensualidades pendientes que pasaron el plazo de gracia (dias_mas) y no tienen mora aplicada
     public function aplicarMoraMensualidades()
     {
-        $sql = "SELECT m.id_mensualidad, m.fecha_vencimiento, cs.cargo_extra, s.dias_mas
+        $sql = "SELECT m.id_mensualidad, m.fecha_vencimiento, cs.cargo_extra, cs.dias_mas
             FROM mensualidades m
             INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
-            INNER JOIN servicios s ON cs.id_servicio = s.id_servicio
             WHERE m.estado = 'pendiente'
               AND m.mora_aplicada = 0";
 

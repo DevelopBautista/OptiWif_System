@@ -42,6 +42,8 @@ function registrarCierre() {
                     $('#observaciones').val('');
                     obtenerTotalSistema();
                     verificarEstadoCaja(); // Desactiva boton de cierre y activa apertura
+                    //ya se que no esta ahi pero ella esta ahi hace dos dias
+                    //Bueno, ya sabes porque no funciona. imagino que tendras un backup por ahi no?
 
                 });
             } else {

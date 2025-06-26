@@ -7,7 +7,6 @@
 
         <div class="box-body">
             <div class="row">
-                <!-- Caja Cierre -->
                 <div class="col-md-6">
                     <p>
                     <h4>Total registrado en el sistema:</h4> <strong id="total_sistema">0.00</strong></p>
@@ -24,8 +23,6 @@
                     <button id="btn_cerrar_caja" class="btn btn-success" onclick="registrarCierre()">
                         <i class="fa fa-check"></i> <b>&nbsp;Cerrar Caja</button>
                 </div>
-
-                <!-- Caja Apertura -->
                 <div class="col-md-6">
                     <form method="POST" autocomplete="off" id="frm_caja" onsubmit="return false">
                         <div class="form-group">
@@ -42,8 +39,6 @@
                         </div>
                     </form>
                 </div>
-
-
                 <div class="col-md-6">
                     <div class="card shadow p-3 mb-4 bg-white rounded border">
                         <div class="card-body">
