@@ -36,22 +36,26 @@ function verificar_usuario() {
                     let timerInterval;
                     Swal.fire({
                         title: "Bienvenido a OptiWiF System",
-                        html: "Usted esta siento redireccionado...",
+                        html: "Usted está siendo redireccionado... <b></b>",
                         timer: 2500,
                         timerProgressBar: true,
                         showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false, // Opcional: para evitar cierre con Enter
                         didOpen: () => {
                             Swal.showLoading();
-                            const timer = Swal.getPopup().querySelector("b");
+                            const b = Swal.getHtmlContainer().querySelector("b");
                             timerInterval = setInterval(() => {
-                                timer.textContent = `${Swal.getTimerLeft()}`;
+                                if (b) {
+                                    b.textContent = `${Swal.getTimerLeft()}`;
+                                }
                             }, 100);
                         },
                         willClose: () => {
                             clearInterval(timerInterval);
                         }
                     }).then((result) => {
-                        /* Read more about handling dismissals below */
                         if (result.dismiss === Swal.DismissReason.timer) {
                             location.reload();
                         }
