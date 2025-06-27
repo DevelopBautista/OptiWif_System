@@ -14,8 +14,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Cliente</th>
-                        <th>Mensualidad</th>
+                        <th>Nombre del Cliente</th>
+                        <th>Cuota Mensual</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>

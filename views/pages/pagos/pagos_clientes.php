@@ -12,10 +12,10 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Cliente</th>
-                        <th>Plan</th>
-                        <th>Mensualidad</th>
-                        <th>Fecha de Pago</th>
+                        <th>Nombre del Cliente</th>
+                        <th>Plan Contratado</th>
+                        <th>Cuota Mensual</th>
+                        <th>Mensualidad Pendiente</th>
                         <th>Estatus</th>
                         <th>Acciones</th>
 
@@ -43,7 +43,7 @@
             <div class="modal-body">
                 <form id="frm_pago" method="POST">
                     <input type="hidden" id="id_mensualidad" name="id_mensualidad">
-                     <input type="hidden" id="estado_pago" name="estado_pago">
+                    <input type="hidden" id="estado_pago" name="estado_pago">
 
                     <label>Cliente</label>
                     <input type="text" id="cliente" name="cliente" class="form-control" disabled><br>
