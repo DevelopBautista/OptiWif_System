@@ -41,7 +41,7 @@ header("Pragma: no-cache");
     <!--dar colores a los btns-->
     <link rel="stylesheet" href="<?php echo SERVERURL; ?>template/dist/css/btnsCss.css">
     <!--cargar ico-->
-    <link rel="icon" type="image/png" href="<?php SERVERURL; ?>login/images/icons/Logo.png" />
+    <link rel="icon" type="image/png" href="<?php echo SERVERURL; ?>template/dist/img/Logo.png" />
     <!-- Google Font -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
