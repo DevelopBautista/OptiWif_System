@@ -87,11 +87,11 @@ class modelo_mensualidad
                 $id_contrato = $contrato['id_contrato'];
                 $fecha_contrato = $contrato['fecha_contrato'];
 
-                // Obtener monto del plan y cargo extra asociados al contrato
+                // Obtener monto del plan y cargo extra
                 $monto = $this->obtenerPrecioPlanPorContrato($id_contrato);
                 $cargo_extra = $this->obtenerCargoExtraContrato($id_contrato);
 
-                // Obtener la última mensualidad registrada
+                // Última mensualidad
                 $sqlUltima = "SELECT fecha_vencimiento 
                           FROM mensualidades 
                           WHERE id_contrato = :id_contrato 
@@ -102,48 +102,51 @@ class modelo_mensualidad
                 $stmtUltima->execute();
                 $ultima = $stmtUltima->fetch(PDO::FETCH_ASSOC);
 
-                // Determinar fecha de inicio para la nueva mensualidad
-                $nueva_fecha_inicio = $ultima ? $ultima['fecha_vencimiento'] : $fecha_contrato;
+                // Determinar fecha base
+                $ultima_fecha = $ultima ? $ultima['fecha_vencimiento'] : $fecha_contrato;
+                $proxima_fecha = date('Y-m-d', strtotime("+1 month", strtotime($ultima_fecha)));
 
-                // Calcular nueva fecha de vencimiento (+1 mes)
-                $fecha_vencimiento = date('Y-m-d', strtotime("+1 month", strtotime($nueva_fecha_inicio)));
+                // Verifica si ya pasó la fecha de vencimiento (solo si toca generar la nueva)
+                $hoy = date('Y-m-d');
+                if ($proxima_fecha <= $hoy) {
 
-                // Verificar si ya existe una mensualidad con esa fecha para ese contrato
-                $sqlExiste = "SELECT COUNT(*) 
-                          FROM mensualidades 
-                          WHERE id_contrato = :id_contrato 
-                          AND fecha_vencimiento = :fecha_vencimiento";
-                $stmtExiste = $this->conn->conexion->prepare($sqlExiste);
-                $stmtExiste->bindParam(':id_contrato', $id_contrato);
-                $stmtExiste->bindParam(':fecha_vencimiento', $fecha_vencimiento);
-                $stmtExiste->execute();
+                    // Verifica que no exista duplicado
+                    $sqlExiste = "SELECT COUNT(*) 
+                              FROM mensualidades 
+                              WHERE id_contrato = :id_contrato 
+                              AND fecha_vencimiento = :fecha_vencimiento";
+                    $stmtExiste = $this->conn->conexion->prepare($sqlExiste);
+                    $stmtExiste->bindParam(':id_contrato', $id_contrato);
+                    $stmtExiste->bindParam(':fecha_vencimiento', $proxima_fecha);
+                    $stmtExiste->execute();
 
-                if ($stmtExiste->fetchColumn() == 0) {
-                    // Insertar nueva mensualidad
-                    $sqlInsert = "INSERT INTO mensualidades (
-                                              id_contrato, monto, 
-                                              fecha_vencimiento, 
-                                              estado, fecha_inicio, 
-                                              cargo_extra) 
-                                   VALUES (:id_contrato, 
-                                            :monto, :fecha_vencimiento, 
-                                            :estado, :fecha_inicio, 
-                                            :cargo_extra )";
-                    $stmtInsert = $this->conn->conexion->prepare($sqlInsert);
-                    $stmtInsert->bindParam(':id_contrato', $id_contrato);
-                    $stmtInsert->bindParam(':monto', $monto);
-                    $stmtInsert->bindParam(':fecha_vencimiento', $fecha_vencimiento);
-                    $stmtInsert->bindParam(':estado', $estado);
-                    $stmtInsert->bindParam(':fecha_inicio', $nueva_fecha_inicio);
-                    $stmtInsert->bindParam(':cargo_extra', $cargo_extra);
-                    $stmtInsert->execute();
+                    if ($stmtExiste->fetchColumn() == 0) {
+                        // Insertar mensualidad
+                        $sqlInsert = "INSERT INTO mensualidades (
+                                      id_contrato, monto, 
+                                      fecha_vencimiento, 
+                                      estado, fecha_inicio, 
+                                      cargo_extra) 
+                                 VALUES (:id_contrato, 
+                                         :monto, :fecha_vencimiento, 
+                                         :estado, :fecha_inicio, 
+                                         :cargo_extra)";
+                        $stmtInsert = $this->conn->conexion->prepare($sqlInsert);
+                        $stmtInsert->bindParam(':id_contrato', $id_contrato);
+                        $stmtInsert->bindParam(':monto', $monto);
+                        $stmtInsert->bindParam(':fecha_vencimiento', $proxima_fecha);
+                        $stmtInsert->bindParam(':estado', $estado);
+                        $stmtInsert->bindParam(':fecha_inicio', $ultima_fecha);
+                        $stmtInsert->bindParam(':cargo_extra', $cargo_extra);
+                        $stmtInsert->execute();
+                    }
                 }
             }
         } catch (PDOException $e) {
-            // Puedes registrar errores si lo deseas
             error_log("Error al generar mensualidades: " . $e->getMessage());
         }
     }
+
 
 
     // Función auxiliar para obtener precio plan por id_contrato
@@ -166,28 +169,41 @@ class modelo_mensualidad
     // Aplica mora a mensualidades pendientes que pasaron el plazo de gracia (dias_mas) y no tienen mora aplicada
     public function aplicarMoraMensualidades()
     {
-        $sql = "SELECT m.id_mensualidad, m.fecha_vencimiento, cs.cargo_extra, cs.dias_mas
-            FROM mensualidades m
-            INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
-            WHERE m.estado = 'pendiente'
-              AND m.mora_aplicada = 0";
+        try {
+            $sql = "SELECT m.id_mensualidad, m.fecha_vencimiento, cs.cargo_extra, cs.dias_mas
+                FROM mensualidades m
+                INNER JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
+                WHERE m.estado = 'pendiente'
+                  AND m.mora_aplicada = 0";
 
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->execute();
-        $mensualidades = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $this->conn->conexion->prepare($sql);
+            $stmt->execute();
+            $mensualidades = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($mensualidades as $m) {
-            $fecha_limite = date('Y-m-d', strtotime($m['fecha_vencimiento'] . " +{$m['dias_mas']} days"));
+            $fecha_actual = date('Y-m-d');
 
-            if (date('Y-m-d') > $fecha_limite) {
-                $sqlUpdate = "UPDATE mensualidades 
-                          SET monto = monto + :cargo_extra, mora_aplicada = 1 
-                          WHERE id_mensualidad = :id";
-                $stmtUpdate = $this->conn->conexion->prepare($sqlUpdate);
-                $stmtUpdate->bindParam(':cargo_extra', $m['cargo_extra']);
-                $stmtUpdate->bindParam(':id', $m['id_mensualidad']);
-                $stmtUpdate->execute();
+            foreach ($mensualidades as $m) {
+                // Validar que dias_mas y cargo_extra sean numéricos
+                $dias_mas = is_numeric($m['dias_mas']) ? (int)$m['dias_mas'] : 0;
+                $cargo_extra = is_numeric($m['cargo_extra']) ? (float)$m['cargo_extra'] : 0;
+
+                // Calcular la fecha límite: vencimiento + días de gracia
+                $fecha_limite = date('Y-m-d', strtotime($m['fecha_vencimiento'] . " +{$dias_mas} days"));
+
+                // Si ya pasó la fecha límite y hay un cargo extra válido
+                if ($fecha_actual > $fecha_limite && $cargo_extra > 0) {
+                    $sqlUpdate = "UPDATE mensualidades 
+                              SET monto = monto + :cargo_extra, 
+                                  mora_aplicada = 1 
+                              WHERE id_mensualidad = :id";
+                    $stmtUpdate = $this->conn->conexion->prepare($sqlUpdate);
+                    $stmtUpdate->bindParam(':cargo_extra', $cargo_extra);
+                    $stmtUpdate->bindParam(':id', $m['id_mensualidad']);
+                    $stmtUpdate->execute();
+                }
             }
+        } catch (PDOException $e) {
+            error_log("Error al aplicar mora: " . $e->getMessage());
         }
     }
 }
