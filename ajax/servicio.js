@@ -70,15 +70,50 @@ function listar_servicios_ajax() {
             { "data": "precio" },
             { "data": "tipo_conexion" },
             { "data": "fecha_contrato" },
-            { "data": "estado" },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver detalles'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm' title='Editar servicio'><i class='fa-solid fa-edit'></i></button>"
+                "data": "estado",
+                "render": function (data) {
+                    if (data == "Activo") {
+                        return "<span class='label label-success'>" + data + "</span>";
+                    } else if (data == "Cancelado") {
+                        return "<span class='label label-danger'>" + data + "</span>";
+                    } else {
+                        return data;
+                    }
+                }
+            },
+            {
+                "defaultContent": `
+                <button class='btn btn-info btn-sm' title='Ver Detalles'><i class='fa-solid fa-eye'></i></button>
+                <button class='btn btn-warning btn-sm btn-edit' title='Editar'><i class='fa-solid fa-edit'></i></button>
+                <button class='btn btn-success btn-sm' title='Activar/Desactivar'><i class='fa-solid fa-check'></i></button>
+            `
             }
         ],
 
         "language": idioma_espanol,
-        "destroy": true
+        "destroy": true,
+
+        //funcion para desactivar el btn edit
+        "rowCallback": function (row, data, index) {
+            if (data.estado === "Cancelado") {
+                // Desactiva todos los botones de esta fila
+                $(row).find("button.btn-edit").prop("disabled", true);
+            }
+        }
     });
+
+
+
+    //cambiar estatus del servicio
+    $('#tabla_detalle_servicio').on('click', '.btn-success', function () {
+        var data = obtenerDataDeFila(this);
+        if (!data) return Swal.fire("Error", "No se pudo obtener la data.", "error");
+
+        var nuevo_estatus = data.estado === "Activo" ? "Cancelado" : "Activo";
+        cambiar_estatus_servicio(data.id_contrato, nuevo_estatus);
+    });
+
 
     //para cuando este en modo celular para que no de error de undefine
     $('#tabla_detalle_servicio').on('click', '.btn-info', function () {
@@ -259,6 +294,54 @@ function update_servicio() {
     })
 }
 
+function cambiar_estatus_servicio(id, estatus) {
+    var advertencia = "";
+    $.ajax({
+        url: "../controllers/servicio/controlador_cambiarEstatus_servicio.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            id: id,
+            estatus: estatus
+        },
+        success: function (response) {
+            if (response.success) {
+                if (estatus === "Cancelado") {
+                    advertencia = "Se retirará la conectividad a internet de este servicio."
+                } else {
+                    advertencia = "Se asignará conectividad a internet a este servicio."
+                }
+                Swal.fire({
+                    title: "¿Estas seguro ?",
+                    icon: "warning",
+                    text: advertencia,
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Si"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: "Éxito",
+                            text: `El servicio fue ${estatus === "Activo" ? "Activo" : "Cancelado"} correctamente.`,
+                            icon: "success",
+                            showConfirmButton: false,
+                            timer: 2000
+                        }).then(() => {//funcion anonima para recargar la tabla por ajax
+                            tabla.ajax.reload();
+                        });
+                    }
+                });
+            } else {
+                Swal.fire("Error", response.message || "No se pudo cambiar el estatus.", "error");
+                tabla.ajax.reload();
+            }
+        },
+        error: function () {
+            Swal.fire("Error", "Error en el servidor", "error");
+        }
+    });
+}
 
 
 

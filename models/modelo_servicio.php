@@ -136,4 +136,16 @@ class modelo_servicio
         $respuesta = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $respuesta;
     }
+
+
+    public function cambiar_estado_servicio($id, $estatus)
+    {
+
+        $sql = "update contratos_servicio set estado= :estado where id_contrato= :id";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->bindParam(':estado', $estatus, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $respuesta = $stmt->execute();
+        return $respuesta; //retorna texto
+    }
 }

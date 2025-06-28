@@ -85,17 +85,24 @@
                     <!--f02-->
                     <div class="row">
                         <div class="form-group col-md-5">
+                            <label for="fecha_contrato">Plan:</label>
                             <select class="planes js-states form-control" name="state" id="cmb_planes" style="width: 100%;">
 
                             </select>
                         </div>
                         <div class="form-group col-md-5">
+                            <label for="fecha_contrato">Tipo Conexion:</label>
                             <select class="conexion js-states form-control" name="state" id="cmb_conexion" style="width: 100%;">
                             </select>
                         </div>
                         <div class="form-group col-md-5">
+                            <label for="dataConexion">Acceso cliente(Ip,Usuario):</label>
                             <input type="text" class="form-control" id="dataConexion" name="dataConexion"
                                 placeholder="Acceso cliente (Ip,Usuario)">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label for="fecha_contrato">Fecha de Pago:</label>
+                            <input type="date" class="form-control" id="nueva_fecha_contrato" name="nueva_fecha_contrato" require>
                         </div>
                     </div>
                 </form>

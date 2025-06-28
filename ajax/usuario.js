@@ -138,12 +138,23 @@ function listar_usuario() {
                 }
             },
             {
-                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver Detalles'><i class='fa-solid fa-eye'></i></button>&nbsp;<button  class=' btn btn-warning btn-sm' title='Editar'><i class='fa-solid fa-edit'></i></button>&nbsp;<button class='btn btn-success btn-sm'title='Activar/Desactivar' ><i class='fa-solid fa-check'></i></button>&nbsp;<button class='btn btn-danger btn-sm' title='Eliminar'><i class='fa-solid fa-trash'></i></button>"
+                "defaultContent": "<button class='btn btn-info btn-sm' title='Ver Detalles'><i class='fa-solid fa-eye'></i></button>" +
+                    "<button  class=' btn btn-warning btn-sm btn-edit' title='Editar'><i class='fa-solid fa-edit'></i></button>" +
+                    "<button class='btn btn-success btn-sm'title='Activar/Desactivar' ><i class='fa-solid fa-check'></i></button>" +
+                    "<button class='btn btn-danger btn-sm' title='Eliminar'><i class='fa-solid fa-trash'></i></button>"
             }
         ],
 
         "language": idioma_espanol,
-        "destroy": true
+        "destroy": true,
+
+        //funcion para desactivar el btn edit
+        "rowCallback": function (row, data, index) {
+            if (data.usuario_estatus === "inactivo") {
+                // Desactiva todos los botones de esta fila
+                $(row).find("button.btn-edit").prop("disabled", true);
+            }
+        }
     });
     //eliminar usuario
     $('#tabla_usuarios').on('click', '.btn-danger', function () {
