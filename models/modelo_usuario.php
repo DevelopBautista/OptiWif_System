@@ -192,18 +192,4 @@ class modelo_Usuario
             ];
         }
     }
-
-
-
-    /* public function verificarCajaAbierta($id_usuario)
-    {
-        $sql = "SELECT * FROM apertura_caja 
-            WHERE id_usuario = :id_usuario AND estado = 'abierta'
-            ORDER BY id_apertura DESC LIMIT 1";
-
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->bindParam(':id_usuario', $id_usuario);
-        $stmt->execute();
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }*/
 }

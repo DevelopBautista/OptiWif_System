@@ -129,20 +129,21 @@ header("Pragma: no-cache");
                     <li class="header">
                         <h4>Menu</h4>
                     </li>
-                    <?php if ($_SESSION['rol'] == 1): ?>
-                        <!-- menu clientes -->
-                        <li class="treeview">
-                            <a href=""><i class="fa fa-users"></i> <span>Clientes</span>
-                                <span class="pull-right-container">
-                                    <i class="fa fa-angle-left pull-right"></i>
-                                </span>
-                            </a>
-                            <ul class="treeview-menu">
+
+                    <!-- menu clientes -->
+                    <li class="treeview">
+                        <a href=""><i class="fa fa-users"></i> <span>Clientes</span>
+                            <span class="pull-right-container">
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <?php if ($_SESSION['rol'] == 1): ?>
                                 <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/registrar_cliente.php')">Nuevo Cliente</a></li>
-                                <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Clientes</a></li>
-                            </ul>
-                        </li>
-                    <?php endif; ?>
+                            <?php endif; ?>
+                            <li><a href="#" onclick="loaderPages('contenido_principal','pages/clientes/listar_clientes.php')">Clientes</a></li>
+                        </ul>
+                    </li>
 
                     <?php if ($_SESSION['rol'] == 1): ?>
                         <!-- menu servios -->

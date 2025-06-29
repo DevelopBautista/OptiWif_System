@@ -1,4 +1,8 @@
-<?php include("incluids/superior.php"); ?>
+<?php
+    session_start();
+    include("incluids/superior.php");
+
+?>
 <div class="col-md-12">
     <div class="box box-info box-solid">
         <div class="box-header with-border">
@@ -112,5 +116,11 @@
     $(document).ready(function() {
         listar_clientes();
     });
+</script>
+
+<script>
+    //esto es para enviar datos al js
+    const usuarioActual = "<?php echo $_SESSION['rol']; ?>";
+    console.log("desde listar_clientes: "+usuarioActual);
 </script>
 <?php include("incluids/inferior.php"); ?>

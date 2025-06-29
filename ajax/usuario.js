@@ -151,7 +151,6 @@ function listar_usuario() {
         //funcion para desactivar el btn edit
         "rowCallback": function (row, data, index) {
             if (data.usuario_estatus === "inactivo") {
-                // Desactiva todos los botones de esta fila
                 $(row).find("button.btn-edit").prop("disabled", true);
             }
         }
