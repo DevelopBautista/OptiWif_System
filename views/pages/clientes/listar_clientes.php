@@ -68,7 +68,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header bg-warning">
-                <h4 class="modal-title">Actualizar Datos del Usuario</h4>
+                <h4 class="modal-title">Actualizar Datos del Cliente</h4>
             </div>
             <div class="modal-body">
                 <form method="POST" autocomplete="off">
@@ -76,9 +76,11 @@
                     <div class="row">
                         <div class="form-group col-md-5">
                             <input type="hidden" id="id_cliente">
-                            <input type="text" class="form-control" name="nom_up" id="nom_up" readonly>
+                            <label for="nom_show">Nombre Completo</label>
+                            <input type="text" class="form-control" name="nom_up" id="nom_up">
                         </div>
                         <div class="form-group col-md-6">
+                            <label for="nom_show">Direccion</label>
                             <input type="text" class="form-control" id="dir_up" name="dir_up"
                                 placeholder="Direccion">
                         </div>
@@ -86,11 +88,13 @@
                     <!--f02-->
                     <div class="row">
                         <div class="form-group col-md-5">
+                            <label for="nom_show">Telefono</label>
                             <input type="text" class="form-control" id="tel_up" name="tel_up"
                                 placeholder="Telefono">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" id="ced_up" name="ced_up" readonly>
+                            <label for="nom_show">Cedula</label>
+                            <input type="text" class="form-control" id="ced_up" name="ced_up">
                         </div>
                     </div>
                 </form>

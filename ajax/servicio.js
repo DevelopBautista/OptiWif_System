@@ -255,6 +255,7 @@ function update_servicio() {
     var id_plan = $("#cmb_planes").val();
     var id_tipo_conexion = $("#cmb_conexion").val();
     var acceso_cliente = $("#dataConexion").val();
+    var nueva_fecha_pago = $("#nueva_fecha_contrato").val();
     var id_contrato = $("#id_contrato").val();
 
     // Validación de campos obligatorios
@@ -271,6 +272,7 @@ function update_servicio() {
             id_plan: id_plan,
             id_tipo_conexion: id_tipo_conexion,
             acceso_cliente: acceso_cliente,
+            nueva_fecha_pago: nueva_fecha_pago,
             id_contrato: id_contrato,
 
         }

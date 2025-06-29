@@ -184,6 +184,8 @@ function actualizar_datos_cliente(id, nom, ced, dir, tel) {
 function update_cliente() {
 
     var id = $("#id_cliente").val();
+    var nombre = $("#nom_up").val();
+    var cedula = $("#ced_up").val();
     var dir = $("#dir_up").val();
     var tel = $("#tel_up").val();
     $("#modal_editar").modal('show');
@@ -203,6 +205,8 @@ function update_cliente() {
             type: "POST",
             dataType: "JSON",
             data: {
+                nombre: nombre,
+                cedula: cedula,
                 dir: dir,
                 tel: tel,
                 id: id

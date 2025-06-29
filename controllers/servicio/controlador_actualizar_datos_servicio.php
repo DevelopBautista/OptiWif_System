@@ -9,11 +9,19 @@ $id_cliente   = htmlspecialchars($_POST['id_cliente'] ?? '');
 $id_plan   = htmlspecialchars($_POST['id_plan'] ?? '');
 $id_tipo_conexion  = htmlspecialchars($_POST['id_tipo_conexion'] ?? '');
 $acceso_cliente   = htmlspecialchars($_POST['acceso_cliente'] ?? '');
-$id_cs    = htmlspecialchars($_POST['id_contrato'] ?? '');
+$nueva_fecha_pago   = htmlspecialchars($_POST['nueva_fecha_pago'] ?? '');
+$id_cs = htmlspecialchars($_POST['id_contrato'] ?? '');
 
 $MU = new modelo_servicio();
 
 
-$consulta = $MU->actualizar_datos_servicio($id_cliente, $id_plan, $id_tipo_conexion, $acceso_cliente, $id_cs);
+$consulta = $MU->actualizar_datos_servicio(
+    $id_cliente,
+    $id_plan,
+    $id_tipo_conexion,
+    $acceso_cliente,
+    $nueva_fecha_pago,
+    $id_cs
+);
 
 echo json_encode($consulta);

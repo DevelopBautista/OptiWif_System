@@ -75,29 +75,21 @@ class modelo_cliente
 
 
 
-    public function eliminar_usuarios($id)
-    {
-        $sql = "DELETE FROM usuario where id_usuario= :id";
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->bindParam('id', $id, PDO::PARAM_INT);
-        $respuesta = $stmt->execute();
-        return $respuesta; //retorna texto
-    }
-
-
-
-
-    public function actualizar_datos_cliente($id, $dir, $tel)
+    public function actualizar_datos_cliente($id, $nombre_completo, $numero_cedula, $dir, $tel)
     {
 
         $sql = "UPDATE clientes 
-                SET direccion = :Dir,
+                SET nombre_completo=:nombre,
+                    numero_cedula=:cedula, 
+                    direccion = :Dir,
                     telefono = :Tel
                 WHERE id_cliente = :Id";
 
         $stmt = $this->conn->conexion->prepare($sql);
 
         // Parámetros comunes
+        $stmt->bindParam(':nombre', $nombre_completo, PDO::PARAM_STR);
+        $stmt->bindParam(':cedula', $numero_cedula, PDO::PARAM_STR);
         $stmt->bindParam(':Dir', $dir, PDO::PARAM_STR);
         $stmt->bindParam(':Tel', $tel, PDO::PARAM_STR);
         $stmt->bindParam(':Id', $id, PDO::PARAM_INT);

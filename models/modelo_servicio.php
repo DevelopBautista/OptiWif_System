@@ -76,12 +76,13 @@ class modelo_servicio
         }
     }
 
-    public function actualizar_datos_servicio($id_cliente, $id_plan, $id_tipo_conexion, $acceso_cliente, $id_cs)
+    public function actualizar_datos_servicio($id_cliente, $id_plan, $id_tipo_conexion, $acceso_cliente, $nueva_fecha_pago, $id_cs)
     {
         $sql = "UPDATE contratos_servicio SET 
                     id_cliente = :id_cliente,
                     id_plan = :id_plan,
-                    id_tipo_conexion = :id_tipo_conexion, 
+                    id_tipo_conexion = :id_tipo_conexion,
+                    fecha_contrato=:fecha_contrato,
                     acceso_cliente = :acceso_cliente 
                 WHERE id_contrato = :id_contrato";
 
@@ -90,6 +91,7 @@ class modelo_servicio
         $stmt->bindParam(':id_cliente', $id_cliente, PDO::PARAM_INT);
         $stmt->bindParam(':id_plan', $id_plan, PDO::PARAM_STR);
         $stmt->bindParam(':id_tipo_conexion', $id_tipo_conexion, PDO::PARAM_STR);
+        $stmt->bindParam(':fecha_contrato', $nueva_fecha_pago, PDO::PARAM_STR);
         $stmt->bindParam(':acceso_cliente', $acceso_cliente, PDO::PARAM_STR);
         $stmt->bindParam(':id_contrato', $id_cs, PDO::PARAM_INT);
 
