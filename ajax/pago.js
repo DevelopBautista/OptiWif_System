@@ -69,12 +69,20 @@ function listar_pagos_ajax() {
             Swal.fire("Error", "No se pudo obtener los datos de la fila.", "error");
             return;
         }
+        //aqui envio los datos a los inputs
+        var total = parseInt(data.monto);
+        var mora = parseInt(data.mora);
+        if (!isNaN(mora) && mora > 0) {
+            total = total + mora;
+        }
 
         $("#id_mensualidad").val(data.id_mensualidad);
         $("#cliente").val(data.cliente);
-        $("#monto_total_pagar").val(data.monto);
+        $("#cuotas_mensual").val(data.monto);
         $("#fecha_pago").val(data.fecha_pagos);
         $("#estado_pago").val(data.estado);
+        $("#mora").val(data.mora);
+        $("#monto_total_pagar").val(total);
         $("#modal_pago").modal("show");
     });
 }
@@ -144,7 +152,7 @@ function registrar_pagos() {
         referencia_pago: $("#referencia_pago").val(),
         observaciones: $("#observaciones").val(),
         dias_mas: $("#dias_mas").val(),
-        cargo_extra: $("#cargo_extra").val()
+        cargo_extra: $("#mora").val()
 
     };
     // se parsea de text a number

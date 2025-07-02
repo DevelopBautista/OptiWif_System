@@ -55,7 +55,7 @@ class modelo_servicio
             if ($stmt->execute()) {
                 // obtener el id_contrato
                 $id_contrato = $this->conn->conexion->lastInsertId();
-                $monto = $m->obtenerPrecioPlan($id_plan);
+                $monto = $m->obtenerPrecioPlanPorContrato($id_plan);
                 $m->crearMensualidades($id_contrato, $fecha_contrato, $monto, 1, $cargo_extra); // la 1ra mensualidad con cargo_extra
 
                 return [

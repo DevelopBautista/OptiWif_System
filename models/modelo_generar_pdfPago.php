@@ -20,7 +20,7 @@ class modelo_ticket
     }
 
 
-    public function imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago)
+    public function imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $fecha_pago, $metodo_pago,$mora)
     {
         $sql = "SELECT nombre,direccion,telefono,rnc,logo FROM empresa";
         $stmt = $this->conn->conexion->prepare($sql);
@@ -72,6 +72,7 @@ class modelo_ticket
                 <div>N° Factura  : ' . htmlspecialchars($numero_factura) . '</div>
                 <div>Cliente     : ' . htmlspecialchars($cliente) . '</div>
                 <div>Mensualidad : ' . htmlspecialchars($fecha_pago) . '</div>
+                 <div>Mora : ' . MONEDA . number_format($mora, 2, ',', '.') . '</div>
                 <div>Fecha       : ' . FECHA_HORA . '</div>
                 <div>Método      : ' . htmlspecialchars($metodo_pago) . '</div>
             <div><strong>Total : ' . MONEDA . number_format($monto_total_pagar, 2, ',', '.') . '</strong></div>

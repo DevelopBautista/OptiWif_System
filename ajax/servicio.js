@@ -214,9 +214,9 @@ function crearServicio() {
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");
+
         console.error("AJAX error:", errorThrown);
-        console.log("Error:", error);
-        console.log("Texto de respuesta:", xhr.responseText);
+        console.log("Texto de respuesta:", jqXHR.responseText);
     });
 }
 

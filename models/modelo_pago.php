@@ -125,13 +125,14 @@ class modelo_pago
         }
     }
 
-    public function listar_pagos()//esta 
+    public function listar_pagos() //esta 
     {
         $sql = "SELECT m.id_mensualidad,
                        c.nombre_completo as cliente,
                        p.nombre_plan as plan,
                        m.monto,
                        m.estado,
+                       m.cargo_extra as mora,
                        m.fecha_inicio,
                        m.fecha_vencimiento as fecha_pagos
                 FROM mensualidades m
@@ -146,7 +147,7 @@ class modelo_pago
     }
 
 
-    public function listar_pagos_realizados()// y esta
+    public function listar_pagos_realizados() // y esta
     {
         $sql = "SELECT 
                     ps.id_pago_servicio as id,

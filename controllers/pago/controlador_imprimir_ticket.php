@@ -18,8 +18,9 @@ $sql = "SELECT ps.fecha_pago,
                c.nombre_completo AS cliente,
                f.numero_factura,
                f.id_factura,
+               m.cargo_extra AS mora,
                f.id_pago_servicio,
-               m.monto
+               m.monto as mensualidad
         FROM facturas f
         JOIN pago_servicio ps ON f.id_pago_servicio = ps.id_pago_servicio
         JOIN mensualidades m ON ps.id_mensualidad = m.id_mensualidad
@@ -38,9 +39,10 @@ if (!$datos) {
 $numero_factura = $datos['numero_factura'];
 $cliente = $datos['cliente'];
 $monto_total_pagar = $datos['monto'];
-$fecha_pago = $datos['fecha_pago'];
+$mensualidad = $datos['mensualidad'];
 $metodo_pago = $datos['metodo_pago'];
+$mora = $datos['mora'];
 
 $ticket = new modelo_ticket();
 
-$ticket->imprimir_ticket_pos($numero_factura,$cliente, $monto_total_pagar, $fecha_pago, $metodo_pago);
+$ticket->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $mensualidad, $metodo_pago, $mora);

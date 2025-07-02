@@ -44,10 +44,12 @@
                     <div class="row">
                         <div class="form-group col-md-5">
                             <input type="hidden" id="id_plan">
+                            <label for="nom_show">Nombre del Plan:</label>
                             <input type="text" class="form-control" name="nom_plan_up" id="nom_plan_up"
                                 placeholder="Nombre del Plan">
                         </div>
                         <div class="form-group col-md-6">
+                            <label for="nom_show">Megas:</label>
                             <input type="text" class="form-control" id="velocidad_up" name="velocidad_up"
                                 placeholder="Velocidad">
                         </div>
@@ -55,6 +57,7 @@
                     <!--f02-->
                     <div class="row">
                         <div class="form-group col-md-5">
+                            <label for="nom_show">Precio:</label>
                             <input type="text" class="form-control" id="precio_plan_up" name="precio_plan_up"
                                 placeholder="Precio">
                         </div>

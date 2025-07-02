@@ -31,8 +31,6 @@
 
 </div>
 
-
-
 <!--form cobro-->
 <div class="modal" tabindex="-1" role="dialog" id="modal_pago" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
@@ -48,8 +46,11 @@
                     <label>Cliente</label>
                     <input type="text" id="cliente" name="cliente" class="form-control" disabled><br>
 
-                    <label>Monto total a pagar</label>
-                    <input type="text" id="monto_total_pagar" name="monto_total_pagar" class="form-control" disabled><br>
+                    <label>Mensualidad</label>
+                    <input type="text" id="cuotas_mensual" name="cuotas_mensual" class="form-control" disabled><br>
+
+                    <label>Mora</label>
+                    <input type="text" id="mora" name="mora" class="form-control" disabled><br>
 
                     <label>Fecha de pago</label>
                     <input type="date" id="fecha_pago" name="fecha_pago" class="form-control" value="<?= date('Y-m-d') ?>" disabled><br>
@@ -58,7 +59,6 @@
                     <select name="metodo_pago" id="metodo_pago" class="form-control">
                         <option value="Efectivo">Efectivo</option>
                         <option value="Transferencia">Transferencia</option>
-                        <option value="Pago móvil">Pago móvil</option>
                     </select><br>
 
                     <label>Referencia de pago (si aplica)</label>
@@ -66,6 +66,9 @@
 
                     <label>Observaciones</label>
                     <textarea id="observaciones" name="observaciones" class="form-control" rows="2"></textarea><br>
+
+                    <label>Total apagar</label>
+                    <input type="text" id="monto_total_pagar" name="monto_total_pagar" class="form-control" disabled><br>
 
                     <label>Efectivo recibido</label>
                     <input type="number" id="efectivo" name="efectivo" class="form-control" placeholder="Entrada de dinero"><br>
