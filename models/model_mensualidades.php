@@ -114,7 +114,7 @@ class modelo_mensualidad
         }
     }
 
-    // ✅ Generar nueva mensualidad solo si el cliente tiene menos de 2 vencidas
+    //Generar nueva mensualidad solo si el cliente tiene menos de 2 vencidas
     public function generarMensualidadSiguiente()
     {
         $estado = "pendiente";

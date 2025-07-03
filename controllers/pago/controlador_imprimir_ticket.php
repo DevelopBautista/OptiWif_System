@@ -3,7 +3,9 @@ session_start();
 require_once("../../models/modelo_generar_pdfPago.php");
 
 if (!isset($_GET['num_factura'])) {
-    die("No se proporcionó el número de factura.");
+    error_log("No se proporcionó el número de factura.", 3, 'logs/error_ticket.log');
+    header("Location: error_ticket.php?msg=" . urlencode("No se proporcionó el número de factura."));
+    exit;
 }
 
 $numero_factura = $_GET['num_factura'];
@@ -13,36 +15,41 @@ require_once("../../models/modelo_conexion.php");
 $conn = new Conexion();
 $conn->conectar();
 
-$sql = "SELECT ps.fecha_pago, 
-               ps.metodo_pago,
+$sql = "SELECT f.numero_factura,
+               f.fecha_emision,
+               p.metodo_pago,
+               p.referencia_pago,
+               p.observaciones,
+               p.mora_pagada,
+               p.fecha_pago,
                c.nombre_completo AS cliente,
-               f.numero_factura,
-               f.id_factura,
-               m.cargo_extra AS mora,
-               f.id_pago_servicio,
-               m.monto as mensualidad
+               (m.monto - p.mora_pagada) AS mensualidad_base,
+               m.monto AS total_pagado
         FROM facturas f
-        JOIN pago_servicio ps ON f.id_pago_servicio = ps.id_pago_servicio
-        JOIN mensualidades m ON ps.id_mensualidad = m.id_mensualidad
-        JOIN contratos_servicio cs ON ps.id_contrato = cs.id_contrato
+        JOIN pago_servicio p ON f.id_pago_servicio = p.id_pago_servicio
+        JOIN mensualidades m ON p.id_mensualidad = m.id_mensualidad
+        JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato
         JOIN clientes c ON cs.id_cliente = c.id_cliente
         WHERE f.numero_factura = ?";
 
-$stmt = $conn->conexion->prepare($sql);
-$stmt->execute([$numero_factura]);
-$datos = $stmt->fetch(PDO::FETCH_ASSOC);
+try {
+    $stmt = $conn->conexion->prepare($sql);
+    $stmt->execute([$numero_factura]);
+    $datos = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$datos) {
-    die("No se encontró la factura.");
+    if (!$datos) {
+        throw new Exception("No se encontró la factura.");
+    }
+
+    $numero_factura = $datos['numero_factura'];
+    $cliente = $datos['cliente'];
+    $mensualidad_base = floatval($datos['mensualidad_base']); // ahora sí es solo la mensualidad
+    $mora = floatval($datos['mora_pagada']);
+    $metodo_pago = $datos['metodo_pago'];
+    $total_pagado = floatval($datos['total_pagado']); // = mensualidad_base + mora
+
+    $ticket = new modelo_ticket();
+    $ticket->imprimir_ticket_pos($numero_factura, $cliente, $mensualidad_base, $mora, $metodo_pago, $total_pagado);
+} catch (Exception $e) {
+    die("Error al generar el ticket: " . $e->getMessage());
 }
-//variables para enviar a la funcion imprimir_ticket_pos
-$numero_factura = $datos['numero_factura'];
-$cliente = $datos['cliente'];
-$monto_total_pagar = $datos['monto'];
-$mensualidad = $datos['mensualidad'];
-$metodo_pago = $datos['metodo_pago'];
-$mora = $datos['mora'];
-
-$ticket = new modelo_ticket();
-
-$ticket->imprimir_ticket_pos($numero_factura, $cliente, $monto_total_pagar, $mensualidad, $metodo_pago, $mora);

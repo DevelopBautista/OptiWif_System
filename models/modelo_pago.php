@@ -24,14 +24,14 @@ class modelo_pago
         $this->conn->conectar();
     }
 
-    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones, $dias_mas, $cargo_extra)
+    public function registrar_pago($id_mensualidad, $monto_total_pagar, $fecha_pago, $metodo_pago, $referencia_pago, $observaciones, $mora_pagada)
     {
         // Obtener datos de la mensualidad y del contrato
         $sql_datos = "SELECT m.monto, m.fecha_vencimiento, m.estado, cs.id_contrato, c.nombre_completo as cliente
-                    FROM mensualidades m 
-                    JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
-                    JOIN clientes c on cs.id_cliente = c.id_cliente
-                    WHERE m.id_mensualidad = ?";
+                FROM mensualidades m 
+                JOIN contratos_servicio cs ON m.id_contrato = cs.id_contrato 
+                JOIN clientes c on cs.id_cliente = c.id_cliente
+                WHERE m.id_mensualidad = ?";
         $stmt = $this->conn->conexion->prepare($sql_datos);
         $stmt->execute([$id_mensualidad]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,21 +47,11 @@ class modelo_pago
 
         $id_contrato = $row['id_contrato'];
         $monto_original = $row['monto'];
-        $fecha_vencimiento = new DateTime($row['fecha_vencimiento']);
         $cliente = $row['cliente'];
 
-        // Calcular fecha con días de gracia
-        $fecha_gracia = clone $fecha_vencimiento;
-        $dias_mas = (int) $dias_mas;
-        $fecha_gracia->modify("+{$dias_mas} days");
-        $fecha_actual = new DateTime($fecha_pago);
+        $cargo_mora = floatval($mora_pagada);  // Mora ya calculada y pasada como parámetro
 
-        // Calcular cargo de mora solo si se pasa de la fecha de gracia
-        $cargo_mora = 0;
-        if ($fecha_actual > $fecha_gracia) {
-            $cargo_mora = $cargo_extra;
-        }
-
+        // Recalcular el monto total a pagar (monto original + mora)
         $monto_total_pagar = $monto_original + $cargo_mora;
 
         // Iniciar transacción
@@ -70,25 +60,27 @@ class modelo_pago
         try {
             // 1. Actualizar mensualidad
             $sql_update = "UPDATE mensualidades 
-                       SET estado = 'pagado', 
-                           monto = ?, 
-                           fecha_pago = ?, 
-                           cargo_extra = ?
-                       WHERE id_mensualidad = ?";
+                   SET estado = 'pagado', 
+                       monto = ?, 
+                       fecha_pago = ?, 
+                       cargo_extra = ?
+                   WHERE id_mensualidad = ?";
             $stmt_update = $this->conn->conexion->prepare($sql_update);
             $stmt_update->execute([$monto_total_pagar, $fecha_pago, $cargo_mora, $id_mensualidad]);
 
-            // 2. Insertar en pago_servicio
+            // 2. Insertar en pago_servicio con mora_pagada incluida
             $sql_insert = "INSERT INTO pago_servicio (
-                           id_contrato,
-                           fecha_pago,
-                           metodo_pago,
-                           estado_pago,
-                           referencia_pago,
-                           observaciones,
-                           creado_en,
-                           id_mensualidad
-                       ) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
+               id_contrato,
+               fecha_pago,
+               metodo_pago,
+               estado_pago,
+               referencia_pago,
+               observaciones,
+               creado_en,
+               id_mensualidad,
+               mora_pagada
+           ) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?)";
+
             $stmt_insert = $this->conn->conexion->prepare($sql_insert);
             $stmt_insert->execute([
                 $id_contrato,
@@ -97,21 +89,18 @@ class modelo_pago
                 'pagado',
                 $referencia_pago,
                 $observaciones,
-                $id_mensualidad
+                $id_mensualidad,
+                $cargo_mora
             ]);
 
-            // 3. Generar factura aqui es que se genera el nuemro:factura
+            // 3. Generar factura con número
             $id_pago = $this->conn->conexion->lastInsertId();
             $numero_factura = 'Fact-' . str_pad($id_pago, 8, '0', STR_PAD_LEFT);
-            try {
-                $sql_factura = "INSERT INTO facturas (numero_factura, id_pago_servicio, fecha_emision) 
-                            VALUES (?, ?, NOW())";
-                $stmt_factura = $this->conn->conexion->prepare($sql_factura);
-                $stmt_factura->execute([$numero_factura, $id_pago]);
-            } catch (Exception $e) {
-                error_log("Error insertando factura: " . $e->getMessage());
-            }
 
+            $sql_factura = "INSERT INTO facturas (numero_factura, id_pago_servicio, fecha_emision) 
+                        VALUES (?, ?, NOW())";
+            $stmt_factura = $this->conn->conexion->prepare($sql_factura);
+            $stmt_factura->execute([$numero_factura, $id_pago]);
 
             $this->conn->conexion->commit();
 

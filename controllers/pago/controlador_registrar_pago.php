@@ -7,15 +7,14 @@ header('Content-Type: application/json');
 require_once '../../models/modelo_pago.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validar y capturar datos
-    $id_mensualidad    = $_POST['id_mensualidad'];
-    $monto_total_pagar = $_POST['monto_total_pagar'];
-    $fecha_pago        = $_POST['fecha_pago'] ?? date('Y-m-d');
-    $metodo_pago       = $_POST['metodo_pago'];
-    $referencia_pago   = $_POST['referencia_pago'] ?? '';
-    $observaciones     = $_POST['observaciones'] ?? '';
-    $dias_mas          = $_POST['dias_mas'] ?? '';
-    $cargo_extra       = $_POST['cargo_extra'] ?? '';
+    // Capturar datos
+    $id_mensualidad     = $_POST['id_mensualidad'];
+    $monto_total_pagar  = floatval($_POST['monto_total_pagar']);
+    $fecha_pago         = $_POST['fecha_pago'] ?? date('Y-m-d');
+    $metodo_pago        = $_POST['metodo_pago'];
+    $referencia_pago    = $_POST['referencia_pago'] ?? '';
+    $observaciones      = $_POST['observaciones'] ?? '';
+    $mora_pagada        = isset($_POST['mora']) ? floatval($_POST['mora']) : 0.00;
 
     $pagoServicio = new modelo_pago();
 
@@ -28,6 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Verificar si ya se pagó
     $estadoPago = $pagoServicio->verificar_pago_existe($id_mensualidad);
 
     if ($estadoPago === true) {
@@ -44,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Registrar el pago
     $resultado = $pagoServicio->registrar_pago(
         $id_mensualidad,
         $monto_total_pagar,
@@ -51,8 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $metodo_pago,
         $referencia_pago,
         $observaciones,
-        $dias_mas,
-        $cargo_extra
+        $mora_pagada // ahora se pasa correctamente
     );
 
     $response = json_decode($resultado);

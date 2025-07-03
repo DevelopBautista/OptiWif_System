@@ -50,7 +50,10 @@
                     <input type="text" id="cuotas_mensual" name="cuotas_mensual" class="form-control" disabled><br>
 
                     <label>Mora</label>
-                    <input type="text" id="mora" name="mora" class="form-control" disabled><br>
+                    <!-- Input visible pero deshabilitado -->
+                    <input type="text" id="mora_mostrar" class="form-control" disabled><br>
+                    <!-- Input oculto que se enviará al backend -->
+                    <input type="hidden" id="mora" name="mora">
 
                     <label>Fecha de pago</label>
                     <input type="date" id="fecha_pago" name="fecha_pago" class="form-control" value="<?= date('Y-m-d') ?>" disabled><br>
@@ -67,41 +70,54 @@
                     <label>Observaciones</label>
                     <textarea id="observaciones" name="observaciones" class="form-control" rows="2"></textarea><br>
 
-                    <label>Total apagar</label>
+                    <label>Total a pagar</label>
                     <input type="text" id="monto_total_pagar" name="monto_total_pagar" class="form-control" disabled><br>
+                    <input type="hidden" id="monto_total" name="monto_total"><!-- importante -->
 
                     <label>Efectivo recibido</label>
                     <input type="number" id="efectivo" name="efectivo" class="form-control" placeholder="Entrada de dinero"><br>
-                    <!--scritp para mostrar el cambio del efectivo-->
-                    <script>
-                        document.getElementById("efectivo").addEventListener("input", function() {
-                            const efectivo = parseFloat(this.value) || 0;
-                            const monto = parseFloat(document.getElementById("monto_total_pagar").value) || 0;
-                            const devuelta = efectivo - monto;
 
-                            document.getElementById("devuelta").value = devuelta >= 0 ? devuelta.toFixed(2) : "0.00";
-                        });
-                    </script>
                     <label>Devuelta</label>
                     <input type="text" id="devuelta" name="devuelta" class="form-control" readonly><br>
                 </form>
-
-
-
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="registrar_pagos()" class="btn btn-warning"><i class="fa  fa-check"><b>&nbsp;Cobrar</b></i></button>
+                <button type="button" onclick="registrar_pagos()" class="btn btn-warning">
+                    <i class="fa fa-check"><b>&nbsp;Cobrar</b></i>
+                </button>
                 <button type="button" class="btn btn-danger" data-dismiss="modal">
-                    <i class="fa fa-close"><b>&nbsp;Cancelar</b></i></button>
+                    <i class="fa fa-close"><b>&nbsp;Cancelar</b></i>
+                </button>
             </div>
         </div>
     </div>
 </div>
+
+
 <!--====================================-->
 <script>
     $(document).ready(function() {
         $(".metodo_pago").select2();
         listar_pagos_ajax();
+        calcular_devuelta();
     });
+</script>
+
+
+<script>
+    //----------- Calcular Devuelta ---------------------
+    function calcular_devuelta() {
+        const efectivoInput = document.getElementById("efectivo");
+        if (efectivoInput) {
+            efectivoInput.addEventListener("input", function() {
+                const efectivo = parseFloat(this.value) || 0;
+                const total = parseFloat(document.getElementById("monto_total").value) || 0;
+                const devuelta = efectivo - total;
+
+                document.getElementById("devuelta").value = devuelta >= 0 ? devuelta.toFixed(2) : "0.00";
+            });
+        }
+
+    }
 </script>
 <?php include("incluids/inferior.php"); ?>

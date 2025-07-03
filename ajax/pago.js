@@ -1,5 +1,4 @@
-
-//dataTables
+// Configuración de idioma para DataTables
 var idioma_espanol = {
     "sProcessing": "Procesando...",
     "sLengthMenu": "Mostrar _MENU_ registros",
@@ -16,10 +15,11 @@ var idioma_espanol = {
         "sPrevious": "Anterior"
     }
 };
-//variable para luego ser usada en otros lugares
+
 var tabla;
 let $url_factura = "../views/libreporte/reports/facturas";
-//-----------se lista los pagos---------------------
+
+//----------- Listar pagos pendientes ---------------------
 function listar_pagos_ajax() {
     tabla = $('#tabla_pagos').DataTable({
         "ajax": {
@@ -42,6 +42,7 @@ function listar_pagos_ajax() {
                     } else if (data === 'vencido') {
                         return "<span class='label label-danger'>" + data + "</span>";
                     }
+                    return data;
                 }
             },
             {
@@ -50,44 +51,45 @@ function listar_pagos_ajax() {
         ],
         "language": idioma_espanol,
         "destroy": true,
-        "responsive": true //Asegura que soporte vista móvil
+        "responsive": true
     });
 
-    //Adaptado para funcionar en modo móvil también
     $('#tabla_pagos').on('click', '.btn-info', function () {
         var tr = $(this).closest('tr');
-        var row = tabla.row(tr);
-
-        // Si es una fila .child, buscar la anterior (la principal)
-        if (tr.hasClass('child')) {
-            row = tabla.row(tr.prev());
-        }
-
+        var row = tabla.row(tr.hasClass('child') ? tr.prev() : tr);
         var data = row.data();
 
         if (!data) {
             Swal.fire("Error", "No se pudo obtener los datos de la fila.", "error");
             return;
         }
-        //aqui envio los datos a los inputs
-        var total = parseInt(data.monto);
-        var mora = parseInt(data.mora);
-        if (!isNaN(mora) && mora > 0) {
-            total = total + mora;
+
+        let monto = parseFloat(data.monto) || 0;
+        let mora = 0;
+        let total = monto;
+
+        if (data.estado === 'vencido') {
+            mora = parseFloat(data.mora) || 0;
+            total += mora;
         }
 
         $("#id_mensualidad").val(data.id_mensualidad);
         $("#cliente").val(data.cliente);
-        $("#cuotas_mensual").val(data.monto);
+        $("#cuotas_mensual").val(monto.toFixed(2));
         $("#fecha_pago").val(data.fecha_pagos);
         $("#estado_pago").val(data.estado);
-        $("#mora").val(data.mora);
-        $("#monto_total_pagar").val(total);
+
+        $("#mora").val(mora.toFixed(2));
+        $("#mora_mostrar").val(mora.toFixed(2)); // si usas input visible para mostrar
+        $("#monto_total_pagar").val(total.toFixed(2));
+        $("#monto_total").val(total.toFixed(2)); // campo oculto para enviar al backend
+
         $("#modal_pago").modal("show");
     });
+
 }
 
-//-----------se lista los pagos realizados---------------------
+//----------- Listar pagos realizados ---------------------
 function listar_pagos_realizados_ajax() {
     tabla = $('#tabla_pagos_realizados').DataTable({
         "ajax": {
@@ -102,73 +104,41 @@ function listar_pagos_realizados_ajax() {
         ],
         dom: 'Bfrtip',
         buttons: [
-            {
-                extend: 'copyHtml5',
-                text: '<i class="fas fa-copy"></i> Copiar',
-                className: 'btn-export-copy',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'excelHtml5',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'btn-export-excel',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'csvHtml5',
-                text: '<i class="fas fa-file-csv"></i> CSV',
-                className: 'btn-export-csv',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'pdfHtml5',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'btn-export-pdf',
-                exportOptions: { columns: ':not(:last-child)' }
-            },
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i> Imprimir',
-                className: 'btn-export-print',
-                exportOptions: { columns: ':not(:last-child)' }
-            }
+            { extend: 'copyHtml5', text: '<i class="fas fa-copy"></i> Copiar', className: 'btn-export-copy', exportOptions: { columns: ':not(:last-child)' } },
+            { extend: 'excelHtml5', text: '<i class="fas fa-file-excel"></i> Excel', className: 'btn-export-excel', exportOptions: { columns: ':not(:last-child)' } },
+            { extend: 'csvHtml5', text: '<i class="fas fa-file-csv"></i> CSV', className: 'btn-export-csv', exportOptions: { columns: ':not(:last-child)' } },
+            { extend: 'pdfHtml5', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'btn-export-pdf', exportOptions: { columns: ':not(:last-child)' } },
+            { extend: 'print', text: '<i class="fas fa-print"></i> Imprimir', className: 'btn-export-print', exportOptions: { columns: ':not(:last-child)' } }
         ],
-
         "language": idioma_espanol,
         "destroy": true
     });
-
-
-
 }
 
-//funcion para registrar un pago
+//----------- Registrar pagos ---------------------
 function registrar_pagos() {
-    let formData = {// agrupo todo en una sola variable(no sabia eso)
-        id_mensualidad: $("#id_mensualidad").val(),
-        monto_total_pagar: $("#monto_total_pagar").val(),
-        fecha_pago: $("#fecha_pago").val(),
-        metodo_pago: $("#metodo_pago").val(),
-        referencia_pago: $("#referencia_pago").val(),
-        observaciones: $("#observaciones").val(),
-        dias_mas: $("#dias_mas").val(),
-        cargo_extra: $("#mora").val()
-
-    };
-    // se parsea de text a number
-    //var estado_paga = $("#estado_pago").val();
-    var monto_total_pagar = parseFloat($("#monto_total_pagar").val());
     var efectivo = parseFloat($("#efectivo").val());
-    // se evalua que no sea vacio O menor a 0
+    var total = parseFloat($("#monto_total").val());
+
     if (isNaN(efectivo) || efectivo <= 0) {
         Swal.fire("Advertencia", "Ingresa un valor válido de efectivo", "warning");
         return;
     }
-    // me aseguro que el monto introducido sea mayor O igual a la mensualidad
-    if (efectivo < monto_total_pagar) {
-        Swal.fire("Advertencia", "El efectivo debe ser mayor o igual al monto de la mensualidad", "warning");
+
+    if (efectivo < total) {
+        Swal.fire("Advertencia", "El efectivo debe ser mayor o igual al monto total a pagar", "warning");
         return;
     }
+
+    let formData = {
+        id_mensualidad: $("#id_mensualidad").val(),
+        monto_total_pagar: $("#monto_total").val(),
+        fecha_pago: $("#fecha_pago").val(),
+        metodo_pago: $("#metodo_pago").val(),
+        referencia_pago: $("#referencia_pago").val(),
+        observaciones: $("#observaciones").val(),
+        mora: $("#mora").val()
+    };
 
     $.ajax({
         url: "../controllers/pago/controlador_registrar_pago.php",
@@ -178,24 +148,21 @@ function registrar_pagos() {
     }).done(function (resp) {
         if (resp.exito) {
             Swal.fire({
-                title: "mensaje de confirmación",
-                text: "Exito" + resp.mensaje,
+                title: "Éxito",
+                text: resp.mensaje,
                 icon: "success",
                 showConfirmButton: false,
                 timer: 2000
-
             }).then(function () {
                 $('#modal_pago').modal('hide');
                 $('#frm_pago')[0].reset();
                 if (typeof tabla !== "undefined") {
                     tabla.ajax.reload(null, false);
                 }
-                var url = '../controllers/pago/controlador_imprimir_ticket.php?num_factura=' + resp.nfactura;
-                window.open(url, '_blank');
+                window.open('../controllers/pago/controlador_imprimir_ticket.php?num_factura=' + resp.nfactura, '_blank');
             });
-
         } else {
-            Swal.fire("mensaje de error", resp.mensaje || "No se pudo registrar el pago", "error");
+            Swal.fire("Error", resp.mensaje || "No se pudo registrar el pago", "error");
         }
     }).fail(function (jqXHR, textStatus, errorThrown) {
         Swal.fire("Error", "Error de servidor: " + textStatus, "error");
@@ -205,17 +172,11 @@ function registrar_pagos() {
 }
 
 
-//llamando modal modal_ver_clientes
-
+//----------- Buscar cliente desde modal -------------
 function bsucar_cliente_modal() {
     $("#modal_ver_clientes").modal("show");
     listar_clientes_servicio();
 }
-
-
-
-
-
 
 
 
