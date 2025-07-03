@@ -40,8 +40,8 @@ class modelo_ticket
             'margin_right' => 5,
             'margin_top' => 5,
             'margin_bottom' => 5,
+            'tempDir' => __DIR__ . '/../views/libreporte/tmp/mpdf'
         ]);
-
         $html = '<div style="text-align: center; font-family: monospace; font-size: 10pt; line-height: 1.4;">';
 
         if (!empty($logoEmpresa) && file_exists($rutaLogo)) {
@@ -70,7 +70,7 @@ class modelo_ticket
         <div>Mensualidad    : ' . MONEDA . number_format($mensualidad, 2, ',', '.') . '</div>';
 
         if ($mora > 0) {
-            $html .= '<div>Mora           : ' . MONEDA . number_format($mora, 2, ',', '.') . '</div>';
+            $html .= '<div>Mora     : ' . MONEDA . number_format($mora, 2, ',', '.') . '</div>';
         }
 
         $html .= '

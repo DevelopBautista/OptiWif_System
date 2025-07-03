@@ -10,3 +10,4 @@ if ($resultado) {
 } else {
     echo json_encode(['exito' => false]);
 }
+exit;

@@ -33,10 +33,10 @@ class modelo_cierre_caja
     // Total del día (mensualidad + mora)
     public function totalDelDia()
     {
-        $sql = "SELECT SUM(m.monto + IFNULL(p.mora_pagada,0)) as total
+        $sql = "SELECT SUM(m.monto) AS total
                 FROM pago_servicio p
                 INNER JOIN mensualidades m ON p.id_mensualidad = m.id_mensualidad
-                WHERE DATE(p.creado_en) = CURDATE() AND p.cerrado = 0";
+                WHERE DATE(p.creado_en) = CURDATE() AND p.cerrado = 1;";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);

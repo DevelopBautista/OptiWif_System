@@ -18,7 +18,10 @@ $total_caja = number_format($resultado['total_caja'], 2);
 $fecha_cierre = $resultado['fecha_cierre'] ?? '---';
 
 // Crear PDF
-$mpdf = new \Mpdf\Mpdf();
+if (!is_writable(__DIR__ . '/../../tmp/mpdf')) {
+    die('La carpeta tmp/mpdf no es escribible.');
+}
+$mpdf = new \Mpdf\Mpdf(['tempDir' => __DIR__ . '/../../tmp/mpdf']);
 $html = "
     <div style='max-width: 600px; margin: auto; font-family: Arial, sans-serif; color: #333;'>
         <h2 style='text-align: center; color: #2c3e50; border-bottom: 2px solid #2980b9; padding-bottom: 10px;'>
