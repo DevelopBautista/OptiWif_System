@@ -40,10 +40,7 @@
                             <button type="button" id="btn_abrir_caja" class="btn btn-primary" onclick="registrarApertura()">
                                 <i class="fa fa-check"></i> <b>&nbsp;Abrir Caja</b>
                             </button>
-
-                            <button type="reset" class="btn btn-danger">
-                                <i class="fa fa-close"></i> <b>&nbsp;Cancelar</b>
-                            </button>
+                            <a href="" class="btn btn-danger"><i class="fa fa-close"><b>&nbsp;Cancelar</b></i></a>
                         </div>
                     </form>
                 </div>
