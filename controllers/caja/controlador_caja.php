@@ -50,7 +50,19 @@ switch ($accion) {
         $registrado = $caja->cerrarCaja($total_real, $observaciones, $id_usuario);
 
         if ($registrado) {
-            echo json_encode(['status' => 'ok', 'mensaje' => 'Cierre registrado y caja cerrada correctamente']);
+            $datosCierre = $caja->buscarCierrePorFecha(date('Y-m-d'));
+
+            $diferencia = $datosCierre['diferencia'] ?? 0;
+            $estado_caja = $diferencia > 0 ? 'Sobra dinero' : ($diferencia < 0 ? 'Falta dinero' : 'Caja cuadrada');
+
+            echo json_encode([
+                'status' => 'ok',
+                'mensaje' => 'Cierre registrado y caja cerrada correctamente.',
+                'total_sistema' => $datosCierre['total_sistema'] ?? 0,
+                'total_real' => $datosCierre['total_real'] ?? 0,
+                'diferencia' => $diferencia,
+                'estado_caja' => $estado_caja
+            ]);
         } else {
             echo json_encode(['status' => 'error', 'mensaje' => 'Error al registrar cierre']);
         }
@@ -69,6 +81,11 @@ switch ($accion) {
         }
         $datosCierre = $caja->buscarCierrePorFecha($fecha);
         if ($datosCierre) {
+            $diferencia = $datosCierre['diferencia'] ?? 0;
+            $estado_caja = $diferencia > 0 ? 'Sobra dinero' : ($diferencia < 0 ? 'Falta dinero' : 'Caja cuadrada');
+
+            $datosCierre['estado_caja'] = $estado_caja;
+
             echo json_encode(['exito' => true, 'datos' => $datosCierre]);
         } else {
             echo json_encode(['exito' => false, 'mensaje' => 'No se encontró cierre para esa fecha']);

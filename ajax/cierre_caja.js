@@ -69,21 +69,67 @@ function buscarCierrePorFecha() {
             if (resp.exito && resp.datos) {
                 const datos = resp.datos;
 
-                let montoInicial = parseFloat(datos.monto_apertura || datos.monto_inicial);
-                let montoFinal = parseFloat(datos.total_caja || datos.total_sistema);
+
+
+
+                let montoInicial = parseFloat(datos.monto_apertura);
+                let montoFinal = parseFloat(datos.total_sistema);
                 let total_movimientos = parseFloat(datos.total_cerrados || 0);
+                let total_real = parseFloat(datos.total_real || 0);
 
                 montoInicial = isNaN(montoInicial) ? 0 : montoInicial;
                 montoFinal = isNaN(montoFinal) ? 0 : montoFinal;
                 total_movimientos = isNaN(total_movimientos) ? 0 : total_movimientos;
+                total_real = isNaN(total_real) ? 0 : total_real;
+                console.log(total_real);
+                console.log(total_movimientos);
+                console.log(montoInicial);
+                console.log(montoFinal);
+                let diferencia = (total_real + montoInicial) - montoFinal;
+
+                let estadoCaja = datos.estado_caja || '';
+                let color = 'black';
+                let icono = '';
+
+                // Define estadoCaja según diferencia
+                if (Math.abs(diferencia) < 0.01) {
+                    estadoCaja = 'Caja cuadrada';
+                } else if (diferencia < 0) {
+                    estadoCaja = 'Falta dinero';
+                } else {
+                    estadoCaja = 'Sobra dinero';
+                }
+
+                if (estadoCaja === 'Caja cuadrada') {
+                    color = 'green';
+                    icono = '✅';
+                } else if (estadoCaja === 'Falta dinero') {
+                    color = 'red';
+                    icono = '⚠️';
+                } else if (estadoCaja === 'Sobra dinero') {
+                    color = 'blue';
+                    icono = '💰';
+                }
+
+                let diferenciaTexto = `
+                    <p style="color: ${color};">
+                        <strong>${icono} ${estadoCaja}`;
+
+                if (estadoCaja !== 'Caja cuadrada') {
+                    diferenciaTexto += `: RD$ ${Math.abs(diferencia).toFixed(2)}`;
+                }
+
+                diferenciaTexto += `</strong></p>`;
 
                 let mensaje = `
                     <div style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; background-color: #f9f9f9; font-family: Arial, sans-serif; font-size: 14px; line-height: 1.6;">
                         <p><strong>👤 Usuario:</strong> ${datos.nombre_usuario}</p>
                         <p><strong>💰 Monto Inicial:</strong> RD$ ${montoInicial.toFixed(2)}</p>
                         <p><strong>📥 Total de pagos procesados:</strong> RD$ ${total_movimientos.toFixed(2)}</p>
-                        <p><strong>🧮 Monto Final:</strong> RD$ ${montoFinal.toFixed(2)}</p>
+                        <p><strong>💵 Monto contado en caja:</strong> RD$ ${total_real.toFixed(2)}</p>
+                        <p><strong>🧮 Monto esperado (sistema):</strong> RD$ ${montoFinal.toFixed(2)}</p>
                         <p><strong>📅 Fecha de Cierre:</strong> ${datos.fecha_cierre ?? '---'}</p>
+                        ${diferenciaTexto}
                     </div>
                 `;
 
@@ -101,6 +147,8 @@ function buscarCierrePorFecha() {
         }
     });
 }
+
+
 
 function generarReporte() {
     var fecha = $('#fecha_busqueda').val();

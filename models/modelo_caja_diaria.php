@@ -32,17 +32,21 @@ class modelo_caja_diaria
 
     public function cerrarCaja($total_real, $observaciones, $id_usuario)
     {
-        $sqlTotal = "SELECT SUM(m.monto) AS total
-                 FROM pago_servicio p
-                 INNER JOIN mensualidades m ON p.id_mensualidad = m.id_mensualidad
-                 WHERE DATE(p.creado_en) = CURDATE() AND p.cerrado = 0";
+        $sqlTotal = "SELECT SUM(m.monto) AS total_pagos
+             FROM pago_servicio p
+             INNER JOIN mensualidades m ON p.id_mensualidad = m.id_mensualidad
+             WHERE DATE(p.creado_en) = CURDATE() AND p.cerrado = 0";
 
         $stmtTotal = $this->conn->conexion->prepare($sqlTotal);
         $stmtTotal->execute();
         $row = $stmtTotal->fetch(PDO::FETCH_ASSOC);
-        $total_sistema = $row['total'] ?? 0;
+        $pagos_dia = $row['total_pagos'] ?? 0;
 
-        $diferencia = $total_real - $total_sistema;
+        $monto_apertura = $this->obtenerMontoApertura($id_usuario);
+
+        $total_sistema = $pagos_dia + $monto_apertura;
+
+        $diferencia = $total_real - $total_sistema;//aqui
 
         $sql = "UPDATE caja_diaria 
             SET total_sistema = :total_sistema, 
@@ -127,13 +131,24 @@ class modelo_caja_diaria
           AND ps2.cerrado = 1
     ), 0)) AS total_caja
 
-FROM caja_diaria c
-LEFT JOIN usuario u ON c.id_usuario = u.id_usuario
-WHERE c.fecha = :fecha
-LIMIT 1";
+    FROM caja_diaria c
+    LEFT JOIN usuario u ON c.id_usuario = u.id_usuario
+    WHERE c.fecha = :fecha
+    LIMIT 1";
         $stmt = $this->conn->conexion->prepare($sql);
         $stmt->bindParam(':fecha', $fecha);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerMontoApertura($id_usuario)
+    {
+        $sql = "SELECT monto_apertura FROM caja_diaria 
+            WHERE fecha = CURDATE() AND id_usuario = :id_usuario AND fecha_cierre IS NULL";
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['monto_apertura'] ?? 0;
     }
 }
