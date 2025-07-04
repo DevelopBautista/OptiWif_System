@@ -1,6 +1,6 @@
 function obtenerTotalSistema() {
     $.ajax({
-        url: '../controllers/caja/controlador_cierre_caja.php',
+        url: '../controllers/caja/controlador_caja.php',
         type: 'POST',
         data: { accion: 'obtener_total' },
         dataType: 'json',
@@ -27,7 +27,7 @@ function registrarCierre() {
     }
 
     $.ajax({
-        url: '../controllers/caja/controlador_cierre_caja.php',
+        url: '../controllers/caja/controlador_caja.php',
         type: 'POST',
         data: {
             accion: 'registrar',
@@ -41,10 +41,7 @@ function registrarCierre() {
                     $('#total_contado').val('');
                     $('#observaciones').val('');
                     obtenerTotalSistema();
-                    verificarEstadoCaja(); // Desactiva boton de cierre y activa apertura
-                    //ya se que no esta ahi pero ella esta ahi hace dos dias
-                    //Bueno, ya sabes porque no funciona. imagino que tendras un backup por ahi no?
-
+                    verificarEstadoCaja();
                 });
             } else {
                 Swal.fire("Error", resp.mensaje, "error");
@@ -57,23 +54,24 @@ function registrarCierre() {
 }
 
 function buscarCierrePorFecha() {
-    var fecha = document.getElementById('fecha_busqueda').value;
+    var fecha = $('#fecha_busqueda').val();
 
     if (!fecha) {
         return Swal.fire("Advertencia", "Debe seleccionar una fecha.", "warning");
     }
 
     $.ajax({
-        url: '../controllers/caja/controlador_buscar_cierre_fecha.php',
+        url: '../controllers/caja/controlador_caja.php',
         type: 'POST',
-        data: { fecha: fecha },
+        data: { accion: 'buscar_cierre', fecha: fecha },
         dataType: 'json',
         success: function (resp) {
             if (resp.exito && resp.datos) {
                 const datos = resp.datos;
-                let montoInicial = parseFloat(datos.monto_inicial);
-                let montoFinal = parseFloat(datos.total_caja);
-                let total_movimientos = parseFloat(datos.total_movimientos);
+
+                let montoInicial = parseFloat(datos.monto_apertura || datos.monto_inicial);
+                let montoFinal = parseFloat(datos.total_caja || datos.total_sistema);
+                let total_movimientos = parseFloat(datos.total_cerrados || 0);
 
                 montoInicial = isNaN(montoInicial) ? 0 : montoInicial;
                 montoFinal = isNaN(montoFinal) ? 0 : montoFinal;
@@ -95,7 +93,7 @@ function buscarCierrePorFecha() {
                     icon: "success"
                 });
             } else {
-                Swal.fire("Sin resultados", resp.mensaje, "info");
+                Swal.fire("Sin resultados", resp.mensaje || "No se encontró información para esa fecha.", "info");
             }
         },
         error: function () {
@@ -112,9 +110,9 @@ function generarReporte() {
     }
 
     $.ajax({
-        url: '../controllers/caja/controlador_verificar_reporte.php',
+        url: '../controllers/caja/controlador_caja.php',
         type: 'GET',
-        data: { fecha: fecha },
+        data: { accion: 'verificar_reporte', fecha: fecha },
         dataType: 'json',
         success: function (resp) {
             if (resp.exito) {
@@ -128,4 +126,3 @@ function generarReporte() {
         }
     });
 }
-

@@ -7,10 +7,10 @@ function registrarApertura() {
     }
 
     $.ajax({
-        url: '../controllers/caja/controlador_apertura_caja.php',
+        url: '../controllers/caja/controlador_caja.php', // controlador unificado
         type: 'POST',
         data: {
-            accion: 'abrir',
+            accion: 'abrir',       // lo manejamos en el controlador
             monto_inicial: monto
         },
         dataType: 'json',
@@ -18,7 +18,7 @@ function registrarApertura() {
             if (resp.status === 'ok') {
                 Swal.fire("Éxito", resp.mensaje, "success").then(() => {
                     $('#monto_inicial').val('');
-                    verificarEstadoCaja(); // Actualiza el estado de los botones
+                    verificarEstadoCaja(); // refresca estado de caja
                 });
             } else {
                 Swal.fire("Error", resp.mensaje, "error");

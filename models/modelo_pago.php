@@ -7,10 +7,7 @@ include_once(__DIR__ . "/../config/config.php");
 require_once __DIR__ . '/../views/libreporte/vendor/autoload.php';
 require_once("modelo_generar_pdfPago.php");
 
-session_start();
-if (!isset($_SESSION['id_user'])) {
-    header('location: ../views/login/login.php');
-}
+
 
 class modelo_pago
 {
@@ -179,11 +176,10 @@ class modelo_pago
     }
 
 
-    public function hayCajaAbierta()
+    public function hayCajaAbierta($id_usuario)
     {
-        $sql = "SELECT COUNT(*) FROM apertura_caja WHERE estado = 'abierta'";
-        $stmt = $this->conn->conexion->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchColumn() > 0;
+        require_once("modelo_caja_diaria.php");
+        $caja = new modelo_caja_diaria();
+        return $caja->existeCajaAbierta($id_usuario);
     }
 }

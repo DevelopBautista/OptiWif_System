@@ -12,9 +12,9 @@ if (!$resultado) {
 
 // Preparar los datos
 $usuario = $resultado['nombre_usuario'];
-$monto_inicial = number_format($resultado['monto_inicial'], 2);
-$total_movimientos = number_format($resultado['total_movimientos'], 2);
-$total_caja = number_format($resultado['total_caja'], 2);
+$monto_inicial = number_format($resultado['monto_apertura'], 2);
+$total_movimientos = number_format($resultado['total_sistema'], 2);
+$total_caja = number_format($resultado['total_real'], 2);
 $fecha_cierre = $resultado['fecha_cierre'] ?? '---';
 
 // Crear PDF

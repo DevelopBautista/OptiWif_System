@@ -6,6 +6,18 @@ error_reporting(E_ALL);
 header('Content-Type: application/json');
 require_once '../../models/modelo_pago.php';
 
+
+session_start();
+$id_usuario = $_SESSION['id_user'] ?? null;
+
+if (!$id_usuario) {
+    echo json_encode([
+        'exito' => false,
+        'mensaje' => 'Sesión expirada. Vuelva a iniciar sesión.'
+    ]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Capturar datos
     $id_mensualidad     = $_POST['id_mensualidad'];
@@ -19,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pagoServicio = new modelo_pago();
 
     // Validar si hay caja abierta
-    if (!$pagoServicio->hayCajaAbierta()) {
+    if (!$pagoServicio->hayCajaAbierta($id_usuario)) {
         echo json_encode([
             'exito' => false,
             'mensaje' => 'No se puede registrar el pago porque no hay una caja abierta.'
