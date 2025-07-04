@@ -80,11 +80,17 @@ switch ($accion) {
             exit;
         }
         $datosCierre = $caja->buscarCierrePorFecha($fecha);
+
         if ($datosCierre) {
             $diferencia = $datosCierre['diferencia'] ?? 0;
             $estado_caja = $diferencia > 0 ? 'Sobra dinero' : ($diferencia < 0 ? 'Falta dinero' : 'Caja cuadrada');
-
             $datosCierre['estado_caja'] = $estado_caja;
+
+            // 👇 Agregar esta parte
+            require_once '../../models/modelo_BuscarFecha_caja.php'; // Ajusta la ruta si es necesario
+            $MC = new modelo_BuscarFecha_caja();
+            $totalPagos = $MC->contador_pagos($fecha);
+            $datosCierre['total_pagos'] = $totalPagos['total_pagos'] ?? 0;
 
             echo json_encode(['exito' => true, 'datos' => $datosCierre]);
         } else {

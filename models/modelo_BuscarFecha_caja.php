@@ -45,4 +45,16 @@ class modelo_BuscarFecha_caja
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
+     public function contador_pagos($fecha)
+    {
+        $sql = "SELECT COUNT(*) AS total_pagos FROM pago_servicio where creado_en = :fecha LIMIT 1";
+
+        $stmt = $this->conn->conexion->prepare($sql);
+        $stmt->bindParam(":fecha", $fecha);
+        $stmt->execute();
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }

@@ -127,6 +127,7 @@ function buscarCierrePorFecha() {
                         <p><strong>💰 Monto Inicial:</strong> RD$ ${montoInicial.toFixed(2)}</p>
                         <p><strong>📥 Total de pagos procesados:</strong> RD$ ${total_movimientos.toFixed(2)}</p>
                         <p><strong>💵 Monto contado en caja:</strong> RD$ ${total_real.toFixed(2)}</p>
+                        <p><strong>👥 Clientes que realizaron pagos: </strong>${datos.total_pagos}</p>
                         <p><strong>🧮 Monto esperado (sistema):</strong> RD$ ${montoFinal.toFixed(2)}</p>
                         <p><strong>📅 Fecha de Cierre:</strong> ${datos.fecha_cierre ?? '---'}</p>
                         ${diferenciaTexto}
