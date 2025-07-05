@@ -92,11 +92,10 @@ header("Pragma: no-cache");
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     <div class="pull-left">
-                                        <a href="#" class="btn  btn-primary">Cancelar</a>
+                                        <a href="#" class="btn btn-primary"><i class="fa fa-times"></i> Cancelar</a>
                                     </div>
                                     <div class="pull-right">
-                                        <!--aqui deberia ir la url base-->
-                                        <a href="#" onclick="cerrar_sesion()" class="btn  btn-danger">Cerrar Sesion</a>
+                                        <a href="#" onclick="cerrar_sesion()" class="btn btn-danger"><i class="fa fa-sign-out"></i>Cerrar Sesion</a>
 
                                     </div>
                                 </li>

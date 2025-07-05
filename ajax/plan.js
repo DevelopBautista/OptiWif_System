@@ -40,7 +40,13 @@ function listar_planes_datatable() {
 
     // actualziar plan
     $('#tabla_plan ').on('click', '.btn-warning', function () {
-        var data = tabla.row($(this).parents('tr')).data();
+        let fila = $(this).closest('tr');
+        let data = tabla.row(fila.hasClass('child') ? fila.prev() : fila).data();
+
+        if (!data) {
+            console.error("No se pudo obtener la fila de datos");
+            return;
+        }
         var id = data.id_plan;
         var nombre_plan = data.nombre_plan;
         var velocidad = data.velocidad;

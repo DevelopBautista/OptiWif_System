@@ -16,9 +16,19 @@ function registrarApertura() {
         dataType: 'json',
         success: function (resp) {
             if (resp.status === 'ok') {
-                Swal.fire("Éxito", resp.mensaje, "success").then(() => {
-                    $('#monto_inicial').val('');
-                    verificarEstadoCaja(); // refresca estado de caja
+                Swal.fire({
+                    title: "Éxito",
+                    text: resp.mensaje,
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 2000,
+                    didClose: () => {
+                        $('#monto_inicial').val('');
+                        verificarEstadoCaja();
+                        back_to_dashbaord();
+                    }
+
+
                 });
             } else {
                 Swal.fire("Error", resp.mensaje, "error");
@@ -29,3 +39,4 @@ function registrarApertura() {
         }
     });
 }
+

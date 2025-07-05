@@ -81,9 +81,14 @@ function listar_clientes() {
 
     //ver datos del cliente
     $('#tabla_clientes ').on('click', '.btn-info', function () {
-        var data = tabla.row($(this).parents('tr')).data();//obteniendo toda la data de la fila 
-        //almacacenando la data de la fila por campos
-        var id = data.id_cliente;
+        let fila = $(this).closest('tr');
+        let data = tabla.row(fila.hasClass('child') ? fila.prev() : fila).data();
+
+        if (!data) {
+            console.error("No se pudo obtener la fila de datos");
+            return;
+        }
+
         var nom = data.nombre_completo;
         var ced = data.numero_cedula;
         var dir = data.direccion;
@@ -93,7 +98,13 @@ function listar_clientes() {
 
     // actualziar datos del cliente
     $('#tabla_clientes ').on('click', '.btn-warning', function () {
-        var data = tabla.row($(this).parents('tr')).data();
+        let fila = $(this).closest('tr');
+        let data = tabla.row(fila.hasClass('child') ? fila.prev() : fila).data();
+
+        if (!data) {
+            console.error("No se pudo obtener la fila de datos");
+            return;
+        }
 
         var id = data.id_cliente;
         var nom = data.nombre_completo;
